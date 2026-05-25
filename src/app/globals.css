@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Forest Green + Slate Gray Theme - Profesional untuk Sistem Desa */
+    --background: 0 0% 100%;
+    --foreground: 215 25% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 215 25% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 15%;
+    --primary: 270 45% 42%;      /* Forest Green #15803D - Warna utama */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 270 18% 35%;    /* Slate Gray #334155 - Warna sekunder */
+    --secondary-foreground: 0 0% 100%;
+    --muted: 270 30% 97%;        /* Pale Green #F0FDF4 - Warna lembut */
+    --muted-foreground: 215 20% 40%;
+    --accent: 280 55% 60%;       /* Light Green #22C55E - Accent */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 270 25% 88%;
+    --input: 270 25% 93%;
+    --ring: 270 55% 50%;
+    --radius: 1rem;
+  }
+
+  .dark {
+    --background: 215 25% 8%;
+    --foreground: 148 30% 85%;
+    --card: 215 25% 12%;
+    --card-foreground: 148 30% 85%;
+    --popover: 215 25% 8%;
+    --popover-foreground: 148 30% 85%;
+    --primary: 280 55% 60%;
+    --primary-foreground: 215 25% 8%;
+    --secondary: 215 25% 60%;
+    --secondary-foreground: 215 25% 8%;
+    --muted: 215 25% 20%;
+    --muted-foreground: 148 30% 70%;
+    --accent: 148 60% 55%;
+    --accent-foreground: 215 25% 8%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 215 25% 20%;
+    --input: 215 25% 15%;
+    --ring: 280 55% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-background text-foreground font-body overflow-x-hidden;
+    overscroll-behavior-y: none;
+  }
+}
+
+/* Custom Scrollbar for better UI on mobile */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-muted-foreground/20 rounded-full;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

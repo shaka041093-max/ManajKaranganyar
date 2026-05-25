@@ -1,0 +1,87 @@
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // == Helper Functions ==
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email.lower() == 'admin@karanganyar.id' ||
+        request.auth.token.email.lower() == 'karanganyar@gmail.id'
+      );
+    }
+
+    // == Rules: Personel & Auth Profiles ==
+    match /personel/{docId} {
+      allow read, list: if isSignedIn();
+      // Admin bisa mengelola semua data.
+      allow create, delete: if isAdmin();
+      // User diizinkan melakukan UPDATE jika email mereka cocok (case-insensitive)
+      // atau jika mereka sudah memiliki UID yang cocok.
+      allow update: if isAdmin() || (isSignedIn() && (
+        request.auth.token.email.lower() == resource.data.email.lower() ||
+        request.auth.token.email.lower() == request.resource.data.email.lower() ||
+        request.auth.uid == resource.data.uid
+      ));
+    }
+    
+    match /personnel/{docId} { 
+      allow read: if true; 
+      allow write: if isAdmin(); 
+    }
+
+    // == Rules: Absensi Records ==
+    match /absensi/{absenId} {
+      allow get: if isSignedIn();
+      allow list: if isSignedIn();
+      allow create, update: if isSignedIn() && (
+        isAdmin() ||
+        request.resource.data.personel_id == request.auth.uid
+      );
+      allow delete: if isAdmin();
+    }
+
+    // == Rules: Global Settings ==
+    match /absensi_settings/{settingId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // == Rules: Master Data ==
+    match /siltap/{docId} { allow read: if isSignedIn(); allow write: if isAdmin(); }
+    match /bpd_insentif/{docId} { allow read: if isSignedIn(); allow write: if isAdmin(); }
+    
+    match /users/{userId} {
+      allow read, write: if isSignedIn() && (isAdmin() || request.auth.uid == userId);
+      match /{allSubcollections=**} {
+        allow read, write: if isSignedIn() && (isAdmin() || request.auth.uid == userId);
+      }
+    }
+    
+    // == Rules: Naskah Dinas & Buku Agenda ==
+    match /naskah_dinas/{docId} {
+      allow read, write: if isSignedIn();
+    }
+    match /buku_agenda/{docId} {
+      allow get, list, write: if isSignedIn();
+    }
+    match /nomor_surat/{docId} {
+      allow read, write: if isSignedIn();
+    }
+
+    // == Rules: Health Records ==
+    match /health_records/{docId} {
+      allow read, write: if isSignedIn();
+    }
+    
+    // Default: Admin only
+    match /{document=**} {
+      allow read, write: if isAdmin();
+    }
+  }
+}
