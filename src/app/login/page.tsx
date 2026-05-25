@@ -42,8 +42,8 @@ export default function LoginPage() {
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "karanganyar@gmail.id",
-      password: "karanganyar123",
+      email: "",
+      password: "",
     },
   })
 
@@ -119,7 +119,7 @@ export default function LoginPage() {
         </CardHeader>
         <CardContent className="p-8 sm:p-10 space-y-6">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" autoComplete="off">
               <FormField
                 control={form.control}
                 name="email"
@@ -129,7 +129,12 @@ export default function LoginPage() {
                     <FormControl>
                       <div className="relative">
                         <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input placeholder="email@desa.id" {...field} className="h-12 rounded-xl pl-10 text-sm border-primary/10 bg-muted/30" />
+                        <Input 
+                          placeholder="email@desa.id" 
+                          {...field} 
+                          className="h-12 rounded-xl pl-10 text-sm border-primary/10 bg-muted/30" 
+                          autoComplete="off"
+                        />
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -145,7 +150,13 @@ export default function LoginPage() {
                     <FormControl>
                        <div className="relative">
                         <KeyRound className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input type="password" placeholder="******" {...field} className="h-12 rounded-xl pl-10 text-sm border-primary/10 bg-muted/30" />
+                        <Input 
+                          type="password" 
+                          placeholder="******" 
+                          {...field} 
+                          className="h-12 rounded-xl pl-10 text-sm border-primary/10 bg-muted/30" 
+                          autoComplete="new-password"
+                        />
                       </div>
                     </FormControl>
                     <FormMessage />

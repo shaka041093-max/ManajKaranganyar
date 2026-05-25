@@ -45,7 +45,7 @@ export default function AdminAbsensiLoginPage() {
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { username: "adminkaranganyar", password: "admin00" },
+    defaultValues: { username: "", password: "" },
   })
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {
@@ -122,7 +122,7 @@ export default function AdminAbsensiLoginPage() {
           </div>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6" autoComplete="off">
               <FormField control={form.control} name="username" render={({ field }) => (
                 <FormItem className="space-y-2">
                   <FormLabel className="text-[10px] font-black uppercase text-slate-500 tracking-wider ml-1">Username Admin</FormLabel>
@@ -133,6 +133,7 @@ export default function AdminAbsensiLoginPage() {
                         placeholder="adminkaranganyar" 
                         {...field} 
                         className="h-14 rounded-2xl pl-12 text-sm border-none bg-slate-50 focus:ring-2 focus:ring-slate-200 font-bold text-slate-700" 
+                        autoComplete="off"
                       />
                     </div>
                   </FormControl>
@@ -151,6 +152,7 @@ export default function AdminAbsensiLoginPage() {
                         placeholder="••••••••" 
                         {...field} 
                         className="h-14 rounded-2xl pl-12 text-sm border-none bg-slate-50 focus:ring-2 focus:ring-slate-200 font-bold text-slate-700" 
+                        autoComplete="new-password"
                       />
                     </div>
                   </FormControl>
