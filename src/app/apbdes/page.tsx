@@ -1,3 +1,4 @@
+
 "use client"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -46,29 +47,32 @@ import {
 } from "@/components/ui/alert-dialog"
 
 export default function ApbdesPage() {
-  const [apbData, setApbData] = useState<ApbItem[]>([])
+  // Inisialisasi langsung dari localStorage jika ada
+  const [apbData, setApbData] = useState<ApbItem[]>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("apbdes_data");
+      if (saved) {
+        try {
+          return JSON.parse(saved);
+        } catch (e) {
+          return initialApbData;
+        }
+      }
+    }
+    return initialApbData;
+  })
+
   const [search, setSearch] = useState("")
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [mounted, setMounted] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { toast } = useToast()
 
-  // Load data from localStorage on mount
   useEffect(() => {
-    const savedData = localStorage.getItem("apbdes_data")
-    if (savedData) {
-      try {
-        setApbData(JSON.parse(savedData))
-      } catch (e) {
-        setApbData(initialApbData)
-      }
-    } else {
-      setApbData(initialApbData)
-    }
     setMounted(true)
   }, [])
 
-  // Save data to localStorage whenever it changes
+  // Simpan ke localStorage HANYA jika data berubah setelah mount
   useEffect(() => {
     if (mounted) {
       localStorage.setItem("apbdes_data", JSON.stringify(apbData))
@@ -120,7 +124,6 @@ export default function ApbdesPage() {
         const ws = wb.Sheets[wsname];
         const jsonData: any[] = XLSX.utils.sheet_to_json(ws, { header: 1 });
         
-        // Skip header row
         const importedData: ApbItem[] = jsonData.slice(1).map((row: any) => {
           const [kode, uraian, volumeStr, nominal, sumber] = row;
           
@@ -180,13 +183,14 @@ export default function ApbdesPage() {
   
   const handleDeleteAll = () => {
     setApbData([]);
+    localStorage.removeItem("apbdes_data");
     setShowDeleteConfirm(false);
-    toast({ variant: "destructive", title: "Data Dihapus", description: "Semua rincian APBDes telah dihapus." });
+    toast({ variant: "destructive", title: "Data Dihapus", description: "Semua rincian APBDes telah dihapus dari memori." });
   };
 
   const handleRestoreDefaults = () => {
     setApbData(initialApbData);
-    toast({ title: "Data Dipulihkan", description: "Mengembalikan ke data contoh Desa Karanganyar." });
+    toast({ title: "Data Dipulihkan", description: "Mengembalikan ke data awal sistem." });
   }
 
   if (!mounted) return null
@@ -416,7 +420,7 @@ export default function ApbdesPage() {
                 </div>
                 <AlertDialogTitle className="text-xl font-black uppercase text-destructive">Hapus Seluruh Data?</AlertDialogTitle>
                 <AlertDialogDescription className="text-xs font-bold uppercase text-slate-500 leading-relaxed">
-                    Tindakan ini akan menghapus semua rincian APBDes dari memori sistem. Pastikan Anda sudah memiliki cadangan file Excel jika ingin memulihkannya nanti.
+                    Tindakan ini akan menghapus semua rincian APBDes dari memori sistem secara permanen.
                 </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter className="flex-col sm:flex-row gap-3 pt-6">

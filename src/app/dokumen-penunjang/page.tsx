@@ -33,7 +33,7 @@ import Link from "next/link"
 import { useState, Suspense, useMemo, useEffect } from "react"
 import { useToast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
-import { APB_DATA, BIDANG_NAMES } from "@/lib/apbdes-data"
+import { APB_DATA as staticApbData, BIDANG_NAMES, type ApbItem } from "@/lib/apbdes-data"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useUser, useDoc, useFirestore, useMemoFirebase, useCollection } from "@/firebase"
 import { doc, collection, query, where } from "firebase/firestore"
@@ -186,6 +186,9 @@ function DokumenContent() {
   // Sub tab state for posyandu
   const [posyanduSubType, setPosyanduSubType] = useState<"kader" | "peserta">("kader")
 
+  // State untuk data APBDes dinamis
+  const [currentApbData, setCurrentApbData] = useState<ApbItem[]>([])
+
   // Mengambil data personil dari Firestore
   const personnelRef = useMemoFirebase(() => (db && user) ? collection(db, "personnel") : null, [db, user])
   const { data: dbOfficials } = useCollection(personnelRef)
@@ -240,6 +243,18 @@ function DokumenContent() {
     setMounted(true)
     setDate(new Date().toISOString().split('T')[0])
     
+    // Load APBDes data from localStorage
+    const savedData = localStorage.getItem("apbdes_data")
+    if (savedData) {
+      try {
+        setCurrentApbData(JSON.parse(savedData))
+      } catch (e) {
+        setCurrentApbData(staticApbData)
+      }
+    } else {
+      setCurrentApbData(staticApbData)
+    }
+
     // Auto switch to manual mode for posyandu
     if (type === "daftar-hadir-posyandu") {
       setUseApbdes(false)
@@ -271,15 +286,15 @@ function DokumenContent() {
   , [dbOfficials]);
 
   const filteredSources = useMemo(() => {
-    if (!bidang) return []
-    const sources = APB_DATA.filter(item => item.bidang.toString() === bidang).map(item => item.sumber)
+    if (!bidang || !currentApbData.length) return []
+    const sources = currentApbData.filter(item => item.bidang.toString() === bidang).map(item => item.sumber)
     return Array.from(new Set(sources))
-  }, [bidang])
+  }, [bidang, currentApbData])
 
   const filteredActivities = useMemo(() => {
-    if (!bidang || !sumber) return []
-    return APB_DATA.filter(item => item.bidang.toString() === bidang && item.sumber === sumber)
-  }, [bidang, sumber])
+    if (!bidang || !sumber || !currentApbData.length) return []
+    return currentApbData.filter(item => item.bidang.toString() === bidang && item.sumber === sumber)
+  }, [bidang, sumber, currentApbData])
 
   const handlePrint = async () => {
     setIsGenerating(true)

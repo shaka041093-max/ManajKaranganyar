@@ -1,7 +1,7 @@
 
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import Link from "next/link"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Archive, FileText, Scale, Loader2, Plus, Search, ExternalLink, Trash2, AlertCircle, Database, Layers, Activity } from "lucide-react"
@@ -15,7 +15,7 @@ import { useUser, useFirestore, useCollection, useMemoFirebase, useDoc } from "@
 import { collection, doc, orderBy, query } from "firebase/firestore"
 import { addDocumentNonBlocking, deleteDocumentNonBlocking } from "@/firebase/non-blocking-updates"
 import { GOOGLE_CONFIG } from "@/lib/google-config"
-import { APB_DATA, BIDANG_NAMES } from "@/lib/apbdes-data"
+import { APB_DATA as staticApbData, BIDANG_NAMES, type ApbItem } from "@/lib/apbdes-data"
 
 export default function ArsipDokumenPage() {
   const { user } = useUser()
@@ -26,7 +26,10 @@ export default function ArsipDokumenPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
 
-  // Form states for SPJ (Integrated with APBDes)
+  // State untuk menampung data APBDes dinamis dari localStorage
+  const [currentApbData, setCurrentApbData] = useState<ApbItem[]>([])
+
+  // Form states for SPJ
   const [spjBidang, setSpjBidang] = useState("")
   const [spjSumber, setSpjSumber] = useState("")
   const [spjKegiatan, setSpjKegiatan] = useState("")
@@ -38,17 +41,31 @@ export default function ArsipDokumenPage() {
   const [phJenisManual, setPhPhJenisManual] = useState("")
   const [phNomor, setPhNomor] = useState("")
 
+  // Load APBDes data from localStorage on mount
+  useEffect(() => {
+    const savedData = localStorage.getItem("apbdes_data")
+    if (savedData) {
+      try {
+        setCurrentApbData(JSON.parse(savedData))
+      } catch (e) {
+        setCurrentApbData(staticApbData)
+      }
+    } else {
+      setCurrentApbData(staticApbData)
+    }
+  }, [])
+
   // APBDes Filtering logic for SPJ
   const filteredSources = useMemo(() => {
-    if (!spjBidang) return []
-    const sources = APB_DATA.filter(item => item.bidang.toString() === spjBidang).map(item => item.sumber)
+    if (!spjBidang || !currentApbData.length) return []
+    const sources = currentApbData.filter(item => item.bidang.toString() === spjBidang).map(item => item.sumber)
     return Array.from(new Set(sources))
-  }, [spjBidang])
+  }, [spjBidang, currentApbData])
 
   const filteredActivities = useMemo(() => {
-    if (!spjBidang || !spjSumber) return []
-    return APB_DATA.filter(item => item.bidang.toString() === spjBidang && item.sumber === spjSumber)
-  }, [spjBidang, spjSumber])
+    if (!spjBidang || !spjSumber || !currentApbData.length) return []
+    return currentApbData.filter(item => item.bidang.toString() === spjBidang && item.sumber === spjSumber)
+  }, [spjBidang, spjSumber, currentApbData])
 
   // GLOBAL DATA FETCHING
   const villageSettingsRef = useMemoFirebase(() => {

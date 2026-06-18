@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useEffect, useState } from "react"
@@ -12,32 +13,33 @@ import { useForm } from "react-hook-form"
 import * as z from "zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth"
-import { doc, setDoc } from "firebase/firestore"
+import { signInWithEmailAndPassword, signOut } from "firebase/auth"
 import Link from "next/link"
 
 const loginSchema = z.object({
   email: z.string().email("Format email tidak valid."),
-  password: z.string().min(6, "Password minimal 6 karakter."),
+  password: z.string().min(1, "Password harus diisi."),
 })
 
 /**
- * Halaman Login Utama
- * Karanganyar Digital System
+ * Halaman Login Utama Manajemen Desa
+ * KHUSUS ADMIN UTAMA
  */
 export default function LoginPage() {
-  const { user, isUserLoading } = useUser()
   const auth = useAuth()
-  const db = useFirestore()
   const router = useRouter()
   const { toast } = useToast()
   const [isProcessing, setIsProcessing] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    if (user && !isUserLoading) {
-      router.push("/dashboard/");
+    setMounted(true)
+    // SELALU KELUAR (LOGOUT) SAAT MASUK KE HALAMAN INI
+    // Hal ini untuk memenuhi permintaan: "selalu memasukkan email dan password"
+    if (auth) {
+      signOut(auth).catch(() => {});
     }
-  }, [user, isUserLoading, router])
+  }, [auth])
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -48,59 +50,42 @@ export default function LoginPage() {
   })
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {
+    // PROTEKSI KETAT: Hanya satu email dan password yang boleh masuk
+    const ALLOWED_EMAIL = "karanganyar@gmail.id"
+    const ALLOWED_PASS = "karanganyar123"
+
+    if (values.email !== ALLOWED_EMAIL || values.password !== ALLOWED_PASS) {
+      toast({
+        variant: "destructive",
+        title: "Akses Ditolak",
+        description: "Hanya Admin Utama (Manajemen) yang diperbolehkan masuk ke sistem ini.",
+      })
+      return
+    }
+
     setIsProcessing(true)
     try {
+      // Login ke Firebase Auth
       await signInWithEmailAndPassword(auth, values.email, values.password)
+      
       toast({
         title: "Login Berhasil",
-        description: "Selamat datang kembali.",
+        description: "Selamat datang di Panel Manajemen Desa.",
       })
       router.push("/dashboard/")
     } catch (error: any) {
-      if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
-        try {
-          const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password)
-          const newUser = userCredential.user
-
-          await setDoc(doc(db, "users", newUser.uid), {
-            id: newUser.uid,
-            email: newUser.email,
-            name: newUser.email?.split('@')[0] || "Pengguna",
-            role: "perangkat", 
-            createdAt: new Date().toISOString()
-          }, { merge: true })
-
-          toast({
-            title: "Akses Diberikan",
-            description: "Akun Anda telah disiapkan secara otomatis.",
-          })
-          router.push("/dashboard/")
-        } catch (createError: any) {
-          toast({
-            variant: "destructive",
-            title: "Gagal Mengakses",
-            description: "Pastikan format email benar dan password minimal 6 karakter.",
-          })
-        }
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Login Error",
-          description: "Terjadi kendala koneksi. Silakan coba lagi.",
-        })
-      }
+      console.error("Login Error:", error);
+      toast({
+        variant: "destructive",
+        title: "Gagal Masuk",
+        description: "Terjadi kesalahan pada kredensial atau koneksi server.",
+      })
     } finally {
       setIsProcessing(false)
     }
   }
 
-  if (isUserLoading || (user && !isProcessing)) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <Loader2 className="h-10 w-10 animate-spin text-primary" />
-      </div>
-    )
-  }
+  if (!mounted) return null;
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4 bg-primary/5">
@@ -113,8 +98,8 @@ export default function LoginPage() {
             <Home className="text-primary-foreground h-10 w-10" />
           </div>
           <div className="space-y-1">
-            <CardTitle className="text-2xl font-black tracking-tighter uppercase text-primary">MASUK SISTEM</CardTitle>
-            <CardDescription className="font-bold text-[10px] uppercase tracking-widest opacity-60">Gunakan Akun Perangkat Desa Anda</CardDescription>
+            <CardTitle className="text-2xl font-black tracking-tighter uppercase text-primary leading-tight">MASUK SISTEM<br/>MANAJEMEN</CardTitle>
+            <CardDescription className="font-bold text-[10px] uppercase tracking-widest opacity-60">Pemerintah Desa Karanganyar</CardDescription>
           </div>
         </CardHeader>
         <CardContent className="p-8 sm:p-10 space-y-6">
@@ -125,12 +110,12 @@ export default function LoginPage() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xs font-bold uppercase text-muted-foreground">Email</FormLabel>
+                    <FormLabel className="text-xs font-bold uppercase text-muted-foreground">Email Admin</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input 
-                          placeholder="email@desa.id" 
+                          placeholder="karanganyar@gmail.id" 
                           {...field} 
                           className="h-12 rounded-xl pl-10 text-sm border-primary/10 bg-muted/30" 
                           autoComplete="off"
@@ -183,7 +168,7 @@ export default function LoginPage() {
           <div className="p-4 bg-muted/50 rounded-xl flex items-start gap-3 border border-dashed border-primary/20">
             <AlertCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
             <p className="text-[10px] text-muted-foreground leading-relaxed font-bold uppercase">
-              Gunakan email: karanganyar@gmail.id untuk akses sistem utama.
+              Sistem ini memiliki otoritas terbatas. Hanya admin resmi yang dapat mengakses database utama desa.
             </p>
           </div>
         </CardContent>
