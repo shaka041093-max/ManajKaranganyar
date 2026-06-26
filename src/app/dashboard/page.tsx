@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
@@ -66,6 +65,7 @@ export default function DashboardPage() {
         setTodayAgenda(res.items);
       } else {
         setTodayAgenda([]);
+        if (res?.error) console.warn("Dashboard Agenda Error:", res.error);
       }
     } catch (err) {
       console.warn("Dashboard Agenda fetch error:", err);

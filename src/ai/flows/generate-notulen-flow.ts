@@ -32,7 +32,7 @@ export async function generateNotulen(input: GenerateNotulenInput): Promise<Gene
 
 const prompt = ai.definePrompt({
   name: 'generateNotulenPrompt',
-  model: 'googleai/gemini-2.0-flash',
+  model: 'googleai/gemini-2.5-flash',
   input: {schema: GenerateNotulenInputSchema},
   output: {schema: GenerateNotulenOutputSchema},
   prompt: `Anda adalah asisten administrasi profesional untuk Pemerintah Desa Karanganyar. 
@@ -49,7 +49,7 @@ Instruksi Penulisan:
 4. Langsung berikan isi paragraf notulensinya saja.
 5. Struktur Paragraf:
    - Paragraf 1: Pembukaan, penyampaian maksud, dan tujuan utama kegiatan.
-   - Paragraf 2-3: Inti pembahasan, jalannya diskusi, atau poin-poin penting yang dikemukakan dalam pertemuan.
+   - Paragraf 2: Inti pembahasan, jalannya diskusi, atau poin-poin penting yang dikemukakan dalam pertemuan.
    - Paragraf terakhir: Kesimpulan, rencana tindak lanjut, dan penutupan kegiatan.`,
 });
 

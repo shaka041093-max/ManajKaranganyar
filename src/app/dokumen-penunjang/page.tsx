@@ -33,10 +33,10 @@ import Link from "next/link"
 import { useState, Suspense, useMemo, useEffect } from "react"
 import { useToast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
-import { APB_DATA as staticApbData, BIDANG_NAMES, type ApbItem } from "@/lib/apbdes-data"
+import { BIDANG_NAMES, type ApbItem } from "@/lib/apbdes-data"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useUser, useDoc, useFirestore, useMemoFirebase, useCollection } from "@/firebase"
-import { doc, collection, query, where } from "firebase/firestore"
+import { collection, doc, query, where, orderBy } from "firebase/firestore"
 import { generateDaftarHadirPDF, generateUangSakuPDF, generateDaftarHadirPesertaPDF } from "@/lib/pdf-utils-v2"
 import { generateHonorNarasumberPDF, generateInsentifPDF, generateSiltapPDF } from "@/lib/pdf-utils"
 
@@ -186,8 +186,29 @@ function DokumenContent() {
   // Sub tab state for posyandu
   const [posyanduSubType, setPosyanduSubType] = useState<"kader" | "peserta">("kader")
 
-  // State untuk data APBDes dinamis
-  const [currentApbData, setCurrentApbData] = useState<ApbItem[]>([])
+  // APBDES DATA FROM FIRESTORE
+  const apbQuery = useMemoFirebase(() => {
+    if (!db || !user) return null
+    return query(collection(db, "apbdes"), orderBy("kode", "asc"))
+  }, [db, user])
+  const { data: allApbData } = useCollection<ApbItem>(apbQuery)
+
+  // Form states
+  const [apbYear, setApbYear] = useState(new Date().getFullYear().toString())
+  const [useApbdes, setUseApbdes] = useState(true)
+  const [bidang, setBidang] = useState("")
+  const [sumber, setSumber] = useState("")
+  const [kegiatan, setKegiatan] = useState("")
+  const [manualTitle, setManualTitle] = useState("")
+  const [date, setDate] = useState("")
+  const [location, setLocation] = useState("Balai Desa Karanganyar")
+  const [time, setTime] = useState("09:00 WIB")
+  
+  // Filter APBDes based on selected year
+  const apbData = useMemo(() => {
+    if (!allApbData) return []
+    return allApbData.filter(item => item.tahun === apbYear)
+  }, [allApbData, apbYear])
 
   // Mengambil data personil dari Firestore
   const personnelRef = useMemoFirebase(() => (db && user) ? collection(db, "personnel") : null, [db, user])
@@ -200,15 +221,6 @@ function DokumenContent() {
   }, [db, user])
   const { data: villageSettings } = useDoc(villageSettingsRef)
 
-  const [useApbdes, setUseApbdes] = useState(true)
-  const [bidang, setBidang] = useState("")
-  const [sumber, setSumber] = useState("")
-  const [kegiatan, setKegiatan] = useState("")
-  const [manualTitle, setManualTitle] = useState("")
-  const [date, setDate] = useState("")
-  const [location, setLocation] = useState("Balai Desa Karanganyar")
-  const [time, setTime] = useState("09:00 WIB")
-  
   const [jumlahOrang, setJumlahOrang] = useState<number>(15)
   const [jumlahKuotaPeserta, setJumlahKuotaPeserta] = useState<number>(30)
   const [participantSelections, setParticipantSelections] = useState(Array(6).fill("none"));
@@ -243,18 +255,6 @@ function DokumenContent() {
     setMounted(true)
     setDate(new Date().toISOString().split('T')[0])
     
-    // Load APBDes data from localStorage
-    const savedData = localStorage.getItem("apbdes_data")
-    if (savedData) {
-      try {
-        setCurrentApbData(JSON.parse(savedData))
-      } catch (e) {
-        setCurrentApbData(staticApbData)
-      }
-    } else {
-      setCurrentApbData(staticApbData)
-    }
-
     // Auto switch to manual mode for posyandu
     if (type === "daftar-hadir-posyandu") {
       setUseApbdes(false)
@@ -272,7 +272,7 @@ function DokumenContent() {
           groups.add(k.jabatan.toUpperCase().trim());
       }
     });
-    return Array.from(groups).sort();
+    return ["SEMUA POSYANDU", ...Array.from(groups).sort()];
   }, [dbOfficials]);
 
   const handleParticipantSelectionChange = (index: number, value: string) => {
@@ -286,15 +286,17 @@ function DokumenContent() {
   , [dbOfficials]);
 
   const filteredSources = useMemo(() => {
-    if (!bidang || !currentApbData.length) return []
-    const sources = currentApbData.filter(item => item.bidang.toString() === bidang).map(item => item.sumber)
-    return Array.from(new Set(sources))
-  }, [bidang, currentApbData])
+    if (!bidang || !apbData) return []
+    const sources = apbData
+      .filter(item => item.bidang.toString() === bidang)
+      .map(item => item.sumber)
+    return Array.from(new Set(sources)).filter(Boolean)
+  }, [bidang, apbData])
 
   const filteredActivities = useMemo(() => {
-    if (!bidang || !sumber || !currentApbData.length) return []
-    return currentApbData.filter(item => item.bidang.toString() === bidang && item.sumber === sumber)
-  }, [bidang, sumber, currentApbData])
+    if (!bidang || !sumber || !apbData) return []
+    return apbData.filter(item => item.bidang.toString() === bidang && item.sumber === sumber)
+  }, [bidang, sumber, apbData])
 
   const handlePrint = async () => {
     setIsGenerating(true)
@@ -346,11 +348,16 @@ function DokumenContent() {
         if (!finalTitle) throw new Error("Judul kegiatan harus diisi")
         if (!selectedWiwitRahayu) throw new Error("Pilih Kelompok Posyandu")
         
-        if (posyanduSubType === "kader") {
-            const kaders = (dbOfficials || []).filter(o => o.category === "Kader" && (o.jabatan?.toUpperCase().includes(selectedWiwitRahayu)));
-            const quota = Math.max(kaders.length, 10); // Minimal 10 baris
+        const isAllPosyandu = selectedWiwitRahayu === "SEMUA POSYANDU";
 
+        if (posyanduSubType === "kader") {
+            const kaders = (dbOfficials || []).filter(o => 
+                o.category === "Kader" && 
+                (isAllPosyandu ? true : o.jabatan?.toUpperCase().includes(selectedWiwitRahayu))
+            );
+            
             const sortedKaders = sortParticipants(kaders);
+            const quota = Math.max(sortedKaders.length, 10); // Minimal 10 baris
 
             const finalParticipants = Array.from({ length: quota }, (_, i) => 
                 sortedKaders[i] ? { name: sortedKaders[i].name, jabatan: sortedKaders[i].jabatan, category: "Kader" } : { name: "", jabatan: "", category: "" }
@@ -360,7 +367,7 @@ function DokumenContent() {
                 kegiatan: finalTitle, 
                 tanggal: date, 
                 participants: finalParticipants,
-                mainTitle: `DAFTAR HADIR POSYANDU ${selectedWiwitRahayu}`,
+                mainTitle: isAllPosyandu ? "DAFTAR HADIR POSYANDU WIWIT RAHAYU" : `DAFTAR HADIR POSYANDU ${selectedWiwitRahayu}`,
                 location,
                 time
             };
@@ -381,7 +388,7 @@ function DokumenContent() {
                 tanggal: date,
                 participants: mappedParticipants,
                 quota: Math.max(mappedParticipants.length, jumlahKuotaPeserta),
-                mainTitle: `DAFTAR HADIR ${selectedHealthCategory.toUpperCase()} POSYANDU ${selectedWiwitRahayu}`,
+                mainTitle: isAllPosyandu ? "DAFTAR HADIR POSYANDU WIWIT RAHAYU" : `DAFTAR HADIR ${selectedHealthCategory.toUpperCase()} POSYANDU ${selectedWiwitRahayu}`,
                 location,
                 time
             };
@@ -814,7 +821,7 @@ function DokumenContent() {
                   className={cn("flex-1 text-[10px] uppercase font-black gap-2 h-10", useApbdes && "shadow-md")}
                   onClick={() => setUseApbdes(true)}
                 >
-                  <Database className="h-3 w-3" /> APBDes
+                  <Database className="h-3 w-3" /> APBDes Cloud
                 </Button>
                 <Button 
                   variant={!useApbdes ? "default" : "ghost"} 
@@ -829,8 +836,24 @@ function DokumenContent() {
                 {useApbdes ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
+                      <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest flex items-center gap-2">
+                        <Calendar className="h-3 w-3" /> Tahun APBDes
+                      </Label>
+                      <Select value={apbYear} onValueChange={(val) => { setApbYear(val); setBidang(""); setSumber(""); setKegiatan(""); }}>
+                        <SelectTrigger className="h-12 rounded-xl bg-muted/20 border-none px-5">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {["2024", "2025", "2026", "2027", "2028", "2029", "2030"].map(y => (
+                            <SelectItem key={y} value={y}>{y}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
                       <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Pilih Bidang</Label>
-                      <Select onValueChange={(val) => { setBidang(val); setSumber(""); setKegiatan(""); }}>
+                      <Select value={bidang} onValueChange={(val) => { setBidang(val); setSumber(""); setKegiatan(""); }}>
                         <SelectTrigger className="h-12 rounded-xl bg-muted/20 border-none px-5">
                           <SelectValue placeholder="Pilih..." />
                         </SelectTrigger>
@@ -843,26 +866,27 @@ function DokumenContent() {
                     </div>
                     <div className="space-y-2">
                       <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Sumber Dana</Label>
-                      <Select disabled={!bidang} onValueChange={(val) => { setSumber(val); setKegiatan(""); }}>
+                      <Select disabled={!bidang} value={sumber} onValueChange={(val) => { setSumber(val); setKegiatan(""); }}>
                         <SelectTrigger className="h-12 rounded-xl bg-muted/20 border-none px-5">
-                          <SelectValue placeholder="Pilih..." />
+                          <SelectValue placeholder="Pilih Sumber..." />
                         </SelectTrigger>
                         <SelectContent>
                           {filteredSources.map(s => (
                             <SelectItem key={s} value={s}>{s}</SelectItem>
                           ))}
+                          {filteredSources.length === 0 && <SelectItem value="none" disabled>Data TA {apbYear} Kosong</SelectItem>}
                         </SelectContent>
                       </Select>
                     </div>
                     <div className="sm:col-span-2 space-y-2">
                       <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Pilih Kegiatan</Label>
-                      <Select disabled={!sumber} onValueChange={setKegiatan}>
+                      <Select disabled={!sumber} value={kegiatan} onValueChange={setKegiatan}>
                         <SelectTrigger className="h-12 rounded-xl bg-muted/20 border-none px-5">
                           <SelectValue placeholder="Pilih Uraian..." />
                         </SelectTrigger>
                         <SelectContent>
                           {filteredActivities.map(item => (
-                            <SelectItem key={item.kode} value={item.uraian}>{item.uraian}</SelectItem>
+                            <SelectItem key={item.id} value={item.uraian}>{item.uraian}</SelectItem>
                           ))}
                         </SelectContent>
                       </Select>

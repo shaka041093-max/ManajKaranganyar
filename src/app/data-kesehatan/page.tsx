@@ -66,6 +66,7 @@ export default function DataKesehatanPage() {
   const [isAddOpen, setIsAddOpen] = useState(false)
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
+  const [isDeleteAllOpen, setIsDeleteAllOpen] = useState(false)
   const [selectedRecord, setSelectedRecord] = useState<any>(null)
   
   const [formData, setFormData] = useState({ name: "", address: "" })
@@ -129,6 +130,24 @@ export default function DataKesehatanPage() {
     toast({ title: "Terhapus", description: "Data telah dihapus dari sistem." })
     setIsDeleteOpen(false)
     setSelectedRecord(null)
+  }
+
+  const handleDeleteAllCategory = async () => {
+    if (!records || records.length === 0 || !db) return
+    setIsProcessing(true)
+    try {
+      // Membersihkan data kategori yang terpilih saja
+      records.forEach(record => {
+        const docRef = doc(db, "health_records", record.id)
+        deleteDocumentNonBlocking(docRef)
+      })
+      toast({ title: "Proses Hapus", description: `Seluruh data ${activeTab} sedang dihapus dari cloud.` })
+      setIsDeleteAllOpen(false)
+    } catch (e) {
+      toast({ variant: "destructive", title: "Gagal", description: "Terjadi kesalahan saat menghapus data masal." })
+    } finally {
+      setIsProcessing(false)
+    }
   }
 
   // Excel Handlers
@@ -217,14 +236,19 @@ export default function DataKesehatanPage() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <input type="file" ref={fileInputRef} onChange={handleImport} className="hidden" accept=".xlsx, .xls" />
             <Button variant="outline" className="rounded-xl h-12 gap-2 font-bold uppercase text-[10px]" onClick={() => fileInputRef.current?.click()} disabled={isProcessing}>
-              <Upload className="h-4 w-4" /> Impor Excel
+              <Upload className="h-4 w-4" /> Impor
             </Button>
             <Button variant="outline" className="rounded-xl h-12 gap-2 font-bold uppercase text-[10px]" onClick={handleExport}>
-              <Download className="h-4 w-4" /> Ekspor Excel
+              <Download className="h-4 w-4" /> Ekspor
             </Button>
+            {records && records.length > 0 && (
+                <Button variant="outline" className="rounded-xl h-12 gap-2 font-bold uppercase text-[10px] text-destructive hover:bg-destructive/5 hover:border-destructive/20 border-slate-200" onClick={() => setIsDeleteAllOpen(true)} disabled={isProcessing}>
+                    <Trash2 className="h-4 w-4" /> Hapus Semua {activeTab}
+                </Button>
+            )}
             <Button className="rounded-xl h-12 gap-2 font-black uppercase text-[10px] bg-primary shadow-lg shadow-primary/20" onClick={() => setIsAddOpen(true)}>
               <Plus className="h-4 w-4" /> Tambah Data
             </Button>
@@ -250,7 +274,7 @@ export default function DataKesehatanPage() {
 
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {isLoading ? (
-                <div className="col-span-full py-20 text-center"><Loader2 className="h-8 w-8 animate-spin text-primary/30 mx-auto" /></div>
+                <div className="col-span-full py-20 text-center"><Loader2 className="h-8 w-8 animate-spin text-primary/30" /></div>
               ) : filteredRecords.length > 0 ? (
                 filteredRecords.map((record) => (
                   <Card key={record.id} className="border-none shadow-sm hover:shadow-xl transition-all bg-white border border-primary/5 rounded-[1.5rem] overflow-hidden group">
@@ -334,7 +358,7 @@ export default function DataKesehatanPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Delete Confirm */}
+      {/* Delete Single Confirm */}
       <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
         <DialogContent className="rounded-[2.5rem] border-none shadow-2xl p-8 max-w-xs text-center">
           <DialogHeader className="items-center">
@@ -349,6 +373,27 @@ export default function DataKesehatanPage() {
           <DialogFooter className="flex-col gap-2">
             <Button variant="destructive" className="w-full h-12 rounded-2xl font-black uppercase" onClick={handleDelete}>Ya, Hapus Data</Button>
             <Button variant="ghost" className="w-full h-12 rounded-2xl font-bold uppercase" onClick={() => setIsDeleteOpen(false)}>Batal</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete ALL Confirm */}
+      <Dialog open={isDeleteAllOpen} onOpenChange={setIsDeleteAllOpen}>
+        <DialogContent className="rounded-[2.5rem] border-none shadow-2xl p-8 max-w-xs text-center">
+          <DialogHeader className="items-center">
+            <div className="h-16 w-16 rounded-full bg-destructive/10 flex items-center justify-center mb-2">
+              <Trash2 className="h-8 w-8 text-destructive" />
+            </div>
+            <DialogTitle className="font-black uppercase text-destructive">Hapus Seluruh Data?</DialogTitle>
+          </DialogHeader>
+          <p className="text-xs font-bold uppercase text-slate-500 leading-relaxed py-4">
+            Anda akan menghapus seluruh data pada kategori <strong>{activeTab}</strong>. Tindakan ini tidak dapat dibatalkan.
+          </p>
+          <DialogFooter className="flex-col gap-2">
+            <Button variant="destructive" className="w-full h-12 rounded-2xl font-black uppercase shadow-lg shadow-destructive/20" onClick={handleDeleteAllCategory} disabled={isProcessing}>
+                {isProcessing ? <Loader2 className="animate-spin h-4 w-4" /> : "Ya, Hapus Seluruhnya"}
+            </Button>
+            <Button variant="ghost" className="w-full h-12 rounded-2xl font-bold uppercase" onClick={() => setIsDeleteAllOpen(false)}>Batal</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
