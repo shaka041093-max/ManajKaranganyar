@@ -17,7 +17,11 @@ import {
   FileText,
   Hash,
   HeartPulse,
-  FileStack
+  FileStack,
+  FileSpreadsheet,
+  Users,
+  Receipt,
+  BarChart3
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -46,6 +50,15 @@ const menuGroups = [
       { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard/" },
       { label: "Informasi APBDes", icon: CircleDollarSign, href: "/apbdes/" },
       { label: "Agenda Kegiatan", icon: Calendar, href: "/agenda/" },
+    ],
+  },
+  {
+    label: "PBB-P2",
+    items: [
+      { label: "Data PBB", icon: FileSpreadsheet, href: "/pbb-p2/master-data/" },
+      { label: "Penarik PBB", icon: Users, href: "/pbb-p2/penarik/" },
+      { label: "Pembayaran PBB", icon: Receipt, href: "/pbb-p2/pembayaran/" },
+      { label: "Monitoring", icon: BarChart3, href: "/pbb-p2/monitoring/" },
     ],
   },
   {

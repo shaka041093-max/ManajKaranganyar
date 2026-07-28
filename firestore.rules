@@ -71,6 +71,13 @@ service cloud.firestore {
     match /health_records/{docId} { allow read, write: if isSignedIn(); }
     match /physical_activities/{docId} { allow read, write: if isSignedIn(); }
     
+    // == Rules: PBB-P2 Collections ==
+    match /pbb_dhkp/{docId} { allow read, write: if isSignedIn(); }
+    match /pbb_kolektor/{docId} { allow read, write: if isSignedIn(); }
+    match /pbb_wilayah/{docId} { allow read, write: if isSignedIn(); }
+    match /pbb_transaksi/{docId} { allow read, write: if isSignedIn(); }
+    match /pbb_setoran/{docId} { allow read, write: if isSignedIn(); }
+    
     // Default: Admin only
     match /{document=**} {
       allow read, write: if isAdmin();
