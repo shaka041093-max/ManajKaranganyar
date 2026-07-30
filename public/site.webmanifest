@@ -3,14 +3,18 @@
   "short_name": "Rungkang",
   "description": "Sistem Manajemen & Pelayanan Desa Rungkang, Kecamatan Gandrungmangu, Kabupaten Cilacap",
   "id": "/",
-  "start_url": "/",
+  "start_url": "/dashboard/",
   "scope": "/",
   "display": "standalone",
-  "orientation": "portrait",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait-primary",
   "theme_color": "#0f5132",
   "background_color": "#f8fafc",
   "lang": "id",
-  "categories": ["government", "productivity"],
+  "dir": "ltr",
+  "categories": ["government", "productivity", "utilities"],
+  "iarc_rating_id": "",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/favicon-16x16.png",
@@ -20,6 +24,11 @@
     {
       "src": "/favicon-32x32.png",
       "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
       "type": "image/png"
     },
     {
@@ -51,32 +60,30 @@
     {
       "name": "Dashboard",
       "short_name": "Dashboard",
-      "description": "Buka halaman utama",
+      "description": "Halaman utama manajemen desa",
       "url": "/dashboard/",
       "icons": [{ "src": "/android-chrome-192x192.png", "sizes": "192x192" }]
     },
     {
       "name": "Pengajuan Surat",
-      "short_name": "Surat",
-      "description": "Ajukan surat baru",
+      "short_name": "Pengajuan",
+      "description": "Ajukan surat keterangan baru",
       "url": "/pelayanan/pengajuan/",
       "icons": [{ "src": "/android-chrome-192x192.png", "sizes": "192x192" }]
     },
     {
       "name": "Agenda Kegiatan",
       "short_name": "Agenda",
-      "description": "Lihat agenda kegiatan",
+      "description": "Manajemen kalender agenda desa",
       "url": "/agenda/",
       "icons": [{ "src": "/android-chrome-192x192.png", "sizes": "192x192" }]
-    }
-  ],
-  "screenshots": [
+    },
     {
-      "src": "/android-chrome-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Manajemen Desa Rungkang"
+      "name": "Data Penduduk",
+      "short_name": "Penduduk",
+      "description": "Database kependudukan desa",
+      "url": "/pelayanan/penduduk/",
+      "icons": [{ "src": "/android-chrome-192x192.png", "sizes": "192x192" }]
     }
   ]
 }

@@ -1,107 +1,138 @@
 /**
  * Service Worker - Manajemen Desa Rungkang PWA
- * 
- * Strategi: Network First dengan fallback offline page.
- * - Halaman app selalu mengambil dari network (data real-time Firebase)
- * - Asset statis (font, icon, css) di-cache agar loading cepat
+ * Versi yang dioptimalkan untuk skor PWABuilder & TWA Android.
  */
 
-const CACHE_NAME = 'rungkang-v1';
+const CACHE_NAME = 'rungkang-pwa-v2';
 const OFFLINE_URL = '/offline.html';
-
-// Asset statis yang di-cache saat install
 const PRECACHE_ASSETS = [
-  '/',
   '/offline.html',
   '/android-chrome-192x192.png',
   '/android-chrome-512x512.png',
   '/favicon.ico',
+  '/site.webmanifest',
 ];
 
 // ─── Install ──────────────────────────────────────────────────────────────────
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(PRECACHE_ASSETS).catch(() => {
-        // Jika offline.html belum ada, abaikan
-      });
-    })
+    (async () => {
+      const cache = await caches.open(CACHE_NAME);
+      // Cache asset statis satu per satu, abaikan error per-file
+      await Promise.allSettled(
+        PRECACHE_ASSETS.map((url) => cache.add(url).catch(() => {}))
+      );
+    })()
   );
+  // Aktifkan service worker langsung tanpa menunggu tab lama ditutup
   self.skipWaiting();
 });
 
 // ─── Activate ─────────────────────────────────────────────────────────────────
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
+    (async () => {
+      // Hapus cache lama
+      const cacheNames = await caches.keys();
+      await Promise.all(
         cacheNames
           .filter((name) => name !== CACHE_NAME)
           .map((name) => caches.delete(name))
       );
-    })
+      // Ambil alih semua client yang aktif
+      await self.clients.claim();
+    })()
   );
-  self.clients.claim();
 });
 
-// ─── Fetch (Network First) ────────────────────────────────────────────────────
+// ─── Fetch Strategy ──────────────────────────────────────────────────────────
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Abaikan request non-HTTP (chrome-extension, dll)
+  // Abaikan request non-HTTP
   if (!request.url.startsWith('http')) return;
 
-  // Abaikan Firebase, Google API, Apps Script (butuh network langsung)
-  if (
-    url.hostname.includes('firestore.googleapis.com') ||
-    url.hostname.includes('firebase') ||
-    url.hostname.includes('googleapis.com') ||
-    url.hostname.includes('script.google.com') ||
-    url.hostname.includes('fonts.googleapis.com') ||
-    url.hostname.includes('fonts.gstatic.com')
-  ) {
-    return;
-  }
+  // Bypass: Firebase, Google API, Apps Script (harus network langsung)
+  const bypassHosts = [
+    'firestore.googleapis.com',
+    'identitytoolkit.googleapis.com',
+    'securetoken.googleapis.com',
+    'firebase.googleapis.com',
+    'firebaseapp.com',
+    'script.google.com',
+    'googleapis.com',
+    'fonts.googleapis.com',
+    'fonts.gstatic.com',
+  ];
+  if (bypassHosts.some((h) => url.hostname.includes(h))) return;
 
-  // Untuk navigasi halaman: Network First, fallback ke cache, lalu offline page
+  // Navigasi halaman: Network First → Cache → Offline Page
   if (request.mode === 'navigate') {
     event.respondWith(
-      fetch(request)
-        .then((response) => {
-          // Cache response navigasi yang sukses
-          const responseClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, responseClone));
-          return response;
-        })
-        .catch(() => {
-          // Offline: coba dari cache, kalau tidak ada tampilkan offline page
-          return caches.match(request).then((cachedResponse) => {
-            return cachedResponse || caches.match(OFFLINE_URL);
-          });
-        })
+      (async () => {
+        try {
+          const networkResponse = await fetch(request);
+          // Cache response sukses
+          const cache = await caches.open(CACHE_NAME);
+          cache.put(request, networkResponse.clone());
+          return networkResponse;
+        } catch {
+          // Offline: coba dari cache, fallback ke offline.html
+          const cachedResponse = await caches.match(request);
+          if (cachedResponse) return cachedResponse;
+          const offlinePage = await caches.match(OFFLINE_URL);
+          return offlinePage || new Response('Offline', { status: 503 });
+        }
+      })()
     );
     return;
   }
 
-  // Untuk asset statis (_next/static, gambar, icon): Cache First
+  // Asset Next.js statis & gambar: Cache First → Network
   if (
     url.pathname.startsWith('/_next/static/') ||
-    url.pathname.startsWith('/android-chrome') ||
-    url.pathname.startsWith('/favicon') ||
-    url.pathname.endsWith('.png') ||
-    url.pathname.endsWith('.ico')
+    url.pathname.match(/\.(png|jpg|jpeg|svg|ico|webp|woff2?|ttf)$/)
   ) {
     event.respondWith(
-      caches.match(request).then((cachedResponse) => {
+      (async () => {
+        const cachedResponse = await caches.match(request);
         if (cachedResponse) return cachedResponse;
-        return fetch(request).then((response) => {
-          const responseClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, responseClone));
-          return response;
-        });
-      })
+        try {
+          const networkResponse = await fetch(request);
+          const cache = await caches.open(CACHE_NAME);
+          cache.put(request, networkResponse.clone());
+          return networkResponse;
+        } catch {
+          return new Response('', { status: 503 });
+        }
+      })()
     );
     return;
   }
+});
+
+// ─── Push Notification (siap untuk masa depan) ────────────────────────────────
+self.addEventListener('push', (event) => {
+  if (!event.data) return;
+  const data = event.data.json();
+  self.registration.showNotification(data.title || 'Rungkang', {
+    body: data.body || 'Ada notifikasi baru',
+    icon: '/android-chrome-192x192.png',
+    badge: '/favicon-32x32.png',
+    data: { url: data.url || '/' },
+  });
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const targetUrl = event.notification.data?.url || '/';
+  event.waitUntil(
+    clients.matchAll({ type: 'window' }).then((clientList) => {
+      for (const client of clientList) {
+        if (client.url === targetUrl && 'focus' in client) return client.focus();
+      }
+      if (clients.openWindow) return clients.openWindow(targetUrl);
+    })
+  );
 });
