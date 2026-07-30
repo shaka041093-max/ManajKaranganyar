@@ -506,24 +506,25 @@ function DokumenContent() {
           <h1 className="text-3xl md:text-4xl font-black text-primary uppercase tracking-tight">Pusat Dokumen</h1>
           <p className="text-muted-foreground font-medium">Pilih jenis berkas administrasi yang ingin Anda cetak.</p>
         </header>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 mt-4">
           {Object.entries(configs).map(([key, item]) => (
             <Link key={key} href={`/dokumen-penunjang/?type=${key}`}>
-              <Card className="border shadow-sm hover:shadow-xl hover:border-primary/50 transition-all cursor-pointer group active:scale-95 h-full flex flex-col">
-                <CardHeader className={cn("p-6 rounded-t-xl", item.bgColor)}>
-                  <item.icon className={cn("h-12 w-12 mb-2 transition-transform group-hover:scale-110", item.color)} />
-                  <CardTitle className="text-lg font-bold uppercase leading-tight">{item.title}</CardTitle>
+              <Card className="border border-slate-200/80 shadow-xs hover:shadow-lg hover:border-primary/50 transition-all cursor-pointer group active:scale-95 h-full flex flex-col rounded-xl md:rounded-2xl overflow-hidden bg-white">
+                <CardHeader className={cn("p-3.5 md:p-6 rounded-t-xl md:rounded-t-2xl flex flex-col items-center text-center sm:items-start sm:text-left", item.bgColor)}>
+                  <item.icon className={cn("h-8 w-8 md:h-12 md:w-12 mb-1.5 md:mb-2 transition-transform group-hover:scale-110 shrink-0", item.color)} />
+                  <CardTitle className="text-xs md:text-lg font-bold uppercase leading-snug line-clamp-2">{item.title}</CardTitle>
                 </CardHeader>
-                <CardContent className="p-6 flex-1 flex flex-col justify-between gap-4">
-                  <p className="text-xs text-muted-foreground font-medium">{item.desc}</p>
-                  <div className="flex items-center text-[10px] font-black uppercase text-primary tracking-widest group-hover:gap-2 transition-all">
-                    Pilih Berkas <ChevronRight className="h-3 w-3 ml-1" />
+                <CardContent className="p-3 md:p-6 flex-1 flex flex-col justify-between gap-2 md:gap-4">
+                  <p className="text-[9px] md:text-xs text-muted-foreground font-medium leading-relaxed line-clamp-2 hidden sm:block">{item.desc}</p>
+                  <div className="flex items-center justify-center sm:justify-start text-[8px] md:text-[10px] font-black uppercase text-primary tracking-wider group-hover:gap-2 transition-all pt-1 border-t border-slate-100 sm:border-0">
+                    <span>Pilih Berkas</span> <ChevronRight className="h-3 w-3 ml-0.5 shrink-0" />
                   </div>
                 </CardContent>
               </Card>
             </Link>
           ))}
         </div>
+
       </div>
     )
   }

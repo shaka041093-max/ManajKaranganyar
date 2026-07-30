@@ -2,7 +2,7 @@ import { Building2 } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
-export default function Logo({ className }: { className?: string }) {
+export function Logo({ className }: { className?: string }) {
   return (
     <Link href="/dashboard" className={cn("flex items-center gap-2 text-primary", className)}>
       <Building2 className="h-7 w-7" />
@@ -10,3 +10,5 @@ export default function Logo({ className }: { className?: string }) {
     </Link>
   );
 }
+
+export default Logo;

@@ -211,7 +211,8 @@ export default function PbbPenarikPlottingPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6 p-4 md:p-8">
+    <div className="p-4 md:p-8 space-y-6 pb-16 max-w-7xl mx-auto">
+
       {/* Header */}
       <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-4">
@@ -385,59 +386,98 @@ export default function PbbPenarikPlottingPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-              <ScrollArea className="h-[400px] w-full">
-                <Table>
-                  <TableHeader className="bg-slate-100/80 sticky top-0 z-10 backdrop-blur-md">
-                    <TableRow>
-                      <TableHead className="font-black text-[10px] uppercase px-6">NOP</TableHead>
-                      <TableHead className="font-black text-[10px] uppercase">Wajib Pajak</TableHead>
-                      <TableHead className="font-black text-[10px] uppercase">Wilayah</TableHead>
-                      <TableHead className="font-black text-[10px] uppercase text-right">Ketetapan</TableHead>
-                      <TableHead className="font-black text-[10px] uppercase text-center px-6">Petugas Penarik</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {loadingDhkp ? (
+              {/* MOBILE VIEW: RINGKAS PER KARTU PLOTTING */}
+              <div className="block md:hidden divide-y divide-slate-100">
+                {loadingDhkp ? (
+                  <div className="p-8 text-center"><Loader2 className="h-6 w-6 animate-spin mx-auto text-primary/40" /></div>
+                ) : dhkpFiltered.length > 0 ? (
+                  dhkpFiltered.map((item) => (
+                    <div key={item.id} className="p-4 space-y-2 bg-white hover:bg-slate-50">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <p className="font-black text-sm text-slate-900 leading-tight">{item.namaWp}</p>
+                          <p className="font-mono text-[10px] text-muted-foreground mt-0.5">{item.nop}</p>
+                        </div>
+                        {item.penarikNama ? (
+                          <Badge className="bg-primary/10 text-primary font-bold text-[9px] border-none shrink-0">
+                            {item.penarikNama}
+                          </Badge>
+                        ) : (
+                          <Badge variant="outline" className="text-slate-400 font-bold text-[9px] shrink-0">
+                            Belum Diplotting
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="flex items-center justify-between text-xs pt-1 border-t border-slate-100">
+                        <span className="text-[10px] font-bold text-slate-500">
+                          RT {item.rt} / RW {item.rw} - {getOfficialDusun(item.dusun, item.rw, item.rt, `${item.alamatWp || ""} ${item.alamatOp || ""}`)}
+                        </span>
+                        <span className="font-black text-xs text-primary">{formatIDR(item.ketetapanNominal)}</span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="p-8 text-center font-bold text-slate-400 uppercase text-xs">Belum ada data DHKP.</div>
+                )}
+              </div>
+
+              {/* DESKTOP VIEW: STANDARD TABLE */}
+              <div className="hidden md:block">
+                <ScrollArea className="h-[400px] w-full">
+                  <Table>
+                    <TableHeader className="bg-slate-100/80 sticky top-0 z-10 backdrop-blur-md">
                       <TableRow>
-                        <TableCell colSpan={5} className="h-32 text-center">
-                          <Loader2 className="h-6 w-6 animate-spin mx-auto text-primary/40" />
-                        </TableCell>
+                        <TableHead className="font-black text-[10px] uppercase px-6">NOP</TableHead>
+                        <TableHead className="font-black text-[10px] uppercase">Wajib Pajak</TableHead>
+                        <TableHead className="font-black text-[10px] uppercase">Wilayah</TableHead>
+                        <TableHead className="font-black text-[10px] uppercase text-right">Ketetapan</TableHead>
+                        <TableHead className="font-black text-[10px] uppercase text-center px-6">Petugas Penarik</TableHead>
                       </TableRow>
-                    ) : dhkpFiltered.length > 0 ? (
-                      dhkpFiltered.map((item) => (
-                        <TableRow key={item.id} className="hover:bg-slate-50">
-                          <TableCell className="font-mono text-xs font-bold px-6">{item.nop}</TableCell>
-                          <TableCell className="font-bold text-xs">{item.namaWp}</TableCell>
-                          <TableCell className="text-xs text-slate-600">
-                            RT {item.rt} / RW {item.rw} - {getOfficialDusun(item.dusun, item.rw, item.rt, `${item.alamatWp || ""} ${item.alamatOp || ""}`)}
-                          </TableCell>
-                          <TableCell className="text-right font-black text-xs text-primary">
-                            {formatIDR(item.ketetapanNominal)}
-                          </TableCell>
-                          <TableCell className="text-center px-6">
-                            {item.penarikNama ? (
-                              <Badge className="bg-primary/10 text-primary font-bold text-[10px]">
-                                {item.penarikNama}
-                              </Badge>
-                            ) : (
-                              <Badge variant="outline" className="text-slate-400 font-bold text-[10px]">
-                                Belum Diplotting
-                              </Badge>
-                            )}
+                    </TableHeader>
+                    <TableBody>
+                      {loadingDhkp ? (
+                        <TableRow>
+                          <TableCell colSpan={5} className="h-32 text-center">
+                            <Loader2 className="h-6 w-6 animate-spin mx-auto text-primary/40" />
                           </TableCell>
                         </TableRow>
-                      ))
-                    ) : (
-                      <TableRow>
-                        <TableCell colSpan={5} className="h-32 text-center font-bold text-slate-400 uppercase text-xs">
-                          Belum ada data DHKP. Silakan impor data di Master Data.
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </ScrollArea>
+                      ) : dhkpFiltered.length > 0 ? (
+                        dhkpFiltered.map((item) => (
+                          <TableRow key={item.id} className="hover:bg-slate-50">
+                            <TableCell className="font-mono text-xs font-bold px-6">{item.nop}</TableCell>
+                            <TableCell className="font-bold text-xs">{item.namaWp}</TableCell>
+                            <TableCell className="text-xs text-slate-600">
+                              RT {item.rt} / RW {item.rw} - {getOfficialDusun(item.dusun, item.rw, item.rt, `${item.alamatWp || ""} ${item.alamatOp || ""}`)}
+                            </TableCell>
+                            <TableCell className="text-right font-black text-xs text-primary">
+                              {formatIDR(item.ketetapanNominal)}
+                            </TableCell>
+                            <TableCell className="text-center px-6">
+                              {item.penarikNama ? (
+                                <Badge className="bg-primary/10 text-primary font-bold text-[10px]">
+                                  {item.penarikNama}
+                                </Badge>
+                              ) : (
+                                <Badge variant="outline" className="text-slate-400 font-bold text-[10px]">
+                                  Belum Diplotting
+                                </Badge>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={5} className="h-32 text-center font-bold text-slate-400 uppercase text-xs">
+                            Belum ada data DHKP. Silakan impor data di Master Data.
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </ScrollArea>
+              </div>
             </CardContent>
+
           </Card>
         </TabsContent>
 

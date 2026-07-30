@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import * as React from "react"
 import { 
@@ -21,7 +21,10 @@ import {
   FileSpreadsheet,
   Users,
   Receipt,
-  BarChart3
+  BarChart3,
+  ChevronDown,
+  FileCheck,
+  FilePlus
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -43,44 +46,72 @@ import {
 } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
 
-const menuGroups = [
+interface MenuItemType {
+  label: string;
+  icon: React.ElementType;
+  href: string;
+  subItems?: { label: string; icon: React.ElementType; href: string }[];
+}
+
+interface MenuGroupType {
+  label: string;
+  items: MenuItemType[];
+}
+
+const menuGroups: MenuGroupType[] = [
   {
     label: "MENU UTAMA",
     items: [
-      { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard/" },
-      { label: "Informasi APBDes", icon: CircleDollarSign, href: "/apbdes/" },
-      { label: "Agenda Kegiatan", icon: Calendar, href: "/agenda/" },
-    ],
-  },
-  {
-    label: "PBB-P2",
-    items: [
-      { label: "Data PBB", icon: FileSpreadsheet, href: "/pbb-p2/master-data/" },
-      { label: "Penarik PBB", icon: Users, href: "/pbb-p2/penarik/" },
-      { label: "Pembayaran PBB", icon: Receipt, href: "/pbb-p2/pembayaran/" },
-      { label: "Monitoring", icon: BarChart3, href: "/pbb-p2/monitoring/" },
+      { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
+      { label: "Informasi APBDes", icon: CircleDollarSign, href: "/apbdes" },
+      { label: "Agenda Kegiatan", icon: Calendar, href: "/agenda" },
     ],
   },
   {
     label: "MANAJEMEN DOKUMEN",
     items: [
-      { label: "Arsip Digital", icon: Archive, href: "/arsip-dokumen/" },
-      { label: "Register Surat", icon: Hash, href: "/arsip-nomor-surat/" },
-      { label: "Naskah Dinas", icon: FileText, href: "/naskah-dinas/" },
-      { label: "Manajemen SPPD", icon: Map, href: "/sppd/" },
-      { label: "Dokumentasi Kegiatan", icon: FileUp, href: "/kegiatan/" },
-      { label: "Cetak Dokumen", icon: Files, href: "/dokumen-penunjang/" },
-      { label: "Inventaris Dokumen Fisik", icon: FileStack, href: "/dokumen-fisik/" },
+      { label: "Arsip Digital", icon: Archive, href: "/arsip-dokumen" },
+      { label: "Register Surat", icon: Hash, href: "/arsip-nomor-surat" },
+      { label: "Naskah Dinas", icon: FileText, href: "/naskah-dinas" },
+      { label: "Manajemen SPPD", icon: Map, href: "/sppd" },
+      { label: "Dokumentasi Kegiatan", icon: FileUp, href: "/kegiatan" },
+      { label: "Cetak Dokumen", icon: Files, href: "/dokumen-penunjang" },
+      { label: "Inventaris Dokumen Fisik", icon: FileStack, href: "/dokumen-fisik" },
+    ],
+  },
+  {
+    label: "PELAYANAN",
+    items: [
+      { 
+        label: "Manajemen Surat", 
+        icon: FileText, 
+        href: "/pelayanan",
+        subItems: [
+          { label: "Kelola Surat", icon: FileCheck, href: "/pelayanan" },
+          { label: "Pengajuan Baru", icon: FilePlus, href: "/pelayanan/pengajuan" },
+        ]
+      },
+      { label: "Data Penduduk", icon: Users, href: "/penduduk" },
+    ],
+  },
+  {
+    label: "PBB-P2",
+    items: [
+      { label: "Data PBB", icon: FileSpreadsheet, href: "/pbb-p2/master-data" },
+      { label: "Penarik PBB", icon: Users, href: "/pbb-p2/penarik" },
+      { label: "Pembayaran PBB", icon: Receipt, href: "/pbb-p2/pembayaran" },
+      { label: "Monitoring", icon: BarChart3, href: "/pbb-p2/monitoring" },
     ],
   },
   {
     label: "DATA & INFORMASI",
     items: [
-      { label: "Data Perangkat Desa", icon: User, href: "/profile/" },
-      { label: "Data Kesehatan", icon: HeartPulse, href: "/data-kesehatan/" },
+      { label: "Data Perangkat Desa", icon: User, href: "/profile" },
+      { label: "Data Kesehatan", icon: HeartPulse, href: "/data-kesehatan" },
     ],
   },
 ]
+
 
 export function AppSidebar() {
   const pathname = usePathname()
@@ -91,6 +122,8 @@ export function AppSidebar() {
   const { setOpenMobile, isMobile } = useSidebar()
   const [mounted, setMounted] = React.useState(false)
   const [isLoggingOut, setIsLoggingOut] = React.useState(false)
+  const [openSubMenus, setOpenSubMenus] = React.useState<Record<string, boolean>>({})
+
 
   // GLOBAL CONFIG: Use village shared settings
   const villageSettingsRef = useMemoFirebase(() => {
@@ -120,6 +153,10 @@ export function AppSidebar() {
     if (isMobile) {
       setOpenMobile(false)
     }
+  }
+
+  const toggleSubMenu = (label: string) => {
+    setOpenSubMenus(prev => ({ ...prev, [label]: !prev[label] }))
   }
 
   return (
@@ -159,10 +196,85 @@ export function AppSidebar() {
               {group.items.map((item) => {
                 const itemPath = item.href.replace(/\/$/, "")
                 const currentPath = mounted ? pathname.replace(/\/$/, "") : ""
-                const isActive = mounted && (
-                  currentPath === itemPath || currentPath.startsWith(itemPath + "/")
+                const isSubActive = item.subItems?.some(sub => {
+                  const subPath = sub.href.replace(/\/$/, "")
+                  return currentPath === subPath || (subPath !== "/pelayanan" && currentPath.startsWith(subPath))
+                })
+                const isActive = mounted && !item.subItems && (
+                  currentPath === itemPath || (itemPath !== "" && currentPath.startsWith(itemPath + "/"))
                 )
-                
+
+                if (item.subItems) {
+                  const isOpen = Boolean(openSubMenus[item.label]);
+
+                  
+                  return (
+                    <SidebarMenuItem key={item.label} className="flex flex-col">
+                      <SidebarMenuButton
+                        tooltip={item.label}
+                        onClick={() => toggleSubMenu(item.label)}
+                        className={cn(
+                          "h-12 px-4 rounded-xl transition-all duration-300 group justify-between",
+                          isSubActive 
+                            ? "bg-amber-500/10 text-amber-600 font-bold hover:bg-amber-500/15" 
+                            : "hover:bg-muted text-muted-foreground"
+                        )}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className={cn(
+                            "shrink-0 transition-colors",
+                            isSubActive ? "text-amber-600" : "text-muted-foreground group-hover:text-primary"
+                          )}>
+                            <item.icon className={cn("h-5 w-5", isSubActive && "stroke-[2.5px]")} />
+                          </div>
+                          <span className={cn(
+                            "font-bold text-[13px] whitespace-nowrap",
+                            isSubActive ? "text-amber-700" : "text-foreground"
+                          )}>
+                            {item.label}
+                          </span>
+                        </div>
+                        <ChevronDown className={cn(
+                          "h-4 w-4 shrink-0 transition-transform duration-200 text-muted-foreground",
+                          isOpen && "rotate-180 text-amber-600"
+                        )} />
+                      </SidebarMenuButton>
+
+                      {isOpen && (
+                        <div className="flex flex-col gap-1 pl-4 mt-1 border-l-2 border-amber-500/20 ml-4 py-1">
+                          {item.subItems.map((sub) => {
+                            const subPath = sub.href.replace(/\/$/, "")
+                            const isSubItemActive = mounted && (
+                              (subPath === "/pelayanan" && (currentPath === "/pelayanan" || currentPath === "/pelayanan/")) ||
+                              (subPath !== "/pelayanan" && currentPath.startsWith(subPath))
+                            )
+
+                            return (
+                              <SidebarMenuButton
+                                key={sub.href}
+                                asChild
+                                isActive={isSubItemActive}
+                                onClick={handleLinkClick}
+                                className={cn(
+                                  "h-10 px-3 rounded-lg transition-all text-xs font-bold",
+                                  isSubItemActive
+                                    ? "bg-amber-500 text-white shadow-md shadow-amber-500/20 hover:bg-amber-600 hover:text-white"
+                                    : "hover:bg-muted text-muted-foreground hover:text-foreground"
+                                )}
+                              >
+                                <Link href={sub.href} className="flex items-center gap-2.5 w-full">
+                                  <sub.icon className={cn("h-4 w-4 shrink-0", isSubItemActive ? "text-white" : "text-amber-600")} />
+                                  <span>{sub.label}</span>
+                                </Link>
+                              </SidebarMenuButton>
+                            )
+                          })}
+                        </div>
+                      )}
+                    </SidebarMenuItem>
+                  )
+                }
+
                 return (
                   <SidebarMenuItem key={item.href}>
                     <SidebarMenuButton 

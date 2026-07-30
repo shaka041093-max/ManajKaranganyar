@@ -63,7 +63,8 @@ export default function RootLayout({
   // portal Absensi, dan fitur Dev Utility agar tidak terblokir ManagementGuard
   const isPortalAbsensi = pathname?.startsWith('/absensi/') || pathname?.startsWith('/absensi-admin/');
   const isDevUtility = pathname?.startsWith('/dev/');
-  const isPublicPage = pathname === '/' || pathname === '/login' || pathname === '/login/' || isPortalAbsensi || isDevUtility;
+  const isPrintPage = pathname?.startsWith('/print/') || pathname?.startsWith('/print');
+  const isPublicPage = pathname === '/' || pathname === '/login' || pathname === '/login/' || isPortalAbsensi || isDevUtility || isPrintPage;
 
   return (
     <html lang="id">

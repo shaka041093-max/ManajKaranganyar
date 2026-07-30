@@ -527,7 +527,8 @@ export default function PbbPembayaranPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6 p-4 md:p-8">
+    <div className="p-4 md:p-8 space-y-6 pb-16 max-w-7xl mx-auto">
+
       {/* Header */}
       <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-4">
@@ -689,92 +690,137 @@ export default function PbbPembayaranPage() {
                   </Badge>
                 </CardHeader>
                 <CardContent className="p-0">
-                  <ScrollArea className="h-[480px]">
-                    <Table>
-                      <TableHeader className="bg-slate-50 sticky top-0 z-10">
-                        <TableRow>
-                          <TableHead className="font-black text-[10px] uppercase px-4">NOP & Wajib Pajak</TableHead>
-                          <TableHead className="font-black text-[10px] uppercase">Wilayah / RT-RW</TableHead>
-                          <TableHead className="font-black text-[10px] uppercase text-right">Tagihan PBB</TableHead>
-                          <TableHead className="font-black text-[10px] uppercase text-center w-[80px]">Tambah</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {loadingDhkp ? (
-                          <TableRow>
-                            <TableCell colSpan={4} className="h-36 text-center">
-                              <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary/40" />
-                            </TableCell>
-                          </TableRow>
-                        ) : searchedBills.length > 0 ? (
-                          searchedBills.map((item) => {
-                            const isAdded = cartItems.some((ci) => ci.dhkp.nop === item.nop)
-                            const isLunas = item.statusBayar === "Lunas"
-                            const officialD = getOfficialDusun(
-                              item.dusun,
-                              item.rw,
-                              item.rt,
-                              `${item.alamatWp || ""} ${item.alamatOp || ""}`
-                            )
+                  {/* MOBILE VIEW: RINGKAS PER KARTU CARI WP */}
+                  <div className="block md:hidden divide-y divide-slate-100">
+                    {loadingDhkp ? (
+                      <div className="p-8 text-center"><Loader2 className="h-6 w-6 animate-spin mx-auto text-primary/40" /></div>
+                    ) : searchedBills.length > 0 ? (
+                      searchedBills.map((item) => {
+                        const isAdded = cartItems.some((ci) => ci.dhkp.nop === item.nop)
+                        const isLunas = item.statusBayar === "Lunas"
+                        const officialD = getOfficialDusun(item.dusun, item.rw, item.rt, `${item.alamatWp || ""} ${item.alamatOp || ""}`)
 
-                            return (
-                              <TableRow key={item.id} className="hover:bg-slate-50/80">
-                                <TableCell className="py-3 px-4">
-                                  <p className="font-black text-xs text-slate-800">{item.namaWp}</p>
-                                  <p className="font-mono text-[10px] text-muted-foreground">{item.nop}</p>
-                                </TableCell>
-                                <TableCell className="py-3">
-                                  <p className="text-xs font-semibold text-slate-700">
-                                    RT {item.rt} / RW {item.rw}
-                                  </p>
-                                  <Badge variant="outline" className="text-[9px] font-bold px-1.5 py-0 bg-slate-50 border-slate-200">
-                                    {officialD}
-                                  </Badge>
-                                </TableCell>
-                                <TableCell className="text-right font-black text-xs text-primary py-3">
-                                  {formatIDR(item.ketetapanNominal)}
-                                </TableCell>
-                                <TableCell className="text-center py-3">
-                                  {isLunas ? (
-                                    <Badge className="bg-emerald-100 text-emerald-700 border-none font-bold text-[10px]">
-                                      Lunas
-                                    </Badge>
-                                  ) : isAdded ? (
-                                    <Button
-                                      size="icon"
-                                      variant="ghost"
-                                      className="h-8 w-8 rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-100"
-                                      onClick={() => handleRemoveFromCart(item.nop)}
-                                      title="Sudah ditambahkan (Klik untuk hapus)"
-                                    >
-                                      <Check className="h-4 w-4 stroke-[3]" />
-                                    </Button>
-                                  ) : (
-                                    <Button
-                                      size="icon"
-                                      variant="default"
-                                      className="h-8 w-8 rounded-full bg-primary hover:bg-primary/90 text-white shadow-md transition-transform active:scale-95"
-                                      onClick={() => handleAddToCart(item)}
-                                      title="Tambah ke keranjang bayar (+)"
-                                    >
-                                      <Plus className="h-5 w-5 stroke-[3]" />
-                                    </Button>
-                                  )}
-                                </TableCell>
-                              </TableRow>
-                            )
-                          })
-                        ) : (
+                        return (
+                          <div key={item.id} className="p-4 space-y-2 bg-white hover:bg-slate-50/50">
+                            <div className="flex items-start justify-between gap-2">
+                              <div>
+                                <p className="font-black text-sm text-slate-900 leading-tight">{item.namaWp}</p>
+                                <p className="font-mono text-[10px] text-muted-foreground mt-0.5">{item.nop}</p>
+                              </div>
+                              {isLunas ? (
+                                <Badge className="bg-emerald-100 text-emerald-700 border-none font-bold text-[9px] shrink-0">Lunas</Badge>
+                              ) : isAdded ? (
+                                <Button size="sm" variant="ghost" className="h-7 px-2.5 rounded-xl bg-emerald-50 text-emerald-600 font-bold text-xs" onClick={() => handleRemoveFromCart(item.nop)}>
+                                  <Check className="h-3.5 w-3.5 mr-1" /> Ditambahkan
+                                </Button>
+                              ) : (
+                                <Button size="sm" className="h-7 px-3 rounded-xl bg-primary text-white font-bold text-xs" onClick={() => handleAddToCart(item)}>
+                                  <Plus className="h-3.5 w-3.5 mr-1" /> Tambah
+                                </Button>
+                              )}
+                            </div>
+                            <div className="flex items-center justify-between text-xs pt-1 border-t border-slate-100">
+                              <span className="text-[10px] font-bold text-slate-500">RT {item.rt} / RW {item.rw} • {officialD}</span>
+                              <span className="font-black text-xs text-primary">{formatIDR(item.ketetapanNominal)}</span>
+                            </div>
+                          </div>
+                        )
+                      })
+                    ) : (
+                      <div className="p-8 text-center text-muted-foreground text-xs italic">Tidak ada data Wajib Pajak yang cocok dengan kata kunci pencarian.</div>
+                    )}
+                  </div>
+
+                  {/* DESKTOP VIEW: STANDARD TABLE */}
+                  <div className="hidden md:block">
+                    <ScrollArea className="h-[480px]">
+                      <Table>
+                        <TableHeader className="bg-slate-50 sticky top-0 z-10">
                           <TableRow>
-                            <TableCell colSpan={4} className="h-36 text-center text-muted-foreground text-xs">
-                              Tidak ada data Wajib Pajak yang cocok dengan kata kunci pencarian.
-                            </TableCell>
+                            <TableHead className="font-black text-[10px] uppercase px-4">NOP & Wajib Pajak</TableHead>
+                            <TableHead className="font-black text-[10px] uppercase">Wilayah / RT-RW</TableHead>
+                            <TableHead className="font-black text-[10px] uppercase text-right">Tagihan PBB</TableHead>
+                            <TableHead className="font-black text-[10px] uppercase text-center w-[80px]">Tambah</TableHead>
                           </TableRow>
-                        )}
-                      </TableBody>
-                    </Table>
-                  </ScrollArea>
+                        </TableHeader>
+                        <TableBody>
+                          {loadingDhkp ? (
+                            <TableRow>
+                              <TableCell colSpan={4} className="h-36 text-center">
+                                <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary/40" />
+                              </TableCell>
+                            </TableRow>
+                          ) : searchedBills.length > 0 ? (
+                            searchedBills.map((item) => {
+                              const isAdded = cartItems.some((ci) => ci.dhkp.nop === item.nop)
+                              const isLunas = item.statusBayar === "Lunas"
+                              const officialD = getOfficialDusun(
+                                item.dusun,
+                                item.rw,
+                                item.rt,
+                                `${item.alamatWp || ""} ${item.alamatOp || ""}`
+                              )
+
+                              return (
+                                <TableRow key={item.id} className="hover:bg-slate-50/80">
+                                  <TableCell className="py-3 px-4">
+                                    <p className="font-black text-xs text-slate-800">{item.namaWp}</p>
+                                    <p className="font-mono text-[10px] text-muted-foreground">{item.nop}</p>
+                                  </TableCell>
+                                  <TableCell className="py-3">
+                                    <p className="text-xs font-semibold text-slate-700">
+                                      RT {item.rt} / RW {item.rw}
+                                    </p>
+                                    <Badge variant="outline" className="text-[9px] font-bold px-1.5 py-0 bg-slate-50 border-slate-200">
+                                      {officialD}
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell className="text-right font-black text-xs text-primary py-3">
+                                    {formatIDR(item.ketetapanNominal)}
+                                  </TableCell>
+                                  <TableCell className="text-center py-3">
+                                    {isLunas ? (
+                                      <Badge className="bg-emerald-100 text-emerald-700 border-none font-bold text-[10px]">
+                                        Lunas
+                                      </Badge>
+                                    ) : isAdded ? (
+                                      <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        className="h-8 w-8 rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-100"
+                                        onClick={() => handleRemoveFromCart(item.nop)}
+                                        title="Sudah ditambahkan (Klik untuk hapus)"
+                                      >
+                                        <Check className="h-4 w-4 stroke-[3]" />
+                                      </Button>
+                                    ) : (
+                                      <Button
+                                        size="icon"
+                                        variant="default"
+                                        className="h-8 w-8 rounded-full bg-primary hover:bg-primary/90 text-white shadow-md transition-transform active:scale-95"
+                                        onClick={() => handleAddToCart(item)}
+                                        title="Tambah ke keranjang bayar (+)"
+                                      >
+                                        <Plus className="h-5 w-5 stroke-[3]" />
+                                      </Button>
+                                    )}
+                                  </TableCell>
+                                </TableRow>
+                              )
+                            })
+                          ) : (
+                            <TableRow>
+                              <TableCell colSpan={4} className="h-36 text-center text-muted-foreground text-xs">
+                                Tidak ada data Wajib Pajak yang cocok dengan kata kunci pencarian.
+                              </TableCell>
+                            </TableRow>
+                          )}
+                        </TableBody>
+                      </Table>
+                    </ScrollArea>
+                  </div>
                 </CardContent>
+
               </Card>
             </div>
 

@@ -11,8 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Loader2, Plane, Calendar as CalendarIcon, RefreshCw, ChevronRight, Save, Hash, Sparkles, Clock, MapPin, Users, FileText } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
-import { useFirestore, useUser, useCollection, useMemoFirebase } from "@/firebase"
-import { collection, doc, setDoc } from "firebase/firestore"
+import { useFirestore, useUser, useCollection, useMemoFirebase, useDoc } from "@/firebase"
+import { collection, doc } from "firebase/firestore"
 import { addDocumentNonBlocking, updateDocumentNonBlocking } from "@/firebase/non-blocking-updates"
 import { format, addDays, parseISO } from "date-fns"
 import { cn } from "@/lib/utils"
@@ -71,6 +71,12 @@ export function SppdUpload({ onSuccess, initialData }: SppdUploadProps) {
   
   const personnelRef = useMemoFirebase(() => (db && user) ? collection(db, "personnel") : null, [db, user])
   const { data: dbOfficials } = useCollection(personnelRef)
+
+  // Baca googleCalendarId dari user settings (sama seperti RincianKegiatan & Dashboard)
+  const userDocRef = useMemoFirebase(() => (db && user) ? doc(db, "users", user.uid) : null, [db, user])
+  const { data: userData } = useDoc(userDocRef)
+  const villageSettingsRef = useMemoFirebase(() => (db && user) ? doc(db, "settings", "village") : null, [db, user])
+  const { data: villageSettings } = useDoc(villageSettingsRef)
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -164,31 +170,36 @@ export function SppdUpload({ onSuccess, initialData }: SppdUploadProps) {
     setIsSyncing(true)
     setAgendas([])
     try {
+      // Gunakan calendarId dari user settings atau village settings (sama seperti RincianKegiatan)
+      const calendarId = userData?.googleCalendarId || villageSettings?.googleCalendarId || GOOGLE_CONFIG.calendarId;
       const res = await callAppsScript({
         action: 'getCalendar',
         date: date,
-        calendarId: GOOGLE_CONFIG.calendarId
+        calendarId: calendarId
       });
-      if (res.success && res.items) {
-        const externalEvents = res.items.filter((item: any) => 
-            (item.description || "").includes("JENIS: Eksternal")
+      if (res && res.success && res.items) {
+        // Hanya tampilkan agenda eksternal untuk keperluan SPPD perjalanan dinas
+        const externalOnly = res.items.filter((item: any) =>
+          (item.description || '').includes('JENIS: Eksternal')
         );
-        setAgendas(externalEvents);
+        setAgendas(externalOnly);
       } else {
-        throw new Error(res.error || "Gagal mengambil data kalender");
+        setAgendas([]);
       }
     } catch (err: any) {
+      // Silent fail: jangan crash, cukup kosongkan agenda
       setAgendas([]);
     } finally {
       setIsSyncing(false)
     }
-  }, []);
+  }, [userData, villageSettings]);
 
   useEffect(() => {
-    if (activeTab === 'agenda') {
+    // Tunggu userData (googleCalendarId) siap dulu sebelum fetch, sama seperti RincianKegiatan
+    if (activeTab === 'agenda' && (userData !== undefined || villageSettings !== undefined)) {
       handleSync(selectedCalendarDate);
     }
-  }, [selectedCalendarDate, handleSync, activeTab]);
+  }, [selectedCalendarDate, handleSync, activeTab, userData, villageSettings]);
 
   const handleSelectAgenda = (agenda: AgendaItem) => {
     form.setValue("destination", agenda.location || "Luar Desa", { shouldValidate: true })

@@ -796,7 +796,8 @@ export default function PbbMasterDataPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6 p-4 md:p-8">
+    <div className="p-4 md:p-8 space-y-6 pb-16 max-w-7xl mx-auto">
+
       {/* Header Section */}
       <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-4">
@@ -1059,145 +1060,190 @@ export default function PbbMasterDataPage() {
             </CardHeader>
 
             <CardContent className="p-0">
-              <ScrollArea className="h-[520px] w-full">
-                <Table>
-                  <TableHeader className="bg-slate-100/80 sticky top-0 z-10 backdrop-blur-md">
-                    <TableRow>
-                      <TableHead className="text-[10px] font-black uppercase px-6 h-11">
-                        NOP (18 Digit)
-                      </TableHead>
-                      <TableHead className="text-[10px] font-black uppercase h-11">
-                        Nama & Alamat WP
-                      </TableHead>
-                      <TableHead className="text-[10px] font-black uppercase h-11">
-                        Lokasi OP & Wilayah
-                      </TableHead>
-                      <TableHead className="text-[10px] font-black uppercase text-center h-11">
-                        Luas (Bumi/Bgn)
-                      </TableHead>
-                      <TableHead className="text-[10px] font-black uppercase text-right h-11">
-                        Ketetapan PBB
-                      </TableHead>
-                      <TableHead className="text-[10px] font-black uppercase text-center h-11">
-                        Status
-                      </TableHead>
-                      <TableHead className="text-[10px] font-black uppercase text-center px-6 h-11">
-                        Aksi
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {loadingDhkp ? (
+              {/* MOBILE VIEW: RINGKAS PER KARTU DHKP */}
+              <div className="block md:hidden divide-y divide-slate-100">
+                {loadingDhkp ? (
+                  <div className="p-8 text-center"><Loader2 className="h-6 w-6 animate-spin mx-auto text-primary/40" /></div>
+                ) : filteredDhkp.length > 0 ? (
+                  filteredDhkp.map((item) => (
+                    <div key={item.id} className="p-4 space-y-2 bg-white hover:bg-slate-50/50">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <p className="font-black text-sm text-slate-900 leading-tight">{item.namaWp}</p>
+                          <p className="font-mono text-[10px] text-muted-foreground mt-0.5">{item.nop}</p>
+                        </div>
+                        <Badge className={cn("text-[9px] font-black px-2 py-0.5 border-none shrink-0", item.statusBayar === "Lunas" ? "bg-emerald-100 text-emerald-700" : "bg-rose-100 text-rose-700")}>
+                          {item.statusBayar}
+                        </Badge>
+                      </div>
+
+                      <div className="flex flex-wrap gap-1 text-[10px] text-slate-600">
+                        <span className="font-medium">{item.alamatOp || item.alamatWp}</span>
+                        <span className="font-bold text-slate-700">• RT {item.rt} / RW {item.rw}</span>
+                        <span className="font-bold text-emerald-700">• {getOfficialDusun(item.dusun, item.rw, item.rt, `${item.alamatWp || ""} ${item.alamatOp || ""}`)}</span>
+                      </div>
+
+                      <div className="pt-2 flex items-center justify-between border-t border-slate-100">
+                        <span className="font-black text-xs text-primary">{formatIDR(item.ketetapanNominal)}</span>
+                        <div className="flex items-center gap-1">
+                          <Button variant="ghost" size="icon" className="h-7 w-7 text-slate-600 hover:text-primary rounded-lg" onClick={() => { setEditingDhkp(item); setDhkpForm(item); setOpenDhkpModal(true); }}>
+                            <Edit className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button variant="ghost" size="icon" className="h-7 w-7 text-slate-400 hover:text-destructive rounded-lg" onClick={() => handleDeleteDhkp(item.id)}>
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="p-8 text-center font-bold text-slate-400 uppercase text-xs">Belum ada data DHKP TA {selectedYear}.</div>
+                )}
+              </div>
+
+              {/* DESKTOP VIEW: STANDARD TABLE */}
+              <div className="hidden md:block">
+                <ScrollArea className="h-[520px] w-full">
+                  <Table>
+                    <TableHeader className="bg-slate-100/80 sticky top-0 z-10 backdrop-blur-md">
                       <TableRow>
-                        <TableCell colSpan={7} className="h-40 text-center">
-                          <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary/40" />
-                        </TableCell>
+                        <TableHead className="text-[10px] font-black uppercase px-6 h-11">
+                          NOP (18 Digit)
+                        </TableHead>
+                        <TableHead className="text-[10px] font-black uppercase h-11">
+                          Nama & Alamat WP
+                        </TableHead>
+                        <TableHead className="text-[10px] font-black uppercase h-11">
+                          Lokasi OP & Wilayah
+                        </TableHead>
+                        <TableHead className="text-[10px] font-black uppercase text-center h-11">
+                          Luas (Bumi/Bgn)
+                        </TableHead>
+                        <TableHead className="text-[10px] font-black uppercase text-right h-11">
+                          Ketetapan PBB
+                        </TableHead>
+                        <TableHead className="text-[10px] font-black uppercase text-center h-11">
+                          Status
+                        </TableHead>
+                        <TableHead className="text-[10px] font-black uppercase text-center px-6 h-11">
+                          Aksi
+                        </TableHead>
                       </TableRow>
-                    ) : filteredDhkp.length > 0 ? (
-                      filteredDhkp.map((item) => (
-                        <TableRow
-                          key={item.id}
-                          className="hover:bg-slate-50 border-slate-100"
-                        >
-                          <TableCell className="font-mono text-xs font-bold text-slate-900 px-6">
-                            {item.nop}
+                    </TableHeader>
+                    <TableBody>
+                      {loadingDhkp ? (
+                        <TableRow>
+                          <TableCell colSpan={7} className="h-40 text-center">
+                            <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary/40" />
                           </TableCell>
-                          <TableCell className="py-3">
-                            <p className="text-xs font-bold text-slate-800">
-                              {item.namaWp}
-                            </p>
-                            <p className="text-[10px] text-muted-foreground truncate max-w-[200px]">
-                              {item.alamatWp}
-                            </p>
-                          </TableCell>
-                          <TableCell className="py-3">
-                            <p className="text-xs font-semibold text-slate-700">
-                              {item.alamatOp}
-                            </p>
-                            <div className="flex gap-1 mt-0.5">
+                        </TableRow>
+                      ) : filteredDhkp.length > 0 ? (
+                        filteredDhkp.map((item) => (
+                          <TableRow
+                            key={item.id}
+                            className="hover:bg-slate-50 border-slate-100"
+                          >
+                            <TableCell className="font-mono text-xs font-bold text-slate-900 px-6">
+                              {item.nop}
+                            </TableCell>
+                            <TableCell className="py-3">
+                              <p className="text-xs font-bold text-slate-800">
+                                {item.namaWp}
+                              </p>
+                              <p className="text-[10px] text-muted-foreground truncate max-w-[200px]">
+                                {item.alamatWp}
+                              </p>
+                            </TableCell>
+                            <TableCell className="py-3">
+                              <p className="text-xs font-semibold text-slate-700">
+                                {item.alamatOp}
+                              </p>
+                              <div className="flex gap-1 mt-0.5">
+                                <Badge
+                                  variant="outline"
+                                  className="text-[9px] font-bold px-1.5 py-0 bg-slate-50"
+                                >
+                                  RT {item.rt} / RW {item.rw}
+                                </Badge>
+                                <Badge
+                                  variant="outline"
+                                  className="text-[9px] font-bold px-1.5 py-0 bg-slate-50"
+                                >
+                                  {getOfficialDusun(item.dusun, item.rw, item.rt, `${item.alamatWp || ""} ${item.alamatOp || ""}`)}
+                                </Badge>
+                              </div>
+                            </TableCell>
+                            <TableCell className="text-center text-xs">
+                              <span className="font-bold">{item.luasBumi}</span> m² /{" "}
+                              <span className="font-bold">{item.luasBangunan}</span> m²
+                            </TableCell>
+                            <TableCell className="text-right font-black text-xs text-primary">
+                              {formatIDR(item.ketetapanNominal)}
+                            </TableCell>
+                            <TableCell className="text-center">
                               <Badge
-                                variant="outline"
-                                className="text-[9px] font-bold px-1.5 py-0 bg-slate-50"
+                                className={cn(
+                                  "text-[10px] font-black px-2.5 py-1 border-none",
+                                  item.statusBayar === "Lunas"
+                                    ? "bg-emerald-100 text-emerald-700"
+                                    : "bg-rose-100 text-rose-700"
+                                )}
                               >
-                                RT {item.rt} / RW {item.rw}
+                                {item.statusBayar === "Lunas" ? (
+                                  <CheckCircle2 className="h-3 w-3 mr-1 inline" />
+                                ) : (
+                                  <XCircle className="h-3 w-3 mr-1 inline" />
+                                )}
+                                {item.statusBayar}
                               </Badge>
-                              <Badge
-                                variant="outline"
-                                className="text-[9px] font-bold px-1.5 py-0 bg-slate-50"
-                              >
-                                {getOfficialDusun(item.dusun, item.rw, item.rt, `${item.alamatWp || ""} ${item.alamatOp || ""}`)}
-                              </Badge>
-                            </div>
-                          </TableCell>
-                          <TableCell className="text-center text-xs">
-                            <span className="font-bold">{item.luasBumi}</span> m² /{" "}
-                            <span className="font-bold">{item.luasBangunan}</span> m²
-                          </TableCell>
-                          <TableCell className="text-right font-black text-xs text-primary">
-                            {formatIDR(item.ketetapanNominal)}
-                          </TableCell>
-                          <TableCell className="text-center">
-                            <Badge
-                              className={cn(
-                                "text-[10px] font-black px-2.5 py-1 border-none",
-                                item.statusBayar === "Lunas"
-                                  ? "bg-emerald-100 text-emerald-700"
-                                  : "bg-rose-100 text-rose-700"
-                              )}
-                            >
-                              {item.statusBayar === "Lunas" ? (
-                                <CheckCircle2 className="h-3 w-3 mr-1 inline" />
-                              ) : (
-                                <XCircle className="h-3 w-3 mr-1 inline" />
-                              )}
-                              {item.statusBayar}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="text-center px-6">
-                            <div className="flex items-center justify-center gap-1">
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-8 w-8 text-slate-600 hover:text-primary hover:bg-primary/10 rounded-lg"
-                                onClick={() => {
-                                  setEditingDhkp(item)
-                                  setDhkpForm(item)
-                                  setOpenDhkpModal(true)
-                                }}
-                              >
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-8 w-8 text-slate-400 hover:text-destructive hover:bg-destructive/10 rounded-lg"
-                                onClick={() => handleDeleteDhkp(item.id)}
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
+                            </TableCell>
+                            <TableCell className="text-center px-6">
+                              <div className="flex items-center justify-center gap-1">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8 text-slate-600 hover:text-primary hover:bg-primary/10 rounded-lg"
+                                  onClick={() => {
+                                    setEditingDhkp(item)
+                                    setDhkpForm(item)
+                                    setOpenDhkpModal(true)
+                                  }}
+                                >
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8 text-slate-400 hover:text-destructive hover:bg-destructive/10 rounded-lg"
+                                  onClick={() => handleDeleteDhkp(item.id)}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={7} className="h-44 text-center">
+                            <div className="flex flex-col items-center justify-center text-slate-400">
+                              <FileSpreadsheet className="h-10 w-10 opacity-30 mb-2" />
+                              <p className="text-sm font-bold uppercase tracking-wider">
+                                Belum Ada Data DHKP TA {selectedYear}
+                              </p>
+                              <p className="text-xs text-muted-foreground">
+                                Gunakan tombol "Impor DHKP Excel" untuk mengunggah data dari Bapenda.
+                              </p>
                             </div>
                           </TableCell>
                         </TableRow>
-                      ))
-                    ) : (
-                      <TableRow>
-                        <TableCell colSpan={7} className="h-44 text-center">
-                          <div className="flex flex-col items-center justify-center text-slate-400">
-                            <FileSpreadsheet className="h-10 w-10 opacity-30 mb-2" />
-                            <p className="text-sm font-bold uppercase tracking-wider">
-                              Belum Ada Data DHKP TA {selectedYear}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              Gunakan tombol "Impor DHKP Excel" untuk mengunggah data dari Bapenda.
-                            </p>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </ScrollArea>
+                      )}
+                    </TableBody>
+                  </Table>
+                </ScrollArea>
+              </div>
             </CardContent>
+
           </Card>
         </TabsContent>
 
