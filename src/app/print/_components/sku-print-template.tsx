@@ -17,7 +17,7 @@ export function SkuPrintTemplate({ submission }: { submission: LetterSubmission 
                 <tbody>
                     <DataRow label="Nama" value={formData.name} />
                     <DataRow label="NIK" value={formData.nik} />
-                    <DataRow label="Tempat/Tgl Lahir" value={formatTTL(formData.birthPlace, formData.birthDate)} />
+                    <DataRow label="Tempat/Tgl Lahir" value={formatTTL(formData.birthPlace, formData.birthDate, formData.nik || submission.nik)} />
                     <DataRow label="Jenis Kelamin" value={formData.gender} />
                     <DataRow label="Alamat" value={formData.address} />
                     <DataRow label="Pekerjaan" value={formData.job} />

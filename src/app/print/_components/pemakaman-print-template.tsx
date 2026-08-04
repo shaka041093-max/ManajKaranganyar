@@ -16,7 +16,7 @@ export function PemakamanPrintTemplate({ submission }: { submission: LetterSubmi
         <tbody>
           <DataRow label="NIK" value={formData.nik} />
           <DataRow label="Nama Lengkap" value={formData.name} />
-          <DataRow label="Tempat / Tgl lahir" value={formatTTL(formData.birthPlace, formData.birthDate)} />
+          <DataRow label="Tempat / Tgl lahir" value={formatTTL(formData.birthPlace, formData.birthDate, formData.nik || submission.nik)} />
           <DataRow label="Agama" value={formData.religion} />
           <DataRow label="Jenis Kelamin" value={formData.gender} />
           <DataRow label="Status Perkawinan" value={formData.maritalStatus} />

@@ -49,6 +49,7 @@ import {
 } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
+import { formatDateToDDMMYYYY } from '@/lib/utils';
 import { ResidentForm } from './resident-form';
 import { ImportResidentDialog } from './import-resident-dialog';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -398,7 +399,7 @@ export function ResidentList() {
                     <TableCell className="font-mono text-[10px]">{resident.nik}</TableCell>
                     <TableCell className="font-mono text-[10px]">{resident.noKk}</TableCell>
                     <TableCell className="font-medium uppercase text-[10px]">{resident.fullName}</TableCell>
-                    <TableCell className="text-[10px] whitespace-nowrap">{resident.dateOfBirth}</TableCell>
+                    <TableCell className="text-[10px] whitespace-nowrap font-mono">{formatDateToDDMMYYYY(resident.dateOfBirth, resident.nik)}</TableCell>
                     <TableCell className="text-[10px]">{resident.gender || '-'}</TableCell>
                     <TableCell className="text-[10px]">{resident.religion || '-'}</TableCell>
                     <TableCell className="text-[10px] font-semibold">{resident.relationshipToHeadOfFamily || '-'}</TableCell>

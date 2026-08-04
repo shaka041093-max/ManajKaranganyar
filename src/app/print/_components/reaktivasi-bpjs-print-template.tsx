@@ -25,7 +25,7 @@ export function ReaktivasiBpjsPrintTemplate({ submission }: { submission: Letter
         <tbody>
             <DataRow label="Nama" value={formData.name} />
             <DataRow label="NIK" value={formData.nik} />
-            <DataRow label="Tempat/Tanggal Lahir" value={formatTTL(formData.birthPlace, formData.birthDate)} />
+            <DataRow label="Tempat/Tanggal Lahir" value={formatTTL(formData.birthPlace, formData.birthDate, formData.nik || submission.nik)} />
             <DataRow label="Pekerjaan" value={formData.job} />
             <DataRow label="Alamat" value={formData.address} />
         </tbody>

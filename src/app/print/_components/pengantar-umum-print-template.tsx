@@ -16,7 +16,7 @@ export function PengantarUmumPrintTemplate({ submission }: { submission: LetterS
         <tbody>
           <DataRow label="Nama" value={formData.name} />
           <DataRow label="NIK" value={formData.nik} />
-          <DataRow label="Tempat / Tgl Lahir" value={formatTTL(formData.birthPlace, formData.birthDate)} />
+          <DataRow label="Tempat / Tgl Lahir" value={formatTTL(formData.birthPlace, formData.birthDate, formData.nik || submission.nik)} />
           <DataRow label="Pekerjaan" value={formData.job} />
           <DataRow label="Alamat" value={formData.address} />
         </tbody>

@@ -49,7 +49,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
+import { cn, formatDateToDDMMYYYY } from '@/lib/utils';
 import { updateSubmissionStatus, deleteSubmission, getNextDocumentNumber } from '@/lib/submissions';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 
@@ -828,7 +828,7 @@ export default function AdminPelayananPage() {
                   </div>
                   <div>
                     <span className="text-[9px] font-black uppercase text-slate-400 block">Tempat/Tgl Lahir</span>
-                    <span>{selectedSubForDetail.formData?.birthPlace || '-'}, {selectedSubForDetail.formData?.birthDate || '-'}</span>
+                    <span>{selectedSubForDetail.formData?.birthPlace || '-'}{selectedSubForDetail.formData?.birthDate ? `, ${formatDateToDDMMYYYY(selectedSubForDetail.formData?.birthDate, selectedSubForDetail.formData?.nik)}` : ''}</span>
                   </div>
                   <div>
                     <span className="text-[9px] font-black uppercase text-slate-400 block">Pekerjaan</span>

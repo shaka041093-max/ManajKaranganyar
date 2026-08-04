@@ -138,6 +138,7 @@ export interface LetterSubmission {
   createdAt: any;
   updatedAt?: any;
   date?: any;
+  nik?: string;
   requesterUid?: string;
   requesterName?: string;
   formData: LetterSubmissionFormData;

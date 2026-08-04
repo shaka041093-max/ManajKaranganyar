@@ -17,7 +17,7 @@ export function KeteranganUmumPrintTemplate({ submission }: { submission: Letter
           <DataRow label="Nama Lengkap" value={formData.name} />
           <DataRow label="NIK" value={formData.nik} />
           <DataRow label="Jenis Kelamin" value={formData.gender} />
-          <DataRow label="Tempat / Tgl Lahir" value={formatTTL(formData.birthPlace, formData.birthDate)} />
+          <DataRow label="Tempat / Tgl Lahir" value={formatTTL(formData.birthPlace, formData.birthDate, formData.nik || submission.nik)} />
           <DataRow label="Pekerjaan" value={formData.job} />
           <DataRow label="Alamat" value={formData.address} />
         </tbody>

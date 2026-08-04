@@ -18,7 +18,7 @@ export function MoyangPrintTemplate({ submission }: { submission: LetterSubmissi
           <DataRow label="Nama Lengkap" value={moyang.name} />
           <DataRow label="NIK" value={moyang.nik} />
           <DataRow label="Jenis Kelamin" value={moyang.gender} />
-          <DataRow label="Tempat/Tgl Lahir" value={formatTTL(moyang.birthPlace, moyang.birthDate)} />
+          <DataRow label="Tempat/Tgl Lahir" value={formatTTL(moyang.birthPlace, moyang.birthDate, moyang.nik)} />
           <DataRow label="Kewarganegaraan" value={moyang.nationality} />
           <DataRow label="Agama" value={moyang.religion} />
           <DataRow label="Pekerjaan" value={moyang.job} />
@@ -35,7 +35,7 @@ export function MoyangPrintTemplate({ submission }: { submission: LetterSubmissi
           <DataRow label="Nama Lengkap" value={anak.name} />
           <DataRow label="NIK" value={anak.nik} />
           <DataRow label="Jenis Kelamin" value={anak.gender} />
-          <DataRow label="Tempat/Tgl Lahir" value={formatTTL(anak.birthPlace, anak.birthDate)} />
+          <DataRow label="Tempat/Tgl Lahir" value={formatTTL(anak.birthPlace, anak.birthDate, anak.nik)} />
           <DataRow label="Kewarganegaraan" value={anak.nationality} />
           <DataRow label="Agama" value={anak.religion} />
           <DataRow label="Pekerjaan" value={anak.job} />

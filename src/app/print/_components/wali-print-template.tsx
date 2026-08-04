@@ -17,7 +17,7 @@ export function WaliPrintTemplate({ submission }: { submission: LetterSubmission
         <tbody>
           <DataRow label="NIK" value={wali.nik} />
           <DataRow label="Nama" value={wali.name} />
-          <DataRow label="Tempat / Tgl Lahir" value={formatTTL(wali.birthPlace, wali.birthDate)} />
+          <DataRow label="Tempat / Tgl Lahir" value={formatTTL(wali.birthPlace, wali.birthDate, wali.nik)} />
           <DataRow label="Pekerjaan" value={wali.job} />
           <DataRow label="Alamat" value={wali.address} />
         </tbody>
@@ -31,7 +31,7 @@ export function WaliPrintTemplate({ submission }: { submission: LetterSubmission
         <tbody>
           <DataRow label="NIK" value={anak.nik} />
           <DataRow label="Nama" value={anak.name} />
-          <DataRow label="Tempat / Tgl Lahir" value={formatTTL(anak.birthPlace, anak.birthDate)} />
+          <DataRow label="Tempat / Tgl Lahir" value={formatTTL(anak.birthPlace, anak.birthDate, anak.nik)} />
           <DataRow label="Alamat" value={anak.address} />
         </tbody>
       </table>

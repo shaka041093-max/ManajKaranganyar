@@ -17,7 +17,7 @@ export function SktmPrintTemplate({ submission }: { submission: LetterSubmission
         <tbody>
           <DataRow label="Nama" value={formData.applicantName} />
           <DataRow label="NIK" value={formData.applicantNik} />
-          <DataRow label="Tempat/Tgl Lahir" value={formatTTL(formData.applicantBirthPlace, formData.applicantBirthDate)} />
+          <DataRow label="Tempat/Tgl Lahir" value={formatTTL(formData.applicantBirthPlace, formData.applicantBirthDate, formData.applicantNik || formData.nik || submission.nik)} />
           <DataRow label="Jenis Kelamin" value={formData.applicantGender} />
           <DataRow label="Agama" value={formData.applicantReligion} />
           <DataRow label="Pekerjaan" value={formData.applicantJob} />

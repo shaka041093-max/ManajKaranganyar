@@ -17,7 +17,7 @@ export function BelumMenikahPrintTemplate({ submission }: { submission: LetterSu
           <DataRow label="Nama Lengkap" value={formData.name} />
           <DataRow label="NIK" value={formData.nik} />
           <DataRow label="Jenis Kelamin" value={formData.gender} />
-          <DataRow label="Tempat/Tgl Lahir" value={formatTTL(formData.birthPlace, formData.birthDate)} />
+          <DataRow label="Tempat/Tgl Lahir" value={formatTTL(formData.birthPlace, formData.birthDate, formData.nik || submission.nik)} />
           <DataRow label="Kewarganegaraan" value={formData.nationality} />
           <DataRow label="Agama" value={formData.religion} />
           <DataRow label="Pekerjaan" value={formData.job} />

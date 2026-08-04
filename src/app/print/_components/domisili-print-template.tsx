@@ -17,7 +17,7 @@ export function DomisiliPrintTemplate({ submission }: { submission: LetterSubmis
           <DataRow label="Nama" value={formData.name} />
           <DataRow label="NIK" value={formData.nik} />
           <DataRow label="Jenis Kelamin" value={formData.gender} />
-          <DataRow label="Tempat/ Tanggal lahir" value={formatTTL(formData.birthPlace, formData.birthDate)} />
+          <DataRow label="Tempat/ Tanggal lahir" value={formatTTL(formData.birthPlace, formData.birthDate, formData.nik || submission.nik)} />
           <DataRow label="Warganegara" value={formData.nationality} />
           <DataRow label="Agama" value={formData.religion} />
           <DataRow label="Alamat Asal (KTP)" value={formData.originAddress} />

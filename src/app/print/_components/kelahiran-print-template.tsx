@@ -52,7 +52,7 @@ export function KelahiranPrintTemplate({ submission }: { submission: LetterSubmi
           <CustomDataRow label="Nama Anak" value={formData.childName} />
           <CustomDataRow label="Jenis Kelamin" value={formData.childGender} />
           <CustomDataRow label="NIK Anak" value={formData.childNik || '-'} />
-          <CustomDataRow label="Tempat / Tgl Lahir" value={formatTTL(formData.childBirthPlace, formData.childBirthDate)} />
+          <CustomDataRow label="Tempat / Tgl Lahir" value={formatTTL(formData.childBirthPlace, formData.childBirthDate, formData.childNik)} />
           <CustomDataRow label="Waktu Lahir" value={formData.childBirthTime} />
           <CustomDataRow label="Tempat Dilahirkan" value={formData.childBirthLocation} />
           <CustomDataRow label="Anak Ke" value={formData.childOrder} />
@@ -65,14 +65,14 @@ export function KelahiranPrintTemplate({ submission }: { submission: LetterSubmi
 
           <CustomDataRow label="IBU" value={null} />
           <CustomDataRow label="Nama" value={formData.motherName} indent />
-          <CustomDataRow label="Tempat/Tgl Lahir" value={formatTTL(formData.motherBirthPlace, formData.motherBirthDate)} indent />
+          <CustomDataRow label="Tempat/Tgl Lahir" value={formatTTL(formData.motherBirthPlace, formData.motherBirthDate, formData.motherNik)} indent />
           <CustomDataRow label="Pekerjaan" value={formData.motherJob} indent />
           <CustomDataRow label="Alamat" value={formData.motherAddress} indent />
 
           <CustomDataRow label="AYAH" value={null} />
           <CustomDataRow label="Nama" value={formData.fatherName} indent />
           <CustomDataRow label="NIK Ayah" value={formData.fatherNik} indent />
-          <CustomDataRow label="Tempat/Tgl Lahir" value={formatTTL(formData.fatherBirthPlace, formData.fatherBirthDate)} indent />
+          <CustomDataRow label="Tempat/Tgl Lahir" value={formatTTL(formData.fatherBirthPlace, formData.fatherBirthDate, formData.fatherNik)} indent />
           <CustomDataRow label="Pekerjaan" value={formData.fatherJob} indent />
           <CustomDataRow label="Alamat" value={formData.fatherAddress} indent />
 
