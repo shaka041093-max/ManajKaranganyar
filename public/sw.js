@@ -3,7 +3,7 @@
  * Versi yang dioptimalkan untuk skor PWABuilder & TWA Android.
  */
 
-const CACHE_NAME = 'rungkang-pwa-v2';
+const CACHE_NAME = 'rungkang-pwa-v3';
 const OFFLINE_URL = '/offline.html';
 const PRECACHE_ASSETS = [
   '/offline.html',
@@ -53,8 +53,10 @@ self.addEventListener('fetch', (event) => {
   // Abaikan request non-HTTP
   if (!request.url.startsWith('http')) return;
 
-  // Bypass: Firebase, Google API, Apps Script (harus network langsung)
+  // Bypass: Localhost development, Firebase, Google API, Apps Script (harus network langsung)
   const bypassHosts = [
+    'localhost',
+    '127.0.0.1',
     'firestore.googleapis.com',
     'identitytoolkit.googleapis.com',
     'securetoken.googleapis.com',

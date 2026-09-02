@@ -98,11 +98,17 @@ export default function RootLayout({
         {/* ── Service Worker Registration ───────────────────────── */}
         <script dangerouslySetInnerHTML={{ __html: `
           if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-              navigator.serviceWorker.register('/sw.js')
-                .then(function(reg) { console.log('[PWA] SW registered:', reg.scope); })
-                .catch(function(err) { console.warn('[PWA] SW registration failed:', err); });
-            });
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+              navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for (var r of registrations) { r.unregister(); }
+              });
+            } else {
+              window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                  .then(function(reg) { console.log('[PWA] SW registered:', reg.scope); })
+                  .catch(function(err) { console.warn('[PWA] SW registration failed:', err); });
+              });
+            }
           }
         `}} />
       </head>

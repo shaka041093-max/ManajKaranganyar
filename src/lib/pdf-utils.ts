@@ -674,7 +674,8 @@ export const generateHonorNarasumberPDF = async (values: any, logoBase64?: strin
   addKopSuratSync(doc, logoImg, margin, pageWidth);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(14);
-  doc.text("TANDA TERIMA HONORARIUM NARASUMBER", pageWidth / 2, 56, { align: "center" });
+  const docHeading = (values.docTitle || "TANDA TERIMA HONORARIUM NARASUMBER").toUpperCase();
+  doc.text(docHeading, pageWidth / 2, 56, { align: "center" });
   let currentY = 66;
   doc.setFontSize(10);
   const addHeaderRow = (label: string, text: string) => {
@@ -688,10 +689,15 @@ export const generateHonorNarasumberPDF = async (values: any, logoBase64?: strin
   addHeaderRow("Kegiatan", values.title);
   addHeaderRow("Hari / Tanggal", format(d, "EEEE, d MMMM yyyy", { locale: localeID }));
   addHeaderRow("Tempat", values.location || "Balai Desa Rungkang");
-  addHeaderRow("Waktu", values.time || "09:00 WIB - Selesai");
+  const timeFormatted = values.time
+    ? (values.time.trim().toLowerCase().startsWith("pukul")
+        ? values.time.trim()
+        : `Pukul ${values.time.trim()}`)
+    : "Pukul 09:00 WIB - Selesai";
+  addHeaderRow("Waktu", timeFormatted);
   currentY += 4;
-  const colW = [10, 45, 45, 22, 18, 22, 18]; 
-  const headers = ["NO", "NAMA", "JABATAN", "HONOR", "PAJAK", "DITERIMA", "TTD"];
+  const colW = [8, 40, 36, 24, 18, 24, 30]; 
+  const headers = ["NO", "NAMA", "JABATAN", "HONOR", "PAJAK", "DITERIMA", "TANDA TANGAN"];
   const drawHeader = (startY: number) => {
     doc.setFont("helvetica", "bold");
     doc.setFontSize(9);
@@ -725,28 +731,33 @@ export const generateHonorNarasumberPDF = async (values: any, logoBase64?: strin
     }
     let cX = margin;
     doc.rect(cX, currentY, colW[0], itemHeight);
-    doc.text((i + 1).toString(), cX + 5, currentY + itemHeight / 2 + 1.5, { align: "center" });
+    doc.setFontSize(9);
+    doc.text((i + 1).toString(), cX + colW[0] / 2, currentY + itemHeight / 2 + 1.5, { align: "center" });
     cX += colW[0];
     doc.rect(cX, currentY, colW[1], itemHeight);
-    doc.text(splitName, cX + 2, currentY + 5);
+    const nameOffsetY = currentY + (itemHeight - (splitName.length - 1) * 4) / 2 + 1.5;
+    doc.text(splitName, cX + 2, nameOffsetY);
     cX += colW[1];
     doc.rect(cX, currentY, colW[2], itemHeight);
-    doc.text(splitPos, cX + 2, currentY + 5);
+    const posOffsetY = currentY + (itemHeight - (splitPos.length - 1) * 4) / 2 + 1.5;
+    doc.text(splitPos, cX + 2, posOffsetY);
     cX += colW[2];
     doc.rect(cX, currentY, colW[3], itemHeight);
-    doc.text(nom.toLocaleString('id-ID'), cX + colW[3] - 2, currentY + itemHeight / 2 + 1.5, { align: "right" });
+    doc.setFontSize(8.5);
+    doc.text(`Rp. ${nom.toLocaleString('id-ID')}`, cX + colW[3] / 2, currentY + itemHeight / 2 + 1.5, { align: "center" });
     cX += colW[3];
     doc.rect(cX, currentY, colW[4], itemHeight);
-    doc.text(taxVal.toLocaleString('id-ID'), cX + colW[4] - 2, currentY + itemHeight / 2 + 1.5, { align: "right" });
+    doc.text(`Rp. ${taxVal.toLocaleString('id-ID')}`, cX + colW[4] / 2, currentY + itemHeight / 2 + 1.5, { align: "center" });
     cX += colW[4];
     doc.rect(cX, currentY, colW[5], itemHeight);
-    doc.text(netVal.toLocaleString('id-ID'), cX + colW[5] - 2, currentY + itemHeight / 2 + 1.5, { align: "right" });
+    doc.text(`Rp. ${netVal.toLocaleString('id-ID')}`, cX + colW[5] / 2, currentY + itemHeight / 2 + 1.5, { align: "center" });
     cX += colW[5];
     doc.rect(cX, currentY, colW[6], itemHeight);
-    const signX = (i % 2 === 0) ? cX + 2 : cX + (colW[6] / 2);
+    const isOdd = (i % 2 === 0);
+    const signX = isOdd ? cX + 2 : cX + (colW[6] / 2);
     doc.setFontSize(8);
-    doc.text(`${i + 1}. .......`, signX, currentY + itemHeight / 2 + 1);
-    doc.setFontSize(10);
+    doc.text(`${i + 1}. ....................`, signX, currentY + itemHeight / 2 + 1);
+    doc.setFontSize(9);
     currentY += itemHeight;
   });
   if (currentY > pageHeight - 60) {
@@ -765,6 +776,8 @@ export const generateHonorNarasumberPDF = async (values: any, logoBase64?: strin
   doc.line(sigX, currentY + 1, sigX + nW, currentY + 1);
   return doc.output("blob");
 }
+
+export const generateHonorKegiatanPDF = generateHonorNarasumberPDF;
 
 export const generateSuratTugasPDF = async (values: any, logoBase64?: string | null): Promise<Blob> => {
   const doc = new jsPDF();
