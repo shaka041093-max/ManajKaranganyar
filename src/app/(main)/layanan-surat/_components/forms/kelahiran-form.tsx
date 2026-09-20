@@ -180,7 +180,7 @@ export function KelahiranForm({ isAdmin = false }: { isAdmin?: boolean }) {
       childBirthDate: '',
       childBirthTime: '',
       childBirthLocation: '',
-      childAddress: 'Desa Rungkang, Kec. Gandrungmangu, Kab. Cilacap',
+      childAddress: 'Desa Karanganyar, Kec. Gandrungmangu, Kab. Cilacap',
       childOrder: '',
       birthAssistant: '',
       birthWeight: '',

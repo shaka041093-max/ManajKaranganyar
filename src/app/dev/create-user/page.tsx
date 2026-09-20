@@ -25,14 +25,14 @@ export default function CreateUserPage() {
     setIsProcessing(true)
     setIsDone(false)
     setLogs([])
-    
+
     const adminEmail = auth.currentUser?.email;
     addLog(`🚀 Memulai sinkronisasi kredensial (Admin: ${adminEmail})...`, "info")
 
     try {
       const personelRef = collection(db, "personel")
       const snapshot = await getDocs(personelRef)
-      
+
       if (snapshot.empty) {
         addLog("❌ Tidak ada data personel ditemukan di Firestore.", "error")
         setIsProcessing(false)
@@ -44,7 +44,7 @@ export default function CreateUserPage() {
 
       for (const u of users as any[]) {
         const username = (u.username || "unknown").toLowerCase().trim()
-        const email = `${username}@rungkang.id`
+        const email = `${username}@karanganyar.id`
         const password = u.password || "password123"
 
         addLog(`⏳ Sinkronisasi: [${username.toUpperCase()}]...`)
@@ -110,14 +110,14 @@ export default function CreateUserPage() {
     <div className="p-8 max-w-2xl mx-auto space-y-6 bg-slate-50 min-h-screen">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" asChild className="rounded-full">
-                <Link href="/absensi-admin/dashboard/"><ArrowLeft className="h-5 w-5" /></Link>
-            </Button>
-            <h1 className="text-xl font-black uppercase tracking-tighter text-slate-900">Credential Sync Tool</h1>
+          <Button variant="ghost" size="icon" asChild className="rounded-full">
+            <Link href="/absensi-admin/dashboard/"><ArrowLeft className="h-5 w-5" /></Link>
+          </Button>
+          <h1 className="text-xl font-black uppercase tracking-tighter text-slate-900">Credential Sync Tool</h1>
         </div>
         <Button onClick={runProcess} disabled={isProcessing} className="rounded-xl gap-2 font-black uppercase shadow-lg shadow-primary/20 bg-primary">
-            {isProcessing ? <Loader2 className="animate-spin h-4 w-4" /> : <RefreshCw className="h-4 w-4" />}
-            Jalankan Sinkronisasi
+          {isProcessing ? <Loader2 className="animate-spin h-4 w-4" /> : <RefreshCw className="h-4 w-4" />}
+          Jalankan Sinkronisasi
         </Button>
       </div>
 
@@ -127,9 +127,9 @@ export default function CreateUserPage() {
           <div className="space-y-1">
             <p className="text-xs font-black text-amber-800 uppercase">Perhatian:</p>
             <p className="text-[10px] font-bold text-amber-700 leading-relaxed uppercase">
-                1. Alat ini mendaftarkan akun di sistem login berdasarkan data Username di Manajemen Akun.<br />
-                2. Setelah selesai, sesi admin akan otomatis logout. Silakan login kembali untuk masuk Panel Monitoring.<br />
-                3. Jika muncul "Missing Permissions", pastikan Anda menjalankan ini dalam kondisi Login sebagai Admin.
+              1. Alat ini mendaftarkan akun di sistem login berdasarkan data Username di Manajemen Akun.<br />
+              2. Setelah selesai, sesi admin akan otomatis logout. Silakan login kembali untuk masuk Panel Monitoring.<br />
+              3. Jika muncul "Missing Permissions", pastikan Anda menjalankan ini dalam kondisi Login sebagai Admin.
             </p>
           </div>
         </div>
@@ -137,16 +137,16 @@ export default function CreateUserPage() {
 
       {isDone && (
         <div className="p-6 bg-slate-900 text-white rounded-[2rem] flex flex-col sm:flex-row items-center justify-between gap-4 animate-in zoom-in-95 border-t-8 border-primary">
-            <div className="flex items-center gap-3">
-                <ShieldCheck className="h-8 w-8 text-primary" />
-                <div>
-                  <p className="text-xs font-black uppercase">Sinkronisasi Selesai</p>
-                  <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Sesi Anda telah kedaluwarsa demi keamanan.</p>
-                </div>
+          <div className="flex items-center gap-3">
+            <ShieldCheck className="h-8 w-8 text-primary" />
+            <div>
+              <p className="text-xs font-black uppercase">Sinkronisasi Selesai</p>
+              <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Sesi Anda telah kedaluwarsa demi keamanan.</p>
             </div>
-            <Button asChild variant="secondary" className="rounded-xl font-black uppercase text-[10px] h-11 px-8">
-                <Link href="/absensi-admin/login/">Masuk Admin Kembali</Link>
-            </Button>
+          </div>
+          <Button asChild variant="secondary" className="rounded-xl font-black uppercase text-[10px] h-11 px-8">
+            <Link href="/absensi-admin/login/">Masuk Admin Kembali</Link>
+          </Button>
         </div>
       )}
 
@@ -161,12 +161,11 @@ export default function CreateUserPage() {
           </div>
         )}
         {logs.map((log, i) => (
-          <div key={i} className={`p-3 rounded-xl border flex items-start gap-3 animate-in fade-in slide-in-from-left-1 duration-300 ${
-            log.type === 'success' ? 'bg-green-50 border-green-100 text-green-700' :
+          <div key={i} className={`p-3 rounded-xl border flex items-start gap-3 animate-in fade-in slide-in-from-left-1 duration-300 ${log.type === 'success' ? 'bg-green-50 border-green-100 text-green-700' :
             log.type === 'error' ? 'bg-red-50 border-red-100 text-red-700' :
-            log.type === 'warn' ? 'bg-yellow-50 border-yellow-100 text-yellow-700' :
-            'bg-slate-50 border-slate-100 text-slate-600'
-          }`}>
+              log.type === 'warn' ? 'bg-yellow-50 border-yellow-100 text-yellow-700' :
+                'bg-slate-50 border-slate-100 text-slate-600'
+            }`}>
             <span className="shrink-0 font-black">[{log.type.toUpperCase()}]</span>
             <span className="font-bold">{log.msg}</span>
           </div>

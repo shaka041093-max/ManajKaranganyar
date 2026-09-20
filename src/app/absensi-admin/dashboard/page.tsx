@@ -175,29 +175,31 @@ export default function MonitoringAbsensiGrid() {
   const tableHeaderDays = Array.from({ length: 31 }, (_, i) => i + 1);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in-up">
       <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 uppercase tracking-tight leading-none">Monitoring Absensi</h1>
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight leading-none">
+            <span className="text-gradient-desa">Monitoring Absensi</span>
+          </h1>
           <p className="text-xs text-muted-foreground font-bold uppercase mt-1">Database Perangkat Desa • Kalkulasi Waktu Real-time</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
             <div className="relative w-full sm:w-48 lg:w-64">
-                <Search className={cn("absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400", (isPersonelLoading || isAttendanceLoading) && "animate-spin")} />
+                <Search className={cn("absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground", (isPersonelLoading || isAttendanceLoading) && "animate-spin")} />
                 <Input 
                     placeholder="Cari nama..." 
                     value={searchTerm} 
                     onChange={e => setSearchTerm(e.target.value)} 
-                    className="pl-9 h-10 rounded-xl bg-white border-slate-200 font-bold" 
+                    className="pl-9 h-10 rounded-xl bg-background/80 backdrop-blur-sm border-border/80 font-bold focus:border-primary/50" 
                 />
             </div>
             
-            <div className="flex items-center gap-1 bg-white border rounded-xl p-1 shadow-sm">
+            <div className="flex items-center gap-1 bg-card/80 backdrop-blur-md border border-border/70 rounded-xl p-1 shadow-sm">
                 <Select value={filterMonth} onValueChange={setFilterMonth}>
                     <SelectTrigger className="w-[120px] h-8 border-none font-bold text-xs bg-transparent focus:ring-0">
                         <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="rounded-xl border-border/70 backdrop-blur-md">
                         {Array.from({ length: 12 }).map((_, i) => (
                             <SelectItem key={i+1} value={(i+1).toString().padStart(2, '0')} className="font-bold text-xs">
                                 {format(new Date(2024, i, 1), "MMMM", { locale: localeID })}
@@ -205,12 +207,12 @@ export default function MonitoringAbsensiGrid() {
                         ))}
                     </SelectContent>
                 </Select>
-                <div className="w-px h-4 bg-slate-200" />
+                <div className="w-px h-4 bg-border" />
                 <Select value={filterYear} onValueChange={setFilterYear}>
                     <SelectTrigger className="w-[90px] h-8 border-none font-bold text-xs bg-transparent focus:ring-0">
                         <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="rounded-xl border-border/70 backdrop-blur-md">
                         {["2024", "2025", "2026", "2027"].map(y => (
                             <SelectItem key={y} value={y} className="font-bold text-xs">{y}</SelectItem>
                         ))}
@@ -220,21 +222,21 @@ export default function MonitoringAbsensiGrid() {
         </div>
       </header>
 
-      <Card className="border-none shadow-2xl rounded-[2rem] overflow-hidden bg-white">
+      <Card className="border border-border/70 shadow-xl shadow-blue-950/5 rounded-[2rem] overflow-hidden bg-card/85 backdrop-blur-md">
         <CardContent className="p-0">
             <div className="overflow-x-auto overflow-y-hidden">
                 {(isPersonelLoading) ? (
                     <div className="py-20 text-center flex flex-col items-center gap-3">
                         <Loader2 className="h-8 w-8 animate-spin text-primary/30" />
-                        <p className="text-[10px] font-black uppercase text-slate-400">Sinkronisasi Database...</p>
+                        <p className="text-[10px] font-black uppercase text-muted-foreground">Sinkronisasi Database...</p>
                     </div>
                 ) : (
                 <table className="w-full border-collapse text-[10px]">
                     <thead>
-                        <tr className="bg-slate-900 text-white">
+                        <tr className="bg-blue-950 text-white">
                             <th className="px-2 py-3 text-center font-black border border-white/10 min-w-[30px]">NO</th>
                             <th className="px-2 py-3 text-center font-black border border-white/10 min-w-[70px] bg-orange-600">TERLAMBAT</th>
-                            <th className="px-2 py-3 text-center font-black border border-white/10 min-w-[70px] bg-emerald-600">JAM KERJA</th>
+                            <th className="px-2 py-3 text-center font-black border border-white/10 min-w-[70px] bg-blue-700">JAM KERJA</th>
                             <th className="px-4 py-3 text-left font-black border border-white/10 min-w-[180px]">NAMA AKUN / JABATAN</th>
                             {tableHeaderDays.map(d => (
                                 <th key={d} className="w-8 py-3 text-center font-black border border-white/10">{d}</th>
@@ -259,7 +261,7 @@ export default function MonitoringAbsensiGrid() {
                             <tr key={row.id} className={cn("hover:bg-slate-50 transition-colors border-b", !row.hasUid && "bg-amber-50/30")}>
                                 <td className="px-2 py-3 text-center font-bold text-slate-500 border-r">{idx + 1}</td>
                                 <td className="px-2 py-3 text-center font-mono font-black text-orange-600 border-r bg-orange-50/30">{formatSeconds(row.stats.totalLatenessSec)}</td>
-                                <td className="px-2 py-3 text-center font-mono font-black text-emerald-600 border-r bg-emerald-50/30">{formatSeconds(row.stats.totalWorkSec)}</td>
+                                <td className="px-2 py-3 text-center font-mono font-black text-blue-700 dark:text-sky-400 border-r bg-blue-50/30">{formatSeconds(row.stats.totalWorkSec)}</td>
                                 <td className="px-4 py-2 border-r relative group">
                                     <div className="flex items-center gap-2">
                                         <p className="font-black text-slate-900 uppercase leading-tight truncate max-w-[140px]">{row.nama}</p>
@@ -315,22 +317,22 @@ export default function MonitoringAbsensiGrid() {
         </CardContent>
       </Card>
 
-      <div className="flex flex-wrap items-center gap-6 px-6 py-4 bg-white border rounded-2xl shadow-sm">
+      <div className="flex flex-wrap items-center gap-6 px-6 py-4 bg-card/85 backdrop-blur-md border border-border/70 rounded-2xl shadow-sm">
         <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-green-400 rounded-sm shadow-inner" />
-            <span className="text-[10px] font-black uppercase text-slate-500">Hadir</span>
+            <div className="w-4 h-4 bg-emerald-500 rounded-md shadow-sm" />
+            <span className="text-[10px] font-black uppercase text-muted-foreground">Hadir</span>
         </div>
         <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-orange-400 rounded-sm shadow-inner" />
-            <span className="text-[10px] font-black uppercase text-slate-500">Telat / Sedang Bekerja</span>
+            <div className="w-4 h-4 bg-amber-500 rounded-md shadow-sm" />
+            <span className="text-[10px] font-black uppercase text-muted-foreground">Telat / Sedang Bekerja</span>
         </div>
         <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-red-400 rounded-sm shadow-inner" />
-            <span className="text-[10px] font-black uppercase text-slate-500">Alpha / TK</span>
+            <div className="w-4 h-4 bg-red-500 rounded-md shadow-sm" />
+            <span className="text-[10px] font-black uppercase text-muted-foreground">Alpha / TK</span>
         </div>
         <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-blue-400 rounded-sm shadow-inner" />
-            <span className="text-[10px] font-black uppercase text-slate-500">Izin / DL / CT</span>
+            <div className="w-4 h-4 bg-blue-500 rounded-md shadow-sm" />
+            <span className="text-[10px] font-black uppercase text-muted-foreground">Izin / DL / CT</span>
         </div>
       </div>
     </div>

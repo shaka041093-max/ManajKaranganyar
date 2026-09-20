@@ -81,7 +81,7 @@ export default function PbbPenarikPlottingPage() {
   // Available RW options
   const availableRws = useMemo(() => {
     const setR = new Set<string>()
-    ;(dhkpList || []).forEach((i) => { if (i.rw) setR.add(i.rw) })
+      ; (dhkpList || []).forEach((i) => { if (i.rw) setR.add(i.rw) })
     if (setR.size === 0) return ["001", "002", "003"]
     return Array.from(setR).sort()
   }, [dhkpList])
@@ -89,7 +89,7 @@ export default function PbbPenarikPlottingPage() {
   // Available RT options
   const availableRts = useMemo(() => {
     const setR = new Set<string>()
-    ;(dhkpList || []).forEach((i) => { if (i.rt) setR.add(i.rt) })
+      ; (dhkpList || []).forEach((i) => { if (i.rt) setR.add(i.rt) })
     if (setR.size === 0) return ["001", "002", "003", "004", "005", "006", "007", "008", "009"]
     return Array.from(setR).sort()
   }, [dhkpList])
@@ -293,7 +293,7 @@ export default function PbbPenarikPlottingPage() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">Semua Dusun</SelectItem>
-                      <SelectItem value="Dusun Rungkang">Dusun Rungkang</SelectItem>
+                      <SelectItem value="Dusun Karanganyar">Dusun Karanganyar</SelectItem>
                       <SelectItem value="Dusun Margasari">Dusun Margasari</SelectItem>
                     </SelectContent>
                   </Select>

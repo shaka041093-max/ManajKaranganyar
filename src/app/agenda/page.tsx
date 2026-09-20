@@ -9,15 +9,15 @@ import { Card, CardContent } from "@/components/ui/card"
 export default function AgendaPage() {
   return (
     <div className="flex flex-col gap-6 p-4 md:p-8 max-w-6xl mx-auto">
-       <header className="flex items-center gap-4">
-          <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center">
-              <Calendar className="h-7 w-7 text-primary" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-black text-primary uppercase tracking-tight">Agenda Kegiatan</h1>
-            <p className="text-xs text-muted-foreground font-bold uppercase">Manajemen Kalender & Input Acara Desa</p>
-          </div>
-        </header>
+      <header className="flex items-center gap-4">
+        <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center">
+          <Calendar className="h-7 w-7 text-primary" />
+        </div>
+        <div>
+          <h1 className="text-2xl font-black text-primary uppercase tracking-tight">Agenda Kegiatan</h1>
+          <p className="text-xs text-muted-foreground font-bold uppercase">Manajemen Kalender & Input Acara Desa</p>
+        </div>
+      </header>
 
       <Tabs defaultValue="rincian" className="w-full">
         <TabsList className="grid w-full grid-cols-3 h-14 bg-muted/50 p-1.5 rounded-2xl">
@@ -34,11 +34,11 @@ export default function AgendaPage() {
             Tampilan Kalender
           </TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="rincian" className="mt-6">
           <RincianKegiatan />
         </TabsContent>
-        
+
         <TabsContent value="input" className="mt-6">
           <InputAgendaForm />
         </TabsContent>
@@ -47,12 +47,12 @@ export default function AgendaPage() {
           <Card className="border-none shadow-2xl rounded-[2.5rem] overflow-hidden bg-white">
             <CardContent className="p-0">
               <div className="aspect-[4/3] md:aspect-video w-full">
-                <iframe 
-                  src="https://calendar.google.com/calendar/embed?src=desarungkang014%40gmail.com&ctz=Asia%2FJakarta" 
-                  style={{ border: 0 }} 
-                  width="100%" 
-                  height="100%" 
-                  frameBorder="0" 
+                <iframe
+                  src="https://calendar.google.com/calendar/embed?src=desakaranganyargandrungmangu%40gmail.com&ctz=Asia%2FJakarta"
+                  style={{ border: 0 }}
+                  width="100%"
+                  height="100%"
+                  frameBorder="0"
                   scrolling="no"
                   className="rounded-[2.5rem]"
                 ></iframe>

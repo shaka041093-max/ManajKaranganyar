@@ -147,7 +147,7 @@ export function DomisiliForm({ isAdmin = false }: { isAdmin?: boolean }) {
       nationality: 'WNI',
       religion: '',
       originAddress: '',
-      domicileAddress: 'Desa Rungkang, Kec. Gandrungmangu, Kab. Cilacap',
+      domicileAddress: 'Desa Karanganyar, Kec. Gandrungmangu, Kab. Cilacap',
     },
   });
 
@@ -165,7 +165,7 @@ export function DomisiliForm({ isAdmin = false }: { isAdmin?: boolean }) {
             form.setValue('birthPlace', resident.placeOfBirth);
             form.setValue('birthDate', formatDbDateToForm(resident.dateOfBirth));
             form.setValue('religion', resident.religion);
-            const fullAddress = `${resident.address}, RT ${resident.rt} RW ${resident.rw}, ${resident.kelurahan}Kec. Gandrungmangu, Kab. Cilacap`.toUpperCase();
+            const fullAddress = `${resident.address}, RT ${resident.rt} RW ${resident.rw}, ${resident.kelurahan}, kec. Gandrungmangu, Kab. Cilacap`.toUpperCase();
             form.setValue('originAddress', fullAddress);
             toast({ title: "Data Ditemukan" });
           }
@@ -293,7 +293,7 @@ export function DomisiliForm({ isAdmin = false }: { isAdmin?: boolean }) {
           <FormField control={form.control} name="domicileAddress" render={({ field }) => (
             <FormItem className="md:col-span-2">
               <FormLabel className="font-bold text-primary">Alamat Domisili Saat Ini</FormLabel>
-              <FormControl><Textarea placeholder="Alamat tempat tinggal saat ini di Desa Rungkang" {...field} disabled={isSubmitting} className="uppercase rounded-2xl" /></FormControl>
+              <FormControl><Textarea placeholder="Alamat tempat tinggal saat ini di Desa Karanganyar" {...field} disabled={isSubmitting} className="uppercase rounded-2xl" /></FormControl>
               <FormDescription>Alamat tempat Anda tinggal saat ini (untuk keterangan domisili).</FormDescription>
               <FormMessage />
             </FormItem>

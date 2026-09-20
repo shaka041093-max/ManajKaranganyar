@@ -58,7 +58,7 @@ export function KegiatanCard({
           )}
           <Badge className={cn(
             "font-black text-[9px] uppercase tracking-widest border-none shadow-md",
-            isInternal ? "bg-emerald-500 text-white" : "bg-sky-500 text-white"
+            isInternal ? "bg-amber-800 text-white" : "bg-sky-600 text-white"
           )}>
             {isInternal ? (
               <span className="flex items-center gap-1"><ShieldCheck className="h-2.5 w-2.5" /> INTERNAL</span>

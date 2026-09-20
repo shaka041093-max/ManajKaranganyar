@@ -6,46 +6,55 @@ export function PindahPrintTemplate({ submission }: { submission: LetterSubmissi
   const { formData } = submission;
 
   return (
-    <PrintLayout submission={submission}>
-      <p className="mt-8 text-justify leading-relaxed">
-        Yang bertanda tangan di bawah ini Kepala Desa Rungkang, Kecamatan
+    <PrintLayout
+      submission={submission}
+      inlineSignatures={true}
+      fontSize="12pt"
+    >
+      <p className="mt-3 text-justify leading-normal">
+        Yang bertanda tangan di bawah ini Kepala Desa Karanganyar, Kecamatan
         Gandrungmangu, Kabupaten Cilacap, menerangkan bahwa:
       </p>
 
-      <table className="mt-4 border-collapse w-full">
+      <table className="mt-2 border-collapse w-full">
         <tbody>
-          <DataRow label="Nama Lengkap" value={formData.name} />
-          <DataRow label="NIK" value={formData.nik} />
-          <DataRow label="Nomor KK" value={formData.kkNumber} />
-          <DataRow label="Nama Kepala Keluarga" value={formData.kkHead} />
-          <DataRow label="Alamat Asal" value={`Desa Rungkang, RT ${formData.currentAddressRt} / RW ${formData.currentAddressRw}, Kecamatan Gandrungmangu, Kabupaten Cilacap, Provinsi Jawa Tengah`} />
+          <DataRow compact="tight" label="Nama Lengkap" value={formData.name} />
+          <DataRow compact="tight" label="NIK" value={formData.nik} />
+          <DataRow compact="tight" label="Nomor KK" value={formData.kkNumber} />
+          <DataRow compact="tight" label="Nama Kepala Keluarga" value={formData.kkHead} />
+          <DataRow
+            compact="tight"
+            label="Alamat Asal"
+            value={`Desa Karanganyar, RT ${formData.currentAddressRt} / RW ${formData.currentAddressRw}, Kecamatan Gandrungmangu, Kabupaten Cilacap, Provinsi Jawa Tengah`}
+          />
         </tbody>
       </table>
 
-      <p className="mt-4 text-justify leading-relaxed">
+      <p className="mt-2.5 text-justify leading-normal">
         Bermaksud untuk pindah alamat ke:
       </p>
 
-      <table className="mt-4 border-collapse w-full">
+      <table className="mt-2 border-collapse w-full">
         <tbody>
           <DataRow
+            compact="tight"
             label="Alamat Tujuan"
             value={`Desa ${formData.destinationAddress}, RT ${formData.destinationAddressRt} / RW ${formData.destinationAddressRw}, Kecamatan ${formData.destinationKecamatan}, Kabupaten ${formData.destinationKabupaten}, Provinsi ${formData.destinationProvinsi}`}
           />
-          <DataRow label="Jumlah Keluarga" value={`${formData.familyCount} orang`} />
+          <DataRow compact="tight" label="Jumlah Keluarga" value={`${formData.familyCount} orang`} />
         </tbody>
       </table>
 
       {formData.familyMembers && formData.familyMembers.length > 0 && (
-        <div className="mt-6">
-          <p className="mb-2 font-semibold">Adapun anggota keluarga yang ikut pindah adalah sebagai berikut:</p>
-          <table className="w-full border-collapse border border-black text-sm">
+        <div className="mt-3">
+          <p className="mb-1.5 font-semibold leading-normal">Adapun anggota keluarga yang ikut pindah adalah sebagai berikut:</p>
+          <table className="w-full border-collapse border border-black text-[11pt]">
             <thead>
-              <tr className="bg-gray-50">
+              <tr className="bg-gray-100">
                 <th className="border border-black px-2 py-1 text-center w-10">No</th>
-                <th className="border border-black px-2 py-1 text-left">NIK</th>
+                <th className="border border-black px-2 py-1 text-left w-[32%]">NIK</th>
                 <th className="border border-black px-2 py-1 text-left">Nama Lengkap</th>
-                <th className="border border-black px-2 py-1 text-left">SHDK</th>
+                <th className="border border-black px-2 py-1 text-left w-[20%]">SHDK</th>
               </tr>
             </thead>
             <tbody>
@@ -54,7 +63,7 @@ export function PindahPrintTemplate({ submission }: { submission: LetterSubmissi
                   <td className="border border-black px-2 py-1 text-center">{index + 1}</td>
                   <td className="border border-black px-2 py-1">{member.nik}</td>
                   <td className="border border-black px-2 py-1">{toProperCase(member.name)}</td>
-                  <td className="border border-black px-2 py-1">{member.relationship}</td>
+                  <td className="border border-black px-2 py-1">{member.relationship ? member.relationship.toUpperCase() : '-'}</td>
                 </tr>
               ))}
             </tbody>
@@ -62,10 +71,10 @@ export function PindahPrintTemplate({ submission }: { submission: LetterSubmissi
         </div>
       )}
 
-      <p className="mt-6 text-justify leading-relaxed">
+      <p className="mt-3 text-justify leading-normal">
         Surat pengantar ini dibuat sebagai kelengkapan administrasi untuk proses pindah domisili yang bersangkutan.
       </p>
-      <p className="mt-4 text-justify leading-relaxed">
+      <p className="mt-2 text-justify leading-normal">
         Demikian surat pengantar ini dibuat untuk dapat dipergunakan sebagaimana mestinya.
       </p>
     </PrintLayout>

@@ -6,11 +6,11 @@ import { usePathname, useRouter } from "next/navigation"
 import { useUser, useAuth, useFirestore, useMemoFirebase, useDoc } from "@/firebase"
 import { doc } from "firebase/firestore"
 import { signOut } from "firebase/auth"
-import { 
-  ShieldCheck, 
-  MonitorPlay, 
-  UserPlus, 
-  Settings, 
+import {
+  ShieldCheck,
+  MonitorPlay,
+  UserPlus,
+  Settings,
   LogOut,
   ChevronLeft,
   LayoutDashboard,
@@ -32,9 +32,9 @@ export default function AdminAbsensiLayout({ children }: { children: ReactNode }
   const isLoginPage = pathname?.includes("/absensi-admin/login");
 
   // Ambil data profil untuk verifikasi role dan status aktif
-  const personelRef = useMemoFirebase(() => 
-    (db && user) ? doc(db, "personel", user.uid) : null, 
-  [db, user])
+  const personelRef = useMemoFirebase(() =>
+    (db && user) ? doc(db, "personel", user.uid) : null,
+    [db, user])
   const { data: profile, isLoading: isProfileLoading } = useDoc(personelRef)
 
   const handleLogout = useCallback(async () => {
@@ -50,7 +50,7 @@ export default function AdminAbsensiLayout({ children }: { children: ReactNode }
   useEffect(() => {
     if (isLoginPage) return;
     if (isUserLoading) return;
-    
+
     // 1. Jika tidak ada user login
     if (!user) {
       router.replace("/absensi-admin/login/")
@@ -59,24 +59,27 @@ export default function AdminAbsensiLayout({ children }: { children: ReactNode }
 
     // 2. Tunggu profil dan cek otorisasi secara ketat
     if (!isProfileLoading) {
-       const isEmailAuthorized = user.email === "admin@rungkang.id" || 
-                                  user.email === "rungkang@gmail.id" ||
-                                  user.email?.toLowerCase() === "desarungkang014@gmail.com";
-                                  
-       const isAdminRole = profile?.role === "admin_absensi" || profile?.role === "admin";
+      const configuredAdminEmail = (process.env.NEXT_PUBLIC_ADMIN_EMAIL || "").toLowerCase();
+      const userEmail = (user.email || "").toLowerCase();
+      const isEmailAuthorized = (configuredAdminEmail && userEmail === configuredAdminEmail) ||
+        userEmail === "admin@karanganyar.id" ||
+        userEmail === "karanganyar@gmail.id" ||
+        userEmail === "desakaranganyargandrungmangu@gmail.com";
 
-       if (!isEmailAuthorized && !isAdminRole) {
-          router.replace("/absensi/dashboard/");
-          return;
-       }
+      const isAdminRole = profile?.role === "admin_absensi" || profile?.role === "admin";
 
-       if (profile && !profile.aktif && !isEmailAuthorized) {
-          handleLogout();
-          return;
-       }
+      if (!isEmailAuthorized && !isAdminRole) {
+        router.replace("/absensi/dashboard/");
+        return;
+      }
 
-       // Konfirmasi otorisasi selesai
-       setIsAuthorized(true);
+      if (profile && !profile.aktif && !isEmailAuthorized) {
+        handleLogout();
+        return;
+      }
+
+      // Konfirmasi otorisasi selesai
+      setIsAuthorized(true);
     }
   }, [user, profile, isUserLoading, isProfileLoading, router, isLoginPage, handleLogout])
 
@@ -122,10 +125,10 @@ export default function AdminAbsensiLayout({ children }: { children: ReactNode }
               const currentPath = pathname?.replace(/\/$/, "");
               const itemPath = item.href.replace(/\/$/, "");
               const isActive = currentPath === itemPath;
-              
+
               return (
-                <Link 
-                  key={item.href} 
+                <Link
+                  key={item.href}
                   href={item.href}
                   className={cn(
                     "flex items-center h-12 rounded-xl transition-all px-3",
@@ -140,14 +143,14 @@ export default function AdminAbsensiLayout({ children }: { children: ReactNode }
           </nav>
 
           <div className="p-4 border-t border-white/5 space-y-2">
-             <button 
+            <button
               onClick={() => router.push("/")}
               className="flex items-center w-full h-11 px-3 rounded-xl hover:bg-white/5 transition-colors"
             >
               <LayoutDashboard className="h-5 w-5 shrink-0" />
               {isSidebarOpen && <span className="ml-3 text-xs font-bold uppercase">Manajemen Desa</span>}
             </button>
-            <button 
+            <button
               onClick={handleLogout}
               className="flex items-center w-full h-11 px-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-colors"
             >
@@ -156,8 +159,8 @@ export default function AdminAbsensiLayout({ children }: { children: ReactNode }
             </button>
           </div>
         </div>
-        
-        <button 
+
+        <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           className="absolute -right-3 top-20 bg-slate-900 border border-white/10 text-white rounded-full p-1 shadow-lg hover:bg-slate-800"
         >

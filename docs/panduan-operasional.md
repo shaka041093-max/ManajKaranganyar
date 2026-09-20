@@ -1,4 +1,4 @@
-# Panduan Operasional Sistem Manajemen Desa Rungkang
+# Panduan Operasional Sistem Manajemen Desa Karanganyar
 
 Dokumen ini berisi petunjuk penggunaan rinci untuk seluruh fitur yang tersedia di portal Manajemen Desa, Admin Absensi, dan Absensi Perangkat.
 
@@ -37,7 +37,7 @@ Portal khusus untuk memonitoring kedisiplinan dan mengelola akun perangkat.
 *   **Manual/Massal:** Digunakan untuk menginput absen jika ada perangkat yang lupa membawa HP atau untuk menginput status "Izin", "Dinas Luar", dan "Sakit" secara kolektif.
 
 ### Menu Cetak Dokumen
-*   **Laporan Bulanan:** Pilih Bulan dan Tahun, lalu klik **"Unduh Laporan PDF"** untuk mendapatkan rekap resmi dengan Kop Surat Pemerintah Desa Rungkang. Tersedia juga format **Excel** untuk pengolahan data internal.
+*   **Laporan Bulanan:** Pilih Bulan dan Tahun, lalu klik **"Unduh Laporan PDF"** untuk mendapatkan rekap resmi dengan Kop Surat Pemerintah Desa Karanganyar. Tersedia juga format **Excel** untuk pengolahan data internal.
 
 ### Menu Pengaturan (Konfigurasi)
 *   **Waktu & Lokasi:** Mengatur jam masuk, jam pulang, toleransi keterlambatan, titik koordinat kantor (Latitude/Longitude), dan radius jangkauan absen (Meter).
@@ -47,7 +47,7 @@ Portal khusus untuk memonitoring kedisiplinan dan mengelola akun perangkat.
 
 ## 3. PANEL MANAJEMEN DESA (Untuk Admin Pusat)
 Pusat kendali administrasi, keuangan, dan dokumentasi desa.
-**Login Khusus:** `rungkang@gmail.id` | **Password:** `rungkang123`
+**Login Khusus:** `karanganyar@gmail.id` | **Password:** `karanganyar123`
 
 ### Menu Dashboard
 *   Ringkasan visual jumlah laporan kegiatan, status pengajuan SPPD terbaru, dan widget **Agenda Hari Ini** yang sinkron dengan Google Calendar desa.

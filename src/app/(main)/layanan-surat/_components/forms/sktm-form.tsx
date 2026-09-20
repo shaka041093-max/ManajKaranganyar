@@ -199,7 +199,7 @@ export function SktmForm({ isAdmin = false }: { isAdmin?: boolean }) {
             form.setValue('applicantBirthDate', formatDbDateToForm(resident.dateOfBirth));
             form.setValue('applicantReligion', resident.religion);
             form.setValue('applicantJob', resident.occupation);
-            const fullAddress = `${resident.address}, RT ${resident.rt} RW ${resident.rw}, ${resident.kelurahan}Kec. Gandrungmangu, Kab. Cilacap`.toUpperCase();
+            const fullAddress = `${resident.address}, RT ${resident.rt} RW ${resident.rw}, ${resident.kelurahan}, kec. Gandrungmangu, Kab. Cilacap`.toUpperCase();
             form.setValue('applicantAddress', fullAddress);
             toast({ title: "Data Pemohon Ditemukan" });
           }
@@ -224,7 +224,7 @@ export function SktmForm({ isAdmin = false }: { isAdmin?: boolean }) {
             form.setValue('childBirthDate', formatDbDateToForm(resident.dateOfBirth));
             form.setValue('childReligion', resident.religion);
             form.setValue('childJob', resident.occupation);
-            const fullAddress = `${resident.address}, RT ${resident.rt} RW ${resident.rw}, ${resident.kelurahan}Kec. Gandrungmangu, Kab. Cilacap`.toUpperCase();
+            const fullAddress = `${resident.address}, RT ${resident.rt} RW ${resident.rw}, ${resident.kelurahan}, kec. Gandrungmangu, Kab. Cilacap`.toUpperCase();
             form.setValue('childAddress', fullAddress);
             toast({ title: "Data Anak Ditemukan" });
           }

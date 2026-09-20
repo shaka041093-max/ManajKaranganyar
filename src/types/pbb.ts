@@ -45,13 +45,13 @@ export const getOfficialDusun = (
   }
 
   if (numRw === 1 || numRw === 3) {
-    return "Dusun Rungkang"
+    return "Dusun Karanganyar"
   }
 
   if (dusun === "Dusun Margasari" || dusun === "MARGASARI") {
     return "Dusun Margasari"
   }
-  return "Dusun Rungkang"
+  return "Dusun Karanganyar"
 }
 
 export interface Kolektor {

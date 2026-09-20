@@ -7,52 +7,56 @@ export function SktmPrintTemplate({ submission }: { submission: LetterSubmission
   const isForChild = formData.submissionType === 'child';
 
   return (
-    <PrintLayout submission={submission}>
-      <p className="mt-8 text-justify leading-relaxed">
-        Yang bertanda tangan di bawah ini Kepala Desa Rungkang, Kecamatan
+    <PrintLayout
+      submission={submission}
+      inlineSignatures={true}
+      fontSize="12pt"
+    >
+      <p className="mt-3 text-justify leading-normal">
+        Yang bertanda tangan di bawah ini Kepala Desa Karanganyar, Kecamatan
         Gandrungmangu, Kabupaten Cilacap, menerangkan dengan sebenar-benarnya bahwa:
       </p>
 
-      <table className="mt-4 border-collapse w-full">
+      <table className="mt-2 border-collapse w-full">
         <tbody>
-          <DataRow label="Nama" value={formData.applicantName} />
-          <DataRow label="NIK" value={formData.applicantNik} />
-          <DataRow label="Tempat/Tgl Lahir" value={formatTTL(formData.applicantBirthPlace, formData.applicantBirthDate, formData.applicantNik || formData.nik || submission.nik)} />
-          <DataRow label="Jenis Kelamin" value={formData.applicantGender} />
-          <DataRow label="Agama" value={formData.applicantReligion} />
-          <DataRow label="Pekerjaan" value={formData.applicantJob} />
-          <DataRow label="Alamat" value={formData.applicantAddress} />
+          <DataRow compact="tight" label="Nama" value={formData.applicantName} />
+          <DataRow compact="tight" label="NIK" value={formData.applicantNik} />
+          <DataRow compact="tight" label="Tempat/Tgl Lahir" value={formatTTL(formData.applicantBirthPlace, formData.applicantBirthDate)} />
+          <DataRow compact="tight" label="Jenis Kelamin" value={formData.applicantGender} />
+          <DataRow compact="tight" label="Agama" value={formData.applicantReligion} />
+          <DataRow compact="tight" label="Pekerjaan" value={formData.applicantJob} />
+          <DataRow compact="tight" label="Alamat" value={formData.applicantAddress} />
         </tbody>
       </table>
 
       {isForChild ? (
         <>
-          <p className="mt-4 text-justify leading-relaxed">
+          <p className="mt-2.5 text-justify leading-normal">
             Adalah benar orang tua / wali dari:
           </p>
 
-          <table className="mt-4 border-collapse w-full">
+          <table className="mt-2 border-collapse w-full">
             <tbody>
-              <DataRow label="Nama" value={formData.childName} />
-              <DataRow label="NIK" value={formData.childNik} />
-              <DataRow label="Tempat/Tgl Lahir" value={formatTTL(formData.childBirthPlace || '', formData.childBirthDate || '')} />
-              <DataRow label="Jenis Kelamin" value={formData.childGender} />
-              <DataRow label="Pekerjaan" value={formData.childJob} />
-              <DataRow label="Alamat" value={formData.childAddress} />
+              <DataRow compact="tight" label="Nama" value={formData.childName} />
+              <DataRow compact="tight" label="NIK" value={formData.childNik} />
+              <DataRow compact="tight" label="Tempat/Tgl Lahir" value={formatTTL(formData.childBirthPlace || '', formData.childBirthDate || '')} />
+              <DataRow compact="tight" label="Jenis Kelamin" value={formData.childGender} />
+              <DataRow compact="tight" label="Pekerjaan" value={formData.childJob} />
+              <DataRow compact="tight" label="Alamat" value={formData.childAddress} />
             </tbody>
           </table>
 
-          <p className="mt-4 text-justify leading-relaxed">
+          <p className="mt-2.5 text-justify leading-normal">
             Nama tersebut di atas adalah benar-benar warga kami dan tergolong keluarga yang tidak mampu / keluarga berpenghasilan rendah. Surat keterangan ini dibuat untuk keperluan : <strong>{formData.purpose}</strong>.
           </p>
         </>
       ) : (
-        <p className="mt-6 text-justify leading-relaxed">
+        <p className="mt-3 text-justify leading-normal">
           Nama tersebut di atas adalah benar-benar warga kami dan tergolong keluarga yang tidak mampu / keluarga berpenghasilan rendah. Surat keterangan ini dibuat untuk keperluan : <strong>{formData.purpose}</strong>.
         </p>
       )}
 
-      <p className="mt-4 text-justify leading-relaxed">
+      <p className="mt-2.5 text-justify leading-normal">
         Demikian surat keterangan ini dibuat dengan sebenarnya untuk dipergunakan sebagaimana mestinya.
       </p>
     </PrintLayout>

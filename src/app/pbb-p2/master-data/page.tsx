@@ -132,7 +132,7 @@ export default function PbbMasterDataPage() {
     alamatOp: "",
     rt: "001",
     rw: "001",
-    dusun: "Dusun Rungkang",
+    dusun: "Dusun Karanganyar",
     luasBumi: 0,
     luasBangunan: 0,
     ketetapanNominal: 0,
@@ -153,7 +153,7 @@ export default function PbbMasterDataPage() {
   // Dialog States for Wilayah
   const [openWilayahModal, setOpenWilayahModal] = useState(false)
   const [wilayahForm, setWilayahForm] = useState<Partial<Wilayah>>({
-    dusun: "Dusun Rungkang",
+    dusun: "Dusun Karanganyar",
     rw: "001",
     rt: "001",
   })
@@ -227,22 +227,22 @@ export default function PbbMasterDataPage() {
   // Available Blok options from DHKP
   const availableBloks = useMemo(() => {
     const setBlok = new Set<string>()
-    ;(dhkpList || []).forEach((item) => {
-      setBlok.add(getRecordBlok(item))
-    })
+      ; (dhkpList || []).forEach((item) => {
+        setBlok.add(getRecordBlok(item))
+      })
     return Array.from(setBlok).sort()
   }, [dhkpList])
 
   // Available Dusun options
   const availableDusuns = useMemo(() => {
-    return ["Dusun Rungkang", "Dusun Margasari"]
+    return ["Dusun Karanganyar", "Dusun Margasari"]
   }, [])
 
   // Available RW options
   const availableRws = useMemo(() => {
     const setR = new Set<string>()
-    ;(dhkpList || []).forEach((i) => { if (i.rw) setR.add(i.rw) })
-    ;(wilayahList || []).forEach((w) => { if (w.rw) setR.add(w.rw) })
+      ; (dhkpList || []).forEach((i) => { if (i.rw) setR.add(i.rw) })
+      ; (wilayahList || []).forEach((w) => { if (w.rw) setR.add(w.rw) })
     if (setR.size === 0) return ["001", "002", "003"]
     return Array.from(setR).sort()
   }, [dhkpList, wilayahList])
@@ -250,8 +250,8 @@ export default function PbbMasterDataPage() {
   // Available RT options
   const availableRts = useMemo(() => {
     const setR = new Set<string>()
-    ;(dhkpList || []).forEach((i) => { if (i.rt) setR.add(i.rt) })
-    ;(wilayahList || []).forEach((w) => { if (w.rt) setR.add(w.rt) })
+      ; (dhkpList || []).forEach((i) => { if (i.rt) setR.add(i.rt) })
+      ; (wilayahList || []).forEach((w) => { if (w.rt) setR.add(w.rt) })
     if (setR.size === 0) return ["001", "002", "003", "004", "005", "006", "007", "008", "009"]
     return Array.from(setR).sort()
   }, [dhkpList, wilayahList])
@@ -381,12 +381,12 @@ export default function PbbMasterDataPage() {
     const templateHeader = [
       {
         NO: 1,
-        KECAMATAN: "RUNGKANG",
-        KELURAHAN: "RUNGKANG",
+        KECAMATAN: "KARANGANYAR",
+        KELURAHAN: "KARANGANYAR",
         NOP: "33.04.120.005.001-0001.0",
         TAHUN: selectedYear,
         "NAMA WP": "BUDI SANTOSO",
-        "ALAMAT WP": "RT 001 RW 001 DUSUN I DESA RUNGKANG",
+        "ALAMAT WP": "RT 001 RW 001 DUSUN I DESA KARANGANYAR",
         "LETAK OP": "RT 001 RW 001 DUSUN I",
         "LUAS BUMI": 250,
         "LUAS BANGUNAN": 80,
@@ -516,7 +516,7 @@ export default function PbbMasterDataPage() {
           }
 
           const kecamatan = String(getColVal(row, "kecamatan", 1) || "GANDRUNGMANGU").trim()
-          const kelurahan = String(getColVal(row, "kelurahan", 2) || "RUNGKANG").trim()
+          const kelurahan = String(getColVal(row, "kelurahan", 2) || "KARANGANYAR").trim()
           const tahunRow = String(getColVal(row, "tahun", 4) || selectedYear).trim()
           const alamatWp = String(getColVal(row, "alamatWp", 6) || "-").trim()
           const letakOp = String(getColVal(row, "alamatOp", 7) || "-").trim()
@@ -551,15 +551,15 @@ export default function PbbMasterDataPage() {
             rw = String(slashMatch[2]).padStart(3, "0")
           }
 
-          // Official Desa Rungkang Administrative Division:
+          // Official Desa Karanganyar Administrative Division:
           // RW 02 (RT 01 s/d RT 09) or MARGASARI -> Dusun Margasari
-          // RW 01 (RT 01 s/d RT 07) & RW 03 (RT 01 s/d RT 04) -> Dusun Rungkang
-          let dusun = "Dusun Rungkang"
+          // RW 01 (RT 01 s/d RT 07) & RW 03 (RT 01 s/d RT 04) -> Dusun Karanganyar
+          let dusun = "Dusun Karanganyar"
           const numRw = parseInt(rw, 10)
           if (numRw === 2 || /MARGASARI/i.test(combinedAddr)) {
             dusun = "Dusun Margasari"
           } else {
-            dusun = "Dusun Rungkang"
+            dusun = "Dusun Karanganyar"
           }
 
           // Format Date & Status Bayar
@@ -671,8 +671,8 @@ export default function PbbMasterDataPage() {
     if (!filteredDhkp || filteredDhkp.length === 0) return
     const exportData = filteredDhkp.map((item, idx) => ({
       NO: idx + 1,
-      KECAMATAN: item.kecamatan || "RUNGKANG",
-      KELURAHAN: item.kelurahan || "RUNGKANG",
+      KECAMATAN: item.kecamatan || "KARANGANYAR",
+      KELURAHAN: item.kelurahan || "KARANGANYAR",
       NOP: item.nop,
       TAHUN: item.tahun || selectedYear,
       "NAMA WP": item.namaWp,
@@ -1014,7 +1014,7 @@ export default function PbbMasterDataPage() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Semua Dusun</SelectItem>
-                    <SelectItem value="Dusun Rungkang">Dusun Rungkang</SelectItem>
+                    <SelectItem value="Dusun Karanganyar">Dusun Karanganyar</SelectItem>
                     <SelectItem value="Dusun Margasari">Dusun Margasari</SelectItem>
                   </SelectContent>
                 </Select>
@@ -1712,7 +1712,7 @@ export default function PbbMasterDataPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Dusun Rungkang">Dusun Rungkang</SelectItem>
+                  <SelectItem value="Dusun Karanganyar">Dusun Karanganyar</SelectItem>
                   <SelectItem value="Dusun Margasari">Dusun Margasari</SelectItem>
                 </SelectContent>
               </Select>
@@ -1917,7 +1917,7 @@ export default function PbbMasterDataPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Dusun Rungkang">Dusun Rungkang</SelectItem>
+                  <SelectItem value="Dusun Karanganyar">Dusun Karanganyar</SelectItem>
                   <SelectItem value="Dusun Margasari">Dusun Margasari</SelectItem>
                 </SelectContent>
               </Select>
@@ -2046,7 +2046,7 @@ export default function PbbMasterDataPage() {
             {importProgress.percent >= 100 && (
               <Button
                 onClick={() => setImportProgress({ ...importProgress, show: false })}
-                className="w-full h-11 rounded-2xl font-black uppercase bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-600/20 mt-2"
+                className="w-full h-11 rounded-2xl font-black uppercase bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20 mt-2"
               >
                 Selesai & Lihat Data
               </Button>

@@ -385,13 +385,13 @@ export default function AdminPelayananPage() {
   });
 
   return (
-    <div className="p-6 md:p-8 space-y-6 pb-16 max-w-7xl mx-auto">
+    <div className="p-6 md:p-8 space-y-6 pb-16 max-w-7xl mx-auto animate-fade-in-up">
 
       <PageHeader
         title="Manajemen Surat & Pelayanan Desa"
         description="Kelola pengajuan surat warga otomatis, persetujuan penandatangan, dan cetak naskah dinas resmi desa."
       >
-        <Button asChild size="default" className="rounded-xl font-bold uppercase tracking-wide bg-amber-500 hover:bg-amber-600 shadow-md shadow-amber-500/20 text-white border-none text-xs">
+        <Button asChild size="default" className="rounded-xl font-bold uppercase tracking-wide bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-md shadow-amber-500/20 text-white border-none text-xs hover:scale-[1.02] transition-all">
           <Link href="/pelayanan/pengajuan">
             <FilePlus className="mr-1.5 h-4 w-4" /> Pengajuan Surat Baru
           </Link>
@@ -399,14 +399,14 @@ export default function AdminPelayananPage() {
       </PageHeader>
 
       {/* KELOLA SURAT WARGA */}
-      <Card className="rounded-2xl border border-slate-200 shadow-xs overflow-hidden bg-white">
-        <CardHeader className="p-5 md:p-6 border-b border-slate-100 bg-slate-50/50 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <Card className="rounded-2xl md:rounded-3xl border border-border/70 shadow-md shadow-blue-950/5 overflow-hidden bg-card/85 backdrop-blur-md">
+        <CardHeader className="p-5 md:p-6 border-b border-border/70 bg-gradient-to-r from-blue-500/10 via-primary/5 to-transparent flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-0.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-[#0f5132] animate-pulse" />
-              <CardTitle className="text-base md:text-lg font-black uppercase tracking-tight text-slate-900">Daftar Pengajuan Surat Warga</CardTitle>
+              <span className="h-2.5 w-2.5 rounded-full bg-primary animate-pulse" />
+              <CardTitle className="text-base md:text-lg font-black uppercase tracking-tight text-foreground">Daftar Pengajuan Surat Warga</CardTitle>
             </div>
-            <CardDescription className="text-xs text-slate-500 font-medium">
+            <CardDescription className="text-xs text-muted-foreground font-medium">
               Daftar seluruh surat yang diajukan oleh/untuk warga via sistem.
             </CardDescription>
           </div>
@@ -415,9 +415,9 @@ export default function AdminPelayananPage() {
               placeholder="Cari Pemohon, NIK, Jenis Surat..."
               value={searchSubmission}
               onChange={(e) => setSearchSubmission(e.target.value)}
-              className="h-10 rounded-xl pl-9 text-xs font-semibold bg-white border-slate-200 shadow-xs focus:ring-2 focus:ring-emerald-600"
+              className="h-10 rounded-xl pl-9 text-xs font-semibold bg-background/80 backdrop-blur-sm border-border/80 shadow-xs focus:ring-2 focus:ring-primary/30"
             />
-            <Search className="absolute left-3 top-3 h-3.5 w-3.5 text-slate-400" />
+            <Search className="absolute left-3 top-3 h-3.5 w-3.5 text-muted-foreground" />
           </div>
         </CardHeader>
 
@@ -509,7 +509,7 @@ export default function AdminPelayananPage() {
 
                     <div>
                       {sub.status === 'APPROVED' || sub.status === 'COMPLETED' || sub.status === 'disetujui' ? (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase bg-[#0f5132] text-white tracking-wider">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase bg-blue-800 text-white tracking-wider">
                           DISETUJUI
                         </span>
                       ) : sub.status === 'REJECTED' || sub.status === 'ditolak' ? (
@@ -531,12 +531,12 @@ export default function AdminPelayananPage() {
                         <span className="text-xs font-mono font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200">
                           {sub.documentNumber}
                         </span>
-                        <Button variant="ghost" size="icon" className="h-6 w-6 text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg shrink-0" onClick={() => handleGenerateDocNumForSub(sub)}>
+                        <Button variant="ghost" size="icon" className="h-6 w-6 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-lg shrink-0" onClick={() => handleGenerateDocNumForSub(sub)}>
                           <RefreshCw className="h-3 w-3" />
                         </Button>
                       </div>
                     ) : (
-                      <Button size="sm" variant="outline" onClick={() => handleGenerateDocNumForSub(sub)} className="h-7 px-2.5 rounded-xl font-bold text-[10px] uppercase text-emerald-700 border-emerald-300 bg-emerald-50/50 hover:bg-emerald-700 hover:text-white transition-all shadow-xs">
+                      <Button size="sm" variant="outline" onClick={() => handleGenerateDocNumForSub(sub)} className="h-7 px-2.5 rounded-xl font-bold text-[10px] uppercase text-primary border-primary/30 bg-primary/5 hover:bg-primary hover:text-white transition-all shadow-xs">
                         <RefreshCw className="mr-1 h-3 w-3" /> Tarik Surat
                       </Button>
                     )}
@@ -549,13 +549,13 @@ export default function AdminPelayananPage() {
           {/* DESKTOP VIEW: STANDARD TABLE */}
           <div className="hidden md:block">
             <Table>
-              <TableHeader className="bg-slate-100/50">
-                <TableRow>
-                  <TableHead className="pl-8 font-black uppercase text-[9px] tracking-[0.2em] text-slate-400">Pemohon & NIK</TableHead>
-                  <TableHead className="font-black uppercase text-[9px] tracking-[0.2em] text-slate-400">Jenis Surat & Keperluan</TableHead>
-                  <TableHead className="font-black uppercase text-[9px] tracking-[0.2em] text-slate-400">Nomor Surat</TableHead>
-                  <TableHead className="font-black uppercase text-[9px] tracking-[0.2em] text-slate-400">Status</TableHead>
-                  <TableHead className="text-right pr-8 font-black uppercase text-[9px] tracking-[0.2em] text-slate-400">Aksi</TableHead>
+              <TableHeader className="bg-muted/40 border-b border-border/60">
+                <TableRow className="border-border/60">
+                  <TableHead className="pl-8 font-black uppercase text-[9px] tracking-[0.2em] text-muted-foreground">Pemohon & NIK</TableHead>
+                  <TableHead className="font-black uppercase text-[9px] tracking-[0.2em] text-muted-foreground">Jenis Surat & Keperluan</TableHead>
+                  <TableHead className="font-black uppercase text-[9px] tracking-[0.2em] text-muted-foreground">Nomor Surat</TableHead>
+                  <TableHead className="font-black uppercase text-[9px] tracking-[0.2em] text-muted-foreground">Status</TableHead>
+                  <TableHead className="text-right pr-8 font-black uppercase text-[9px] tracking-[0.2em] text-muted-foreground">Aksi</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -564,16 +564,16 @@ export default function AdminPelayananPage() {
                     <TableRow key={i}><TableCell colSpan={5} className="p-8"><Skeleton className="h-10 w-full rounded-xl" /></TableCell></TableRow>
                   ))
                 ) : filteredSubmissions?.length === 0 ? (
-                  <TableRow><TableCell colSpan={5} className="h-48 text-center text-slate-400 font-medium italic">Belum ada pengajuan surat warga.</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={5} className="h-48 text-center text-muted-foreground font-medium italic">Belum ada pengajuan surat warga.</TableCell></TableRow>
                 ) : (
                   filteredSubmissions?.map((sub) => (
-                    <TableRow key={sub.id} className="hover:bg-slate-50/80 group transition-all">
+                    <TableRow key={sub.id} className="hover:bg-primary/5 group transition-all border-border/40">
                       <TableCell className="pl-8 py-4">
                         <div className="space-y-0.5">
-                          <p className="font-black text-sm uppercase text-slate-800 leading-tight">
+                          <p className="font-black text-sm uppercase text-foreground leading-tight">
                             {sub.formData?.name || sub.requesterName || 'Pemohon'}
                           </p>
-                          <p className="text-[10px] font-bold text-slate-400">NIK: {sub.formData?.nik || '-'}</p>
+                          <p className="text-[10px] font-bold text-muted-foreground">NIK: {sub.formData?.nik || '-'}</p>
                         </div>
                       </TableCell>
                       <TableCell>
@@ -597,7 +597,7 @@ export default function AdminPelayananPage() {
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-6 w-6 text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg shrink-0"
+                              className="h-6 w-6 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-lg shrink-0"
                               title="Tarik / Perbarui Nomor Surat Otomatis"
                               onClick={() => handleGenerateDocNumForSub(sub)}
                             >
@@ -609,7 +609,7 @@ export default function AdminPelayananPage() {
                             size="sm"
                             variant="outline"
                             onClick={() => handleGenerateDocNumForSub(sub)}
-                            className="h-7 px-2.5 rounded-xl font-bold text-[10px] uppercase text-emerald-700 border-emerald-300 bg-emerald-50/50 hover:bg-emerald-700 hover:text-white transition-all shadow-xs"
+                            className="h-7 px-2.5 rounded-xl font-bold text-[10px] uppercase text-primary border-primary/30 bg-primary/5 hover:bg-primary hover:text-white transition-all shadow-xs"
                           >
                             <RefreshCw className="mr-1 h-3 w-3" /> Tarik Surat
                           </Button>
@@ -618,7 +618,7 @@ export default function AdminPelayananPage() {
 
                       <TableCell>
                         {sub.status === 'APPROVED' || sub.status === 'COMPLETED' || sub.status === 'disetujui' ? (
-                          <span className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase bg-[#0f5132] text-white tracking-wider">
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase bg-blue-800 text-white tracking-wider">
                             DISETUJUI
                           </span>
                         ) : sub.status === 'REJECTED' || sub.status === 'ditolak' ? (
@@ -714,7 +714,7 @@ export default function AdminPelayananPage() {
         <DialogContent className="rounded-[2rem] max-w-md p-8 border-none shadow-2xl bg-white">
           <DialogHeader className="space-y-2 text-left">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center border border-emerald-200 shrink-0">
+              <div className="w-10 h-10 rounded-2xl bg-primary/10 text-primary flex items-center justify-center border border-primary/20 shrink-0">
                 <UserCheck className="h-5 w-5" />
               </div>
               <DialogTitle className="text-xl font-black uppercase tracking-tight italic font-serif text-slate-900">
@@ -733,19 +733,19 @@ export default function AdminPelayananPage() {
               className={cn(
                 "p-4 rounded-2xl border-2 transition-all cursor-pointer flex items-center gap-4",
                 selectedSigner === 'kades'
-                  ? "border-emerald-600 bg-emerald-50/40 shadow-sm"
+                  ? "border-primary bg-primary/10 shadow-sm"
                   : "border-slate-100 bg-slate-50/50 hover:border-slate-200"
               )}
             >
               <div className={cn(
                 "w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors",
-                selectedSigner === 'kades' ? "border-emerald-600 bg-emerald-600 text-white" : "border-slate-300"
+                selectedSigner === 'kades' ? "border-primary bg-primary text-white" : "border-slate-300"
               )}>
                 {selectedSigner === 'kades' && <div className="w-2.5 h-2.5 bg-white rounded-full" />}
               </div>
               <div>
                 <h4 className="font-black text-sm uppercase text-slate-900 leading-tight">KEPALA DESA</h4>
-                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">SUSANTO</p>
+                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">RISKIANASARI, SE.</p>
               </div>
             </div>
 
@@ -755,19 +755,19 @@ export default function AdminPelayananPage() {
               className={cn(
                 "p-4 rounded-2xl border-2 transition-all cursor-pointer flex items-center gap-4",
                 selectedSigner === 'sekdes'
-                  ? "border-emerald-600 bg-emerald-50/40 shadow-sm"
+                  ? "border-primary bg-primary/10 shadow-sm"
                   : "border-slate-100 bg-slate-50/50 hover:border-slate-200"
               )}
             >
               <div className={cn(
                 "w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors",
-                selectedSigner === 'sekdes' ? "border-emerald-600 bg-emerald-600 text-white" : "border-slate-300"
+                selectedSigner === 'sekdes' ? "border-primary bg-primary text-white" : "border-slate-300"
               )}>
                 {selectedSigner === 'sekdes' && <div className="w-2.5 h-2.5 bg-white rounded-full" />}
               </div>
               <div>
                 <h4 className="font-black text-sm uppercase text-slate-900 leading-tight">SEKRETARIS DESA</h4>
-                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">HERU WAHYONO</p>
+                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">PRIYO SUMARNO,S.PD.</p>
               </div>
             </div>
           </div>
@@ -789,7 +789,7 @@ export default function AdminPelayananPage() {
                   setSelectedSubForPrint(null);
                 }
               }}
-              className="flex-1 h-12 rounded-2xl font-black uppercase text-xs tracking-wider bg-[#0f5132] hover:bg-emerald-900 text-white shadow-lg shadow-emerald-900/20"
+              className="flex-1 h-12 rounded-2xl font-black uppercase text-xs tracking-wider bg-blue-800 hover:bg-blue-900 text-white shadow-lg shadow-blue-950/20"
             >
               LANJUTKAN CETAK
             </Button>
@@ -926,7 +926,7 @@ export default function AdminPelayananPage() {
           <DialogFooter className="gap-2">
             <Button variant="outline" className="rounded-xl font-bold" onClick={() => setSelectedSubForDetail(null)}>Tutup</Button>
             <Button
-              className="rounded-xl font-black uppercase bg-[#0f5132] hover:bg-emerald-900 text-white"
+              className="rounded-xl font-black uppercase bg-blue-800 hover:bg-blue-900 text-white"
               onClick={() => {
                 if (selectedSubForDetail) {
                   const target = selectedSubForDetail;

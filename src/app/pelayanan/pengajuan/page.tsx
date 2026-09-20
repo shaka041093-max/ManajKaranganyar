@@ -10,7 +10,7 @@ export default function AdminPengajuanSuratPage() {
       {/* Header Admin Pengajuan Surat */}
       <div className="space-y-1.5 mb-2">
         <div className="flex items-center gap-2.5">
-          <div className="h-6 w-1.5 bg-[#0f5132] rounded-full" />
+          <div className="h-6 w-1.5 bg-primary rounded-full" />
           <h1 className="text-xl md:text-2xl font-black uppercase text-slate-900 tracking-tight font-serif italic">
             PENGAJUAN SURAT BARU
           </h1>

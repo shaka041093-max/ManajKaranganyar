@@ -15,7 +15,7 @@ export const generatePhysicalDocPDF = async (type: string, data: any, logoBase64
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
   const contentWidth = pageWidth - (margin * 2);
-  
+
   const logoSource = (logoBase64 && logoBase64.length > 50 && logoBase64.startsWith('data:image')) ? logoBase64 : LOGO_CILACAP_FALLBACK;
   const logoImg = await loadImage(logoSource);
 
@@ -28,18 +28,18 @@ export const generatePhysicalDocPDF = async (type: string, data: any, logoBase64
     doc.setFontSize(10);
     const leftX = margin + 35;
     const rightX = pageWidth - margin - 35;
-    
+
     doc.text(leftTitle, leftX, y, { align: "center" });
     doc.text(rightTitle, rightX, y, { align: "center" });
-    
+
     doc.setFont("helvetica", "bold");
     doc.text((leftName || "-----------").toUpperCase(), leftX, y + 25, { align: "center" });
     doc.text((rightName || "-----------").toUpperCase(), rightX, y + 25, { align: "center" });
-    
+
     const wL = doc.getTextWidth((leftName || "-----------").toUpperCase());
     const wR = doc.getTextWidth((rightName || "-----------").toUpperCase());
-    doc.line(leftX - wL/2, y + 26, leftX + wL/2, y + 26);
-    doc.line(rightX - wR/2, y + 26, rightX + wR/2, y + 26);
+    doc.line(leftX - wL / 2, y + 26, leftX + wL / 2, y + 26);
+    doc.line(rightX - wR / 2, y + 26, rightX + wR / 2, y + 26);
   };
 
   if (type === 'prop_cover') {
@@ -55,7 +55,7 @@ export const generatePhysicalDocPDF = async (type: string, data: any, logoBase64
       doc.addImage(logoImg, 'PNG', pageWidth / 2 - 25, 130, 50, 60);
     }
     doc.setFontSize(16);
-    doc.text("PEMERINTAH DESA RUNGKANG", pageWidth / 2, 230, { align: "center" });
+    doc.text("PEMERINTAH DESA KARANGANYAR", pageWidth / 2, 230, { align: "center" });
     doc.setFontSize(14);
     doc.text("KECAMATAN GANDRUNGMANGU", pageWidth / 2, 240, { align: "center" });
     doc.text("KABUPATEN CILACAP", pageWidth / 2, 250, { align: "center" });
@@ -71,7 +71,7 @@ export const generatePhysicalDocPDF = async (type: string, data: any, logoBase64
     doc.text("I. PENDAHULUAN", margin, y); y += 8;
     doc.setFont("helvetica", "normal");
     doc.setFontSize(11);
-    const pendahuluan = `Dalam rangka meningkatkan infrastruktur dan kualitas hidup masyarakat di ${data.lokasi}, Pemerintah Desa Rungkang memandang perlu melaksanakan ${data.namaKegiatan} melalui pemanfaatan ${data.sumberDana} Tahun Anggaran ${data.tahunAnggaran}.`;
+    const pendahuluan = `Dalam rangka meningkatkan infrastruktur dan kualitas hidup masyarakat di ${data.lokasi}, Pemerintah Desa Karanganyar memandang perlu melaksanakan ${data.namaKegiatan} melalui pemanfaatan ${data.sumberDana} Tahun Anggaran ${data.tahunAnggaran}.`;
     const pLines = doc.splitTextToSize(pendahuluan, contentWidth);
     doc.text(pLines, margin, y, { align: "justify" });
     y += (pLines.length * 6) + 10;
@@ -93,12 +93,12 @@ export const generatePhysicalDocPDF = async (type: string, data: any, logoBase64
     let y = 70;
     doc.setFontSize(10);
     const addRow = (l: string, v: string) => {
-        doc.setFont("helvetica", "bold");
-        doc.text(l, margin, y);
-        doc.text(":", margin + 45, y);
-        doc.setFont("helvetica", "normal");
-        doc.text(v || "-", margin + 48, y);
-        y += 7;
+      doc.setFont("helvetica", "bold");
+      doc.text(l, margin, y);
+      doc.text(":", margin + 45, y);
+      doc.setFont("helvetica", "normal");
+      doc.text(v || "-", margin + 48, y);
+      y += 7;
     }
     addRow("Bidang", data.nama_bidang || "Pelaksanaan Pembangunan Desa");
     addRow("Kegiatan", data.nama_kegiatan);
@@ -113,7 +113,7 @@ export const generatePhysicalDocPDF = async (type: string, data: any, logoBase64
     y += 10;
     doc.setFont("helvetica", "normal");
     doc.rect(margin, y, 10, 20); doc.text("1", margin + 5, y + 10, { align: "center" });
-    doc.rect(margin + 10, y, 100, 20); 
+    doc.rect(margin + 10, y, 100, 20);
     const lines = doc.splitTextToSize(`Pelaksanaan ${data.nama_kegiatan} dengan volume ${data.volume} sesuai RAB.`, 96);
     doc.text(lines, margin + 12, y + 8);
     doc.rect(margin + 110, y, 60, 20); doc.text(formattedBudget, margin + 168, y + 10, { align: "right" });
@@ -125,66 +125,66 @@ export const generatePhysicalDocPDF = async (type: string, data: any, logoBase64
     addSignatures(y, "Bendahara Desa,", data.nama_bendahara, "Ketua TPK,", data.nama_ketua_tpk);
     y += 45;
     doc.setFont("helvetica", "bold");
-    doc.text("Menyetujui,\nKepala Desa Rungkang", pageWidth / 2, y, { align: "center" });
+    doc.text("Menyetujui,\nKepala Desa Karanganyar", pageWidth / 2, y, { align: "center" });
     y += 25;
-    doc.text((data.nama_kades || "SUSANTO").toUpperCase(), pageWidth / 2, y, { align: "center" });
-    const nW = doc.getTextWidth((data.nama_kades || "SUSANTO").toUpperCase());
-    doc.line(pageWidth/2 - nW/2, y+1, pageWidth/2 + nW/2, y+1);
+    doc.text((data.nama_kades || "RISKIANASARI, SE.").toUpperCase(), pageWidth / 2, y, { align: "center" });
+    const nW = doc.getTextWidth((data.nama_kades || "RISKIANASARI, SE.").toUpperCase());
+    doc.line(pageWidth / 2 - nW / 2, y + 1, pageWidth / 2 + nW / 2, y + 1);
   }
 
   else if (type === 'spj_survey_harga') {
-    const filledItems = (data.survey_items || []).filter((it:any) => it.nama && it.nama.trim() !== "");
+    const filledItems = (data.survey_items || []).filter((it: any) => it.nama && it.nama.trim() !== "");
     const numShops = data.num_shops || 3;
 
     const renderSurveyPage = (pageIdx: number) => {
-        const tokoName = [data.nama_toko1, data.nama_toko2, data.nama_toko3, data.nama_toko4][pageIdx] || "";
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(14);
-        doc.text("FORM SURVEY HARGA", pageWidth / 2, 15, { align: "center" });
-        doc.setFontSize(10);
-        doc.text("DESA", margin, 25); doc.text(`: RUNGKANG`, margin + 30, 25);
-        doc.text("KECAMATAN", margin, 31); doc.text(`: GANDRUNGMANGU`, margin + 30, 31);
-        doc.text("KABUPATEN", margin, 37); doc.text(`: CILACAP`, margin + 30, 37);
-        let y = 45;
-        const colW = [12, 85, 25, 30, 23]; 
-        const headers = ["NO", "Nama/Jenis Barang", "Satuan", "Harga", "Keterangan"];
-        doc.setFont("helvetica", "bold");
-        let hX = margin;
-        headers.forEach((h, i) => { doc.rect(hX, y, colW[i], 12); doc.text(h, hX + colW[i]/2, y + 8, { align: "center" }); hX += colW[i]; });
-        y += 12;
-        doc.setFont("helvetica", "normal");
-        filledItems.forEach((item: any, i: number) => {
-            let rX = margin;
-            doc.rect(rX, y, colW[0], 8.5); doc.text((i+1).toString(), rX + colW[0]/2, y + 5.5, { align: "center" }); rX += colW[0];
-            doc.rect(rX, y, colW[1], 8.5); doc.text((item.nama || "").toUpperCase(), rX + 2, y + 5.5); rX += colW[1];
-            doc.rect(rX, y, colW[2], 8.5); doc.text((item.satuan || "").toUpperCase(), rX + colW[2]/2, y + 5.5, { align: "center" }); rX += colW[2];
-            doc.rect(rX, y, colW[3], 8.5); 
-            const price = Number([item.h1, item.h2, item.h3, item.h4][pageIdx] || 0);
-            if (price > 0) doc.text(price.toLocaleString('id-ID'), rX + colW[3] - 2, y + 5.5, { align: "right" });
-            rX += colW[3];
-            doc.rect(rX, y, colW[4], 8.5);
-            y += 8.5;
-        });
-        y += 10;
-        doc.setFontSize(10);
-        doc.setFont("helvetica", "italic");
-        doc.text("Catatan : Harga termasuk pajak dan resiko pengiriman", margin, y);
-        
-        const sigCenterX = pageWidth - margin - 35;
-        const dStr = format(new Date(), "d MMMM yyyy", { locale: localeID });
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(10);
-        y += 10;
-        doc.text(`Rungkang, ${dStr}`, sigCenterX, y, { align: "center" });
-        y += 6;
-        doc.text(`Toko ${tokoName.toUpperCase()}`, sigCenterX, y, { align: "center" });
-        y += 28;
-        doc.text("..........................", sigCenterX, y, { align: "center" });
+      const tokoName = [data.nama_toko1, data.nama_toko2, data.nama_toko3, data.nama_toko4][pageIdx] || "";
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(14);
+      doc.text("FORM SURVEY HARGA", pageWidth / 2, 15, { align: "center" });
+      doc.setFontSize(10);
+      doc.text("DESA", margin, 25); doc.text(`: KARANGANYAR`, margin + 30, 25);
+      doc.text("KECAMATAN", margin, 31); doc.text(`: GANDRUNGMANGU`, margin + 30, 31);
+      doc.text("KABUPATEN", margin, 37); doc.text(`: CILACAP`, margin + 30, 37);
+      let y = 45;
+      const colW = [12, 85, 25, 30, 23];
+      const headers = ["NO", "Nama/Jenis Barang", "Satuan", "Harga", "Keterangan"];
+      doc.setFont("helvetica", "bold");
+      let hX = margin;
+      headers.forEach((h, i) => { doc.rect(hX, y, colW[i], 12); doc.text(h, hX + colW[i] / 2, y + 8, { align: "center" }); hX += colW[i]; });
+      y += 12;
+      doc.setFont("helvetica", "normal");
+      filledItems.forEach((item: any, i: number) => {
+        let rX = margin;
+        doc.rect(rX, y, colW[0], 8.5); doc.text((i + 1).toString(), rX + colW[0] / 2, y + 5.5, { align: "center" }); rX += colW[0];
+        doc.rect(rX, y, colW[1], 8.5); doc.text((item.nama || "").toUpperCase(), rX + 2, y + 5.5); rX += colW[1];
+        doc.rect(rX, y, colW[2], 8.5); doc.text((item.satuan || "").toUpperCase(), rX + colW[2] / 2, y + 5.5, { align: "center" }); rX += colW[2];
+        doc.rect(rX, y, colW[3], 8.5);
+        const price = Number([item.h1, item.h2, item.h3, item.h4][pageIdx] || 0);
+        if (price > 0) doc.text(price.toLocaleString('id-ID'), rX + colW[3] - 2, y + 5.5, { align: "right" });
+        rX += colW[3];
+        doc.rect(rX, y, colW[4], 8.5);
+        y += 8.5;
+      });
+      y += 10;
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "italic");
+      doc.text("Catatan : Harga termasuk pajak dan resiko pengiriman", margin, y);
+
+      const sigCenterX = pageWidth - margin - 35;
+      const dStr = format(new Date(), "d MMMM yyyy", { locale: localeID });
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      y += 10;
+      doc.text(`Karanganyar, ${dStr}`, sigCenterX, y, { align: "center" });
+      y += 6;
+      doc.text(`Toko ${tokoName.toUpperCase()}`, sigCenterX, y, { align: "center" });
+      y += 28;
+      doc.text("..........................", sigCenterX, y, { align: "center" });
     };
 
     for (let p = 0; p < numShops; p++) {
-        if (p > 0) doc.addPage();
-        renderSurveyPage(p);
+      if (p > 0) doc.addPage();
+      renderSurveyPage(p);
     }
   }
 
@@ -194,15 +194,15 @@ export const generatePhysicalDocPDF = async (type: string, data: any, logoBase64
     const pH = docL.internal.pageSize.getHeight();
     const m = 10;
     const contentW = pW - (m * 2);
-    
+
     docL.setFont("helvetica", "bold");
     docL.setFontSize(11);
     docL.text("DAFTAR HARGA PERKIRAAN SENDIRI (HPS)", pW / 2, 10, { align: "center" });
     docL.text("BAHAN / MATERIAL", pW / 2, 15, { align: "center" });
-    
+
     let y = 25;
     const numShops = data.num_shops || 3;
-    
+
     const colNo = 8;
     const colUraian = 48;
     const colSat = 11;
@@ -214,74 +214,74 @@ export const generatePhysicalDocPDF = async (type: string, data: any, logoBase64
     const colKet = 18;
 
     const surveyColW = Math.floor(90 / numShops);
-    
-    const colW = [colNo, colUraian, colSat]; 
+
+    const colW = [colNo, colUraian, colSat];
     for (let s = 0; s < numShops; s++) colW.push(surveyColW);
-    colW.push(colHps, colPpn, colPph, colHrgSat, colHrgPakai, colKet); 
+    colW.push(colHps, colPpn, colPph, colHrgSat, colHrgPakai, colKet);
 
     const headers = ["NO", "URAIAN", "SAT"];
     for (let s = 0; s < numShops; s++) {
-        const name = [data.nama_toko1, data.nama_toko2, data.nama_toko3, data.nama_toko4][s] || `TOKO ${s+1}`;
-        headers.push(`SURVEY ${name.toUpperCase()}`);
+      const name = [data.nama_toko1, data.nama_toko2, data.nama_toko3, data.nama_toko4][s] || `TOKO ${s + 1}`;
+      headers.push(`SURVEY ${name.toUpperCase()}`);
     }
     headers.push("HARGA HPS", "PPN", "PPH", "HRG SAT", "HRG PAKAI", "KET");
-    
+
     docL.setFontSize(7);
     let hX = m;
-    headers.forEach((h, i) => { 
-        docL.rect(hX, y, colW[i], 12); 
-        const splitH = docL.splitTextToSize(h, colW[i] - 2);
-        const lineCount = splitH.length;
-        const lineH = 3.5;
-        const startH = 6.5 - ((lineCount - 1) * (lineH / 2));
-        docL.text(splitH, hX + colW[i]/2, y + startH, { align: "center" }); 
-        hX += colW[i]; 
+    headers.forEach((h, i) => {
+      docL.rect(hX, y, colW[i], 12);
+      const splitH = docL.splitTextToSize(h, colW[i] - 2);
+      const lineCount = splitH.length;
+      const lineH = 3.5;
+      const startH = 6.5 - ((lineCount - 1) * (lineH / 2));
+      docL.text(splitH, hX + colW[i] / 2, y + startH, { align: "center" });
+      hX += colW[i];
     });
     y += 12;
 
     docL.setFont("helvetica", "normal");
-    const items = (data.survey_items || []).filter((it:any) => it.nama && it.nama.trim() !== "");
+    const items = (data.survey_items || []).filter((it: any) => it.nama && it.nama.trim() !== "");
     items.forEach((item: any, i: number) => {
-        const hps = Number(item.hps) || 0;
-        const ppnPercent = Number(item.ppn) || 0;
-        const pphPercent = Number(item.pph) || 0;
-        const ppnNominal = Math.round(hps * (ppnPercent / 100));
-        const pphNominal = Math.round(hps * (pphPercent / 100));
-        const hrgSat = hps + ppnNominal + pphNominal;
-        
-        let rX = m;
-        docL.rect(rX, y, colW[0], 8.5); docL.text((i+1).toString(), rX + colW[0]/2, y + 5.5, { align: "center" }); rX += colW[0];
-        docL.rect(rX, y, colW[1], 8.5); docL.text((item.nama || "").toUpperCase(), rX + 2, y + 5.5); rX += colW[1];
-        docL.rect(rX, y, colW[2], 8.5); docL.text((item.satuan || "").toUpperCase(), rX + colW[2]/2, y + 5.5, { align: "center" }); rX += colW[2];
-        
-        for (let s = 1; s <= numShops; s++) {
-            const price = Number(item[`h${s}` as keyof any] || 0);
-            docL.rect(rX, y, colW[2+s], 8.5); 
-            if (price > 0) docL.text(price.toLocaleString('id-ID'), rX + colW[2+s]-1, y+5.5, { align: "right" }); 
-            rX += colW[2+s];
-        }
+      const hps = Number(item.hps) || 0;
+      const ppnPercent = Number(item.ppn) || 0;
+      const pphPercent = Number(item.pph) || 0;
+      const ppnNominal = Math.round(hps * (ppnPercent / 100));
+      const pphNominal = Math.round(hps * (pphPercent / 100));
+      const hrgSat = hps + ppnNominal + pphNominal;
 
-        const nextIdx = 3 + numShops;
-        docL.rect(rX, y, colW[nextIdx], 8.5); docL.text(hps.toLocaleString('id-ID'), rX + colW[nextIdx]-1, y+5.5, { align: "right" }); rX += colW[nextIdx];
-        docL.rect(rX, y, colW[nextIdx+1], 8.5); docL.text(ppnNominal > 0 ? ppnNominal.toLocaleString('id-ID') : "0", rX + colW[nextIdx+1]-1, y+5.5, { align: "right" }); rX += colW[nextIdx+1];
-        docL.rect(rX, y, colW[nextIdx+2], 8.5); docL.text(pphNominal > 0 ? pphNominal.toLocaleString('id-ID') : "0", rX + colW[nextIdx+2]-1, y+5.5, { align: "right" }); rX += colW[nextIdx+2];
-        docL.rect(rX, y, colW[nextIdx+3], 8.5); docL.text(hrgSat.toLocaleString('id-ID'), rX + colW[nextIdx+3]-1, y+5.5, { align: "right" }); rX += colW[nextIdx+3];
-        docL.rect(rX, y, colW[nextIdx+4], 8.5); docL.text(hrgSat.toLocaleString('id-ID'), rX + colW[nextIdx+4]-1, y+5.5, { align: "right" }); rX += colW[nextIdx+4];
-        docL.rect(rX, y, colW[nextIdx+5], 8.5);
-        y += 8.5;
+      let rX = m;
+      docL.rect(rX, y, colW[0], 8.5); docL.text((i + 1).toString(), rX + colW[0] / 2, y + 5.5, { align: "center" }); rX += colW[0];
+      docL.rect(rX, y, colW[1], 8.5); docL.text((item.nama || "").toUpperCase(), rX + 2, y + 5.5); rX += colW[1];
+      docL.rect(rX, y, colW[2], 8.5); docL.text((item.satuan || "").toUpperCase(), rX + colW[2] / 2, y + 5.5, { align: "center" }); rX += colW[2];
+
+      for (let s = 1; s <= numShops; s++) {
+        const price = Number(item[`h${s}` as keyof any] || 0);
+        docL.rect(rX, y, colW[2 + s], 8.5);
+        if (price > 0) docL.text(price.toLocaleString('id-ID'), rX + colW[2 + s] - 1, y + 5.5, { align: "right" });
+        rX += colW[2 + s];
+      }
+
+      const nextIdx = 3 + numShops;
+      docL.rect(rX, y, colW[nextIdx], 8.5); docL.text(hps.toLocaleString('id-ID'), rX + colW[nextIdx] - 1, y + 5.5, { align: "right" }); rX += colW[nextIdx];
+      docL.rect(rX, y, colW[nextIdx + 1], 8.5); docL.text(ppnNominal > 0 ? ppnNominal.toLocaleString('id-ID') : "0", rX + colW[nextIdx + 1] - 1, y + 5.5, { align: "right" }); rX += colW[nextIdx + 1];
+      docL.rect(rX, y, colW[nextIdx + 2], 8.5); docL.text(pphNominal > 0 ? pphNominal.toLocaleString('id-ID') : "0", rX + colW[nextIdx + 2] - 1, y + 5.5, { align: "right" }); rX += colW[nextIdx + 2];
+      docL.rect(rX, y, colW[nextIdx + 3], 8.5); docL.text(hrgSat.toLocaleString('id-ID'), rX + colW[nextIdx + 3] - 1, y + 5.5, { align: "right" }); rX += colW[nextIdx + 3];
+      docL.rect(rX, y, colW[nextIdx + 4], 8.5); docL.text(hrgSat.toLocaleString('id-ID'), rX + colW[nextIdx + 4] - 1, y + 5.5, { align: "right" }); rX += colW[nextIdx + 4];
+      docL.rect(rX, y, colW[nextIdx + 5], 8.5);
+      y += 8.5;
     });
 
     y += 10;
     docL.setFontSize(8);
     const dStr = format(new Date(), "d MMMM yyyy", { locale: localeID });
     const sX = [m + 45, pW / 2, pW - 60];
-    
+
     docL.setFont("helvetica", "normal");
-    docL.text(`Desa Rungkang, ${dStr}`, sX[2], y, { align: "center" });
-    
+    docL.text(`Desa Karanganyar, ${dStr}`, sX[2], y, { align: "center" });
+
     y += 5;
     docL.setFont("helvetica", "bold");
-    
+
     docL.text("Diverifikasi Oleh,", sX[0], y, { align: "center" });
     docL.text("Sekretaris Desa", sX[0], y + 4, { align: "center" });
 
@@ -294,90 +294,90 @@ export const generatePhysicalDocPDF = async (type: string, data: any, logoBase64
     y += 28;
     const nameSekdes = (data.nama_sekdes || "WASIMAN").toUpperCase();
     docL.text(nameSekdes, sX[0], y, { align: "center" });
-    docL.line(sX[0] - docL.getTextWidth(nameSekdes)/2, y + 0.8, sX[0] + docL.getTextWidth(nameSekdes)/2, y + 0.8);
+    docL.line(sX[0] - docL.getTextWidth(nameSekdes) / 2, y + 0.8, sX[0] + docL.getTextWidth(nameSekdes) / 2, y + 0.8);
 
-    docL.text("SUSANTO", sX[1], y + 10, { align: "center" });
-    docL.line(sX[1] - docL.getTextWidth("SUSANTO")/2, y + 10.8, sX[1] + docL.getTextWidth("SUSANTO")/2, y + 10.8);
+    docL.text("RISKIANASARI, SE.", sX[1], y + 10, { align: "center" });
+    docL.line(sX[1] - docL.getTextWidth("RISKIANASARI, SE.") / 2, y + 10.8, sX[1] + docL.getTextWidth("RISKIANASARI, SE.") / 2, y + 10.8);
 
     const nameKasi = (data.nama_kasi || "-----------").toUpperCase();
     docL.text(nameKasi, sX[2], y, { align: "center" });
-    docL.line(sX[2] - docL.getTextWidth(nameKasi)/2, y + 0.8, sX[2] + docL.getTextWidth(nameKasi)/2, y + 0.8);
+    docL.line(sX[2] - docL.getTextWidth(nameKasi) / 2, y + 0.8, sX[2] + docL.getTextWidth(nameKasi) / 2, y + 0.8);
 
     return docL.output("blob");
   }
 
   else if (type === 'spj_foto_fisik') {
     const isFisik = data.photoMode === "fisik";
-    
-    const addPhotoPageHeader = (catLabel: string) => {
-        addKopSuratSync(doc, logoImg, margin, pageWidth);
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(14);
-        
-        // Judul khusus untuk mode Non-Fisik sesuai permintaan user
-        const titleText = isFisik ? `DOKUMENTASI PEKERJAAN ${catLabel}` : `DOKUMENTASI ${catLabel}`;
-        doc.text(titleText, pageWidth / 2, 52, { align: "center" });
-        
-        doc.setFontSize(10);
-        let yHeader = 62;
 
-        if (isFisik) {
-            doc.setFont("helvetica", "bold"); doc.text("DATA KEGIATAN", margin, yHeader);
-            yHeader += 6;
-            doc.setFont("helvetica", "normal");
-            doc.text("Kegiatan", margin, yHeader); doc.text(`: ${data.nama_kegiatan || "-"}`, margin + 25, yHeader);
-            yHeader += 6;
-            doc.text("Lokasi", margin, yHeader); doc.text(`: ${data.lokasi_kegiatan || "-"}`, margin + 25, yHeader);
-            yHeader += 6;
-            doc.text("Anggaran", margin, yHeader); doc.text(`: Rp ${formattedBudget}`, margin + 25, yHeader);
-        } else {
-            doc.setFont("helvetica", "normal");
-            doc.text("Pengadaan", margin, yHeader); doc.text(`: ${data.nama_kegiatan || "-"}`, margin + 25, yHeader);
-            yHeader += 6;
-            doc.text("Anggaran", margin, yHeader); doc.text(`: Rp ${formattedBudget}`, margin + 25, yHeader);
-        }
-        
-        yHeader += 4;
-        doc.setLineWidth(0.1);
-        doc.line(margin, yHeader, pageWidth - margin, yHeader);
-        return yHeader + 6;
+    const addPhotoPageHeader = (catLabel: string) => {
+      addKopSuratSync(doc, logoImg, margin, pageWidth);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(14);
+
+      // Judul khusus untuk mode Non-Fisik sesuai permintaan user
+      const titleText = isFisik ? `DOKUMENTASI PEKERJAAN ${catLabel}` : `DOKUMENTASI ${catLabel}`;
+      doc.text(titleText, pageWidth / 2, 52, { align: "center" });
+
+      doc.setFontSize(10);
+      let yHeader = 62;
+
+      if (isFisik) {
+        doc.setFont("helvetica", "bold"); doc.text("DATA KEGIATAN", margin, yHeader);
+        yHeader += 6;
+        doc.setFont("helvetica", "normal");
+        doc.text("Kegiatan", margin, yHeader); doc.text(`: ${data.nama_kegiatan || "-"}`, margin + 25, yHeader);
+        yHeader += 6;
+        doc.text("Lokasi", margin, yHeader); doc.text(`: ${data.lokasi_kegiatan || "-"}`, margin + 25, yHeader);
+        yHeader += 6;
+        doc.text("Anggaran", margin, yHeader); doc.text(`: Rp ${formattedBudget}`, margin + 25, yHeader);
+      } else {
+        doc.setFont("helvetica", "normal");
+        doc.text("Pengadaan", margin, yHeader); doc.text(`: ${data.nama_kegiatan || "-"}`, margin + 25, yHeader);
+        yHeader += 6;
+        doc.text("Anggaran", margin, yHeader); doc.text(`: Rp ${formattedBudget}`, margin + 25, yHeader);
+      }
+
+      yHeader += 4;
+      doc.setLineWidth(0.1);
+      doc.line(margin, yHeader, pageWidth - margin, yHeader);
+      return yHeader + 6;
     }
 
-    const photoCategories = isFisik 
+    const photoCategories = isFisik
       ? [
-          { label: "KONDISI 0%", urls: data.physicalPhotos?.p0 || [] }, 
-          { label: "KONDISI 50%", urls: data.physicalPhotos?.p50 || [] }, 
-          { label: "KONDISI 100%", urls: data.physicalPhotos?.p100 || [] }
-        ]
+        { label: "KONDISI 0%", urls: data.physicalPhotos?.p0 || [] },
+        { label: "KONDISI 50%", urls: data.physicalPhotos?.p50 || [] },
+        { label: "KONDISI 100%", urls: data.physicalPhotos?.p100 || [] }
+      ]
       : [
-          { label: "FOTO BUKTI 1", urls: data.nonPhysicalPhotos?.f1 || [] },
-          { label: "FOTO BUKTI 2", urls: data.nonPhysicalPhotos?.f2 || [] }
-        ];
+        { label: "FOTO BUKTI 1", urls: data.nonPhysicalPhotos?.f1 || [] },
+        { label: "FOTO BUKTI 2", urls: data.nonPhysicalPhotos?.f2 || [] }
+      ];
 
     for (let i = 0; i < photoCategories.length; i++) {
-        const cat = photoCategories[i];
-        if (i > 0) doc.addPage();
-        
-        let y = addPhotoPageHeader(cat.label);
-        
-        if (cat.urls && cat.urls.length > 0) {
-            for (const url of cat.urls) {
-                const img = await loadImage(url);
-                if (img) {
-                    const imgProps = doc.getImageProperties(url);
-                    const imgW = contentWidth;
-                    const imgH = (imgProps.height * imgW) / imgProps.width;
-                    
-                    if (y + imgH > pageHeight - 20) { 
-                        doc.addPage(); 
-                        y = addPhotoPageHeader(cat.label); // Judul tetap sama tanpa (Lanjutan)
-                    }
-                    
-                    doc.addImage(img, 'JPEG', margin, y, imgW, imgH);
-                    y += imgH + 10;
-                }
+      const cat = photoCategories[i];
+      if (i > 0) doc.addPage();
+
+      let y = addPhotoPageHeader(cat.label);
+
+      if (cat.urls && cat.urls.length > 0) {
+        for (const url of cat.urls) {
+          const img = await loadImage(url);
+          if (img) {
+            const imgProps = doc.getImageProperties(url);
+            const imgW = contentWidth;
+            const imgH = (imgProps.height * imgW) / imgProps.width;
+
+            if (y + imgH > pageHeight - 20) {
+              doc.addPage();
+              y = addPhotoPageHeader(cat.label); // Judul tetap sama tanpa (Lanjutan)
             }
+
+            doc.addImage(img, 'JPEG', margin, y, imgW, imgH);
+            y += imgH + 10;
+          }
         }
+      }
     }
   }
 
@@ -398,7 +398,7 @@ export const generatePhysicalDocPDF = async (type: string, data: any, logoBase64
     doc.line(pageWidth / 2 - textWidth / 2, numY + 1, pageWidth / 2 + textWidth / 2, numY + 1);
     const dBast = data.tanggal_bast ? new Date(data.tanggal_bast) : new Date();
     const openingY = 85;
-    const openingText = `Pada hari ini ${format(dBast, "EEEE", { locale: localeID })} tanggal ${terbilang(getDate(dBast))} bulan ${format(dBast, "MMMM", { locale: localeID })} tahun ${terbilang(getYear(dBast))} bertempat di Desa Rungkang, kami yang bertanda tangan dibawah ini :`;
+    const openingText = `Pada hari ini ${format(dBast, "EEEE", { locale: localeID })} tanggal ${terbilang(getDate(dBast))} bulan ${format(dBast, "MMMM", { locale: localeID })} tahun ${terbilang(getYear(dBast))} bertempat di Desa Karanganyar, kami yang bertanda tangan dibawah ini :`;
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
     doc.text(openingText, margin, openingY, { align: "justify", maxWidth: contentWidth });
@@ -411,16 +411,16 @@ export const generatePhysicalDocPDF = async (type: string, data: any, logoBase64
     doc.text("Nama", labelX, y); doc.text(":", dotX, y); doc.setFont("helvetica", "bold"); doc.text((data.nama_kasi || "-").toUpperCase(), valX, y); y += 6;
     doc.setFont("helvetica", "normal");
     doc.text("Jabatan", labelX, y); doc.text(":", dotX, y); doc.text(`Pelaksana Kegiatan Anggaran (${data.jabatan_kasi || "-"})`, valX, y); y += 6;
-    doc.text("Alamat", labelX, y); doc.text(":", dotX, y); 
-    const alamat1 = `Desa Rungkang Kecamatan Gandrungmangu yang selanjutnya disebut PIHAK KESATU`;
+    doc.text("Alamat", labelX, y); doc.text(":", dotX, y);
+    const alamat1 = `Desa Karanganyar Kecamatan Gandrungmangu yang selanjutnya disebut PIHAK KESATU`;
     const splitAl1 = doc.splitTextToSize(alamat1, contentWidth - 40);
     doc.text(splitAl1, valX, y); y += (splitAl1.length * 5) + 4;
     doc.text("II", margin, y);
-    doc.text("Nama", labelX, y); doc.text(":", dotX, y); doc.setFont("helvetica", "bold"); doc.text("SUSANTO", valX, y); y += 6;
+    doc.text("Nama", labelX, y); doc.text(":", dotX, y); doc.setFont("helvetica", "bold"); doc.text("RISKIANASARI, SE.", valX, y); y += 6;
     doc.setFont("helvetica", "normal");
     doc.text("Jabatan", labelX, y); doc.text(":", dotX, y); doc.text("Pemegang Kekuasaan Pengelolaan Keuangan Desa", valX, y); y += 6;
-    doc.text("Alamat", labelX, y); doc.text(":", dotX, y); 
-    const alamat2 = `Desa Rungkang Kecamatan Gandrungmangu yang selanjutnya disebut PIHAK KEDUA`;
+    doc.text("Alamat", labelX, y); doc.text(":", dotX, y);
+    const alamat2 = `Desa Karanganyar Kecamatan Gandrungmangu yang selanjutnya disebut PIHAK KEDUA`;
     const splitAl2 = doc.splitTextToSize(alamat2, contentWidth - 40);
     doc.text(splitAl2, valX, y); y += (splitAl2.length * 5) + 10;
     const bodyText = "Dengan ini menyatakan bahwa PIHAK KESATU telah menyerahkan barang/pekerjaan kepada PIHAK KEDUA dan PIHAK KEDUA telah menerima barang/pekerjaan dari PIHAK KESATU berupa :";
@@ -431,17 +431,17 @@ export const generatePhysicalDocPDF = async (type: string, data: any, logoBase64
     const headers = ["NO", "NAMA KEGIATAN", "VOLUME", "TTD"];
     let hX = margin;
     doc.setFont("helvetica", "bold");
-    headers.forEach((h, i) => { doc.rect(hX, y, colW[i], 10); doc.text(h, hX + colW[i]/2, y + 6.5, { align: "center" }); hX += colW[i]; });
+    headers.forEach((h, i) => { doc.rect(hX, y, colW[i], 10); doc.text(h, hX + colW[i] / 2, y + 6.5, { align: "center" }); hX += colW[i]; });
     y += 10;
     doc.setFont("helvetica", "normal");
     let rX = margin;
-    doc.rect(rX, y, colW[0], 15); doc.text("1", rX + colW[0]/2, y + 9, { align: "center" }); rX += colW[0];
+    doc.rect(rX, y, colW[0], 15); doc.text("1", rX + colW[0] / 2, y + 9, { align: "center" }); rX += colW[0];
     doc.rect(rX, y, colW[1], 15); doc.text(data.namaKegiatan || "-", rX + 3, y + 9); rX += colW[1];
-    doc.rect(rX, y, colW[2], 15); doc.text(`${data.volume || "1"} Kegiatan`, rX + colW[2]/2, y + 9, { align: "center" }); rX += colW[2];
+    doc.rect(rX, y, colW[2], 15); doc.text(`${data.volume || "1"} Kegiatan`, rX + colW[2] / 2, y + 9, { align: "center" }); rX += colW[2];
     doc.rect(rX, y, colW[3], 15);
     y += 25;
-    doc.text(`Rungkang, ${format(dBast, "d MMMM yyyy", { locale: localeID })}`, pageWidth - margin, y, { align: "right" }); y += 10;
-    addSignatures(y, "PIHAK KEDUA\nPemegang Kekuasaan\nPengelolaan Keuangan Desa", "SUSANTO", "PIHAK KESATU\nPelaksana Kegiatan Anggaran", data.nama_kasi);
+    doc.text(`Karanganyar, ${format(dBast, "d MMMM yyyy", { locale: localeID })}`, pageWidth - margin, y, { align: "right" }); y += 10;
+    addSignatures(y, "PIHAK KEDUA\nPemegang Kekuasaan\nPengelolaan Keuangan Desa", "RISKIANASARI, SE.", "PIHAK KESATU\nPelaksana Kegiatan Anggaran", data.nama_kasi);
   }
 
   else if (type === 'spj_ba_hps') {
@@ -449,11 +449,11 @@ export const generatePhysicalDocPDF = async (type: string, data: any, logoBase64
     doc.setFont("helvetica", "bold");
     doc.setFontSize(11);
     doc.text("BERITA ACARA PENETAPAN HARGA PERKIRAAN SENDIRI (HPS)", pageWidth / 2, 54, { align: "center" });
-    
+
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
     let y = 62;
-    const bodyText = `Bahwa dalam pelaksanaan pembangunan Desa Rungkang Kecamatan Gandrungmangu Kabupaten Cilacap Provinsi Jawa Tengah, maka pada :`;
+    const bodyText = `Bahwa dalam pelaksanaan pembangunan Desa Karanganyar Kecamatan Gandrungmangu Kabupaten Cilacap Provinsi Jawa Tengah, maka pada :`;
     const bLines = doc.splitTextToSize(bodyText, contentWidth);
     doc.text(bLines, margin, y, { align: "justify", maxWidth: contentWidth });
     y += (bLines.length * 4.5) + 3;
@@ -480,12 +480,12 @@ export const generatePhysicalDocPDF = async (type: string, data: any, logoBase64
     doc.setFont("helvetica", "bold");
     doc.text("Unsur pimpinan rapat dan Narasumber adalah :", margin, y); y += 5;
     doc.setFont("helvetica", "normal");
-    
+
     const labelColW = 35;
-    const numX = margin + labelColW + 2; 
-    const dariX = margin + 105; 
-    
-    doc.text("Pimpinan Rapat", margin + 5, y); 
+    const numX = margin + labelColW + 2;
+    const dariX = margin + 105;
+
+    doc.text("Pimpinan Rapat", margin + 5, y);
     doc.text(`: 1. Ketua`, numX, y); doc.text(`dari ${(data.ba_hps_leader_name || "-")}`, dariX, y); y += 4.5;
     doc.text(`: 2. Sekretaris`, numX, y); doc.text(`dari ${(data.ba_hps_secretary_name || "-")}`, dariX, y); y += 5.5;
 
@@ -510,52 +510,52 @@ export const generatePhysicalDocPDF = async (type: string, data: any, logoBase64
     const sigX2 = pageWidth - margin - 35;
     doc.text("Pemimpin Musyawarah,", sigX1, y, { align: "center" });
     doc.text("Notulensi,", sigX2, y, { align: "center" });
-    
+
     y += 18;
     doc.setFont("helvetica", "bold");
     const leaderName = (data.ba_hps_leader_name || "-----------").toUpperCase();
     const secName = (data.nama_kasi || "-----------").toUpperCase();
     doc.text(leaderName, sigX1, y, { align: "center" });
     doc.text(secName, sigX2, y, { align: "center" });
-    doc.line(sigX1 - doc.getTextWidth(leaderName)/2, y+0.5, sigX1 + doc.getTextWidth(leaderName)/2, y+0.5);
-    doc.line(sigX2 - doc.getTextWidth(secName)/2, y+0.5, sigX2 + doc.getTextWidth(secName)/2, y+0.5);
+    doc.line(sigX1 - doc.getTextWidth(leaderName) / 2, y + 0.5, sigX1 + doc.getTextWidth(leaderName) / 2, y + 0.5);
+    doc.line(sigX2 - doc.getTextWidth(secName) / 2, y + 0.5, sigX2 + doc.getTextWidth(secName) / 2, y + 0.5);
 
     y += 6;
     doc.text("Mengetahui,", pageWidth / 2, y, { align: "center" }); y += 4;
-    doc.text("Kepala Desa Rungkang", pageWidth / 2, y, { align: "center" }); y += 18;
-    doc.text("SUSANTO", pageWidth / 2, y, { align: "center" });
-    doc.line(pageWidth/2 - 25, y+0.5, pageWidth/2 + 25, y+0.5);
+    doc.text("Kepala Desa Karanganyar", pageWidth / 2, y, { align: "center" }); y += 18;
+    doc.text("RISKIANASARI, SE.", pageWidth / 2, y, { align: "center" });
+    doc.line(pageWidth / 2 - 25, y + 0.5, pageWidth / 2 + 25, y + 0.5);
 
     doc.addPage();
     addKopSuratSync(doc, logoImg, margin, pageWidth);
     let y2 = 60;
     doc.setFont("helvetica", "bold");
     doc.text("DAFTAR HADIR PESERTA MUSYAWARAH", pageWidth / 2, y2, { align: "center" }); y2 += 8;
-    
+
     const colW = [12, 60, 60, 38];
     const tableHeaders = ["NO", "NAMA", "ALAMAT", "TANDA TANGAN"];
     let hX = margin;
     doc.setFontSize(9);
     tableHeaders.forEach((h, i) => {
-        doc.rect(hX, y2, colW[i], 10);
-        doc.text(h, hX + colW[i]/2, y2 + 6.5, { align: "center" });
-        hX += colW[i];
+      doc.rect(hX, y2, colW[i], 10);
+      doc.text(h, hX + colW[i] / 2, y2 + 6.5, { align: "center" });
+      hX += colW[i];
     });
     y2 += 10;
     doc.setFont("helvetica", "normal");
     for (let i = 1; i <= 15; i++) {
-        let rX = margin;
-        if (y2 + 12 > pageHeight - 20) { doc.addPage(); y2 = 20; }
-        doc.rect(rX, y2, colW[0], 12); doc.text(i.toString(), rX + colW[0]/2, y2 + 7.5, { align: "center" }); rX += colW[0];
-        doc.rect(rX, y2, colW[1], 12); rX += colW[1]; 
-        doc.rect(rX, y2, colW[2], 12); rX += colW[2]; 
-        doc.rect(rX, y2, colW[3], 12); 
-        
-        doc.setFontSize(8);
-        const signX = (i % 2 !== 0) ? rX + 2 : rX + (colW[3] / 2);
-        doc.text(`${i}. .........`, signX, y2 + 7.5);
-        doc.setFontSize(9);
-        y2 += 12;
+      let rX = margin;
+      if (y2 + 12 > pageHeight - 20) { doc.addPage(); y2 = 20; }
+      doc.rect(rX, y2, colW[0], 12); doc.text(i.toString(), rX + colW[0] / 2, y2 + 7.5, { align: "center" }); rX += colW[0];
+      doc.rect(rX, y2, colW[1], 12); rX += colW[1];
+      doc.rect(rX, y2, colW[2], 12); rX += colW[2];
+      doc.rect(rX, y2, colW[3], 12);
+
+      doc.setFontSize(8);
+      const signX = (i % 2 !== 0) ? rX + 2 : rX + (colW[3] / 2);
+      doc.text(`${i}. .........`, signX, y2 + 7.5);
+      doc.setFontSize(9);
+      y2 += 12;
     }
   }
 
@@ -582,10 +582,10 @@ export const generatePhysicalDocPDF = async (type: string, data: any, logoBase64
     doc.text("* Gunakan tombol DOCX di aplikasi untuk mendapatkan berkas yang bisa disunting penuh di MS Word.", margin, y);
     y += 30;
     doc.setFont("helvetica", "normal");
-    doc.text(`Rungkang, ${formattedDate}`, pageWidth - margin - 60, y);
+    doc.text(`Karanganyar, ${formattedDate}`, pageWidth - margin - 60, y);
     y += 6;
     doc.setFont("helvetica", "bold");
-    doc.text("Ketua TPK Desa Rungkang,", pageWidth - margin - 60, y);
+    doc.text("Ketua TPK Desa Karanganyar,", pageWidth - margin - 60, y);
     y += 28;
     doc.text((data.nama_ketua_tpk || "-----------").toUpperCase(), pageWidth - margin - 60, y);
   }

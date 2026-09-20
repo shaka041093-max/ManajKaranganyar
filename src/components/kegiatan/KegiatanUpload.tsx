@@ -61,28 +61,28 @@ export function KegiatanUpload({ onSuccess, initialData }: { onSuccess?: () => v
   const [isSyncing, setIsSyncing] = useState(false)
   const [agendas, setAgendas] = useState<AgendaItem[]>([])
   const [selectedCalendarDate, setSelectedCalendarDate] = useState<string>(format(new Date(), "yyyy-MM-dd"))
-  
+
   // Cloudinary Image URLs
   const [cloudinaryUrls, setCloudinaryUrls] = useState<{
     kegiatan: string[],
     atk: string[],
     konsumsi: string[]
-  }>({ 
-    kegiatan: initialData?.cloudinaryUrls?.kegiatan || [], 
-    atk: initialData?.cloudinaryUrls?.atk || [], 
-    konsumsi: initialData?.cloudinaryUrls?.konsumsi || [] 
+  }>({
+    kegiatan: initialData?.cloudinaryUrls?.kegiatan || [],
+    atk: initialData?.cloudinaryUrls?.atk || [],
+    konsumsi: initialData?.cloudinaryUrls?.konsumsi || []
   })
-  
+
   const [selectedMaterials, setSelectedMaterials] = useState<File[]>([])
   const [selectedUndangan, setSelectedUndangan] = useState<File | null>(null)
-  
+
   const undanganInputRef = useRef<HTMLInputElement>(null)
   const materiInputRef = useRef<HTMLInputElement>(null)
-  
+
   const { toast } = useToast()
   const { user } = useUser()
   const db = useFirestore()
-  
+
   const personnelRef = useMemoFirebase(() => db ? collection(db, "personnel") : null, [db])
   const { data: dbOfficials } = useCollection(personnelRef)
 
@@ -93,10 +93,10 @@ export function KegiatanUpload({ onSuccess, initialData }: { onSuccess?: () => v
   }, [db, user])
   const { data: villageSettings } = useDoc(villageSettingsRef)
 
-  const filteredOfficials = (dbOfficials || []).filter(o => 
+  const filteredOfficials = (dbOfficials || []).filter(o =>
     o.jabatan?.includes("KAUR") || o.jabatan?.includes("KEPALA SEKSI") || o.category === "Pemerintah Desa"
   );
-  
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -104,7 +104,7 @@ export function KegiatanUpload({ onSuccess, initialData }: { onSuccess?: () => v
       description: initialData?.description || "",
       activityType: initialData?.activityType || "Internal",
       category: initialData?.category || "Internal",
-      location: initialData?.location || "Balai Desa Rungkang",
+      location: initialData?.location || "Balai Desa Karanganyar",
       date: initialData?.date || format(new Date(), "yyyy-MM-dd"),
       time: initialData?.time || "",
       officialName: initialData?.officialName || "",
@@ -143,7 +143,7 @@ export function KegiatanUpload({ onSuccess, initialData }: { onSuccess?: () => v
     }
   }, [selectedCalendarDate, handleSync, initialData, villageSettings])
 
-  const fileToBase64 = async (file: File): Promise<{name: string, type: string, base64: string} | null> => {
+  const fileToBase64 = async (file: File): Promise<{ name: string, type: string, base64: string } | null> => {
     if (!file || file.size === 0) return null;
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -177,15 +177,15 @@ export function KegiatanUpload({ onSuccess, initialData }: { onSuccess?: () => v
   const handleSelectAgenda = (agenda: AgendaItem) => {
     const cleanTitle = agenda.summary.replace(/^Kegiatan\s*:\s*/i, "");
     form.setValue("title", cleanTitle, { shouldDirty: true, shouldValidate: true })
-    
+
     if (agenda.start?.dateTime) {
       const startDate = new Date(agenda.start.dateTime);
       form.setValue("date", format(startDate, "yyyy-MM-dd"), { shouldDirty: true, shouldValidate: true })
       form.setValue("time", format(startDate, "HH:mm"), { shouldDirty: true, shouldValidate: true })
     }
-    
-    form.setValue("location", agenda.location || "Balai Desa Rungkang", { shouldDirty: true, shouldValidate: true })
-    
+
+    form.setValue("location", agenda.location || "Balai Desa Karanganyar", { shouldDirty: true, shouldValidate: true })
+
     // Otomatisasi tipe kegiatan berdasarkan agenda
     const desc = agenda.description || "";
     if (desc.includes("JENIS: Internal")) {
@@ -248,25 +248,25 @@ export function KegiatanUpload({ onSuccess, initialData }: { onSuccess?: () => v
 
   const handlePreviewCategoryDok = async (category: 'kegiatan' | 'atk' | 'konsumsi', urls: string[]) => {
     if (urls.length === 0) {
-        toast({ variant: "destructive", title: "Foto Belum Diupload", description: `Silakan upload foto ${category.toUpperCase()} ke Cloudinary terlebih dahulu.` });
-        return;
+      toast({ variant: "destructive", title: "Foto Belum Diupload", description: `Silakan upload foto ${category.toUpperCase()} ke Cloudinary terlebih dahulu.` });
+      return;
     }
     const values = form.getValues();
     if (!values.title) {
-        toast({ variant: "destructive", title: "Judul Kosong", description: "Isi nama kegiatan terlebih dahulu." });
-        return;
+      toast({ variant: "destructive", title: "Judul Kosong", description: "Isi nama kegiatan terlebih dahulu." });
+      return;
     }
     setIsGeneratingDok(category);
     try {
-        const title = category === 'kegiatan' ? "DOKUMENTASI KEGIATAN" : category === 'atk' ? "DOKUMENTASI ATK" : "DOKUMENTASI KONSUMSI";
-        const files = await getFilesFromUrls(urls);
-        const pdfBlob = await generateDokumentasiPDF(values, title, files, villageSettings?.logoBase64);
-        const url = URL.createObjectURL(pdfBlob);
-        window.open(url, "_blank");
+      const title = category === 'kegiatan' ? "DOKUMENTASI KEGIATAN" : category === 'atk' ? "DOKUMENTASI ATK" : "DOKUMENTASI KONSUMSI";
+      const files = await getFilesFromUrls(urls);
+      const pdfBlob = await generateDokumentasiPDF(values, title, files, villageSettings?.logoBase64);
+      const url = URL.createObjectURL(pdfBlob);
+      window.open(url, "_blank");
     } catch (e) {
-        toast({ variant: "destructive", title: "Gagal PDF", description: "Terjadi kesalahan sistem saat memproses gambar." });
+      toast({ variant: "destructive", title: "Gagal PDF", description: "Terjadi kesalahan sistem saat memproses gambar." });
     } finally {
-        setIsGeneratingDok(null);
+      setIsGeneratingDok(null);
     }
   }
 
@@ -276,12 +276,12 @@ export function KegiatanUpload({ onSuccess, initialData }: { onSuccess?: () => v
       toast({ variant: "destructive", title: "Judul Kosong", description: "Isi nama kegiatan agar AI bisa menyusun notulen." });
       return;
     }
-    
+
     setIsGeneratingAI(true);
     try {
       const response = await generateNotulen({
         title: values.title,
-        location: values.location || "Balai Desa Rungkang",
+        location: values.location || "Balai Desa Karanganyar",
         date: values.date || format(new Date(), "yyyy-MM-dd")
       });
 
@@ -298,7 +298,7 @@ export function KegiatanUpload({ onSuccess, initialData }: { onSuccess?: () => v
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!user) return;
-    
+
     if (cloudinaryUrls.kegiatan.length === 0) {
       toast({ variant: "destructive", title: "Foto Wajib", description: "Minimal upload 1 foto kegiatan ke Cloudinary." });
       return;
@@ -351,7 +351,7 @@ export function KegiatanUpload({ onSuccess, initialData }: { onSuccess?: () => v
         folderName: `${values.title} | ${values.date} ${initialData ? '(UPDATED)' : ''}`,
         parentFolderId: targetFolderId,
         files: {
-          photos: [], 
+          photos: [],
           materials: materialData.filter(Boolean),
           undangan: undanganData,
           notulen: { name: `Notulen_${values.title}.pdf`, type: 'application/pdf', base64: notulenBase64 },
@@ -418,17 +418,17 @@ export function KegiatanUpload({ onSuccess, initialData }: { onSuccess?: () => v
             <div className="flex items-end gap-2 p-4 border rounded-xl bg-card shadow-sm border-primary/20">
               <div className="flex-1">
                 <label className="text-[10px] font-bold uppercase text-muted-foreground mb-1 block">Pilih Tanggal Agenda</label>
-                <Input 
-                  type="date" 
+                <Input
+                  type="date"
                   value={selectedCalendarDate}
                   onChange={(e) => setSelectedCalendarDate(e.target.value)}
                   className="h-12 text-base font-bold w-full"
                 />
               </div>
-              <button 
-                type="button" 
-                onClick={() => handleSync(selectedCalendarDate)} 
-                disabled={isSyncing} 
+              <button
+                type="button"
+                onClick={() => handleSync(selectedCalendarDate)}
+                disabled={isSyncing}
                 className="h-12 w-12 flex items-center justify-center rounded-xl border border-primary/20 bg-white hover:bg-primary/5 transition-colors shrink-0"
               >
                 <RefreshCw className={cn("h-5 w-5 text-primary", isSyncing && "animate-spin")} />
@@ -447,7 +447,7 @@ export function KegiatanUpload({ onSuccess, initialData }: { onSuccess?: () => v
                     {agendas.map((agenda: AgendaItem) => {
                       const isInternal = agenda.description?.includes("JENIS: Internal");
                       const isExternal = agenda.description?.includes("JENIS: Eksternal");
-                      
+
                       return (
                         <button
                           key={agenda.id}
@@ -455,30 +455,30 @@ export function KegiatanUpload({ onSuccess, initialData }: { onSuccess?: () => v
                           onClick={() => handleSelectAgenda(agenda)}
                           className={cn(
                             "w-full text-left p-4 rounded-xl border transition-all flex items-start justify-between gap-3 group shadow-sm",
-                            isInternal ? "bg-emerald-50/30 border-emerald-100 hover:bg-emerald-50 hover:border-emerald-300" :
-                            isExternal ? "bg-sky-50/30 border-sky-100 hover:bg-sky-50 hover:border-sky-300" :
-                            "bg-white border-primary/10 hover:bg-primary/5 hover:border-primary/30"
+                            isInternal ? "bg-amber-50/40 border-amber-200 hover:bg-amber-50 hover:border-amber-300" :
+                              isExternal ? "bg-sky-50/30 border-sky-100 hover:bg-sky-50 hover:border-sky-300" :
+                                "bg-white border-primary/10 hover:bg-primary/5 hover:border-primary/30"
                           )}
                         >
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
-                                <span className={cn(
-                                    "text-[7px] font-black uppercase px-1.5 py-0.5 rounded border",
-                                    isInternal ? "bg-emerald-100 border-emerald-200 text-emerald-700" :
-                                    isExternal ? "bg-sky-100 border-sky-200 text-sky-700" :
+                              <span className={cn(
+                                "text-[7px] font-black uppercase px-1.5 py-0.5 rounded border",
+                                isInternal ? "bg-amber-100 border-amber-200 text-amber-800" :
+                                  isExternal ? "bg-sky-100 border-sky-200 text-sky-700" :
                                     "bg-slate-100 border-slate-200 text-slate-500"
-                                )}>
-                                    {isInternal ? 'INTERNAL' : isExternal ? 'EKSTERNAL' : 'UMUM'}
-                                </span>
+                              )}>
+                                {isInternal ? 'INTERNAL' : isExternal ? 'EKSTERNAL' : 'UMUM'}
+                              </span>
                             </div>
                             <p className="text-sm font-bold leading-snug group-hover:text-primary whitespace-normal break-words">
                               {agenda.summary}
                             </p>
                             <div className="flex items-center gap-2 mt-1">
-                                <Clock className="h-2.5 w-2.5 text-muted-foreground" />
-                                <p className="text-[9px] font-bold text-muted-foreground">
-                                    {agenda.start?.dateTime ? format(new Date(agenda.start.dateTime), "HH:mm") : '--:--'} WIB
-                                </p>
+                              <Clock className="h-2.5 w-2.5 text-muted-foreground" />
+                              <p className="text-[9px] font-bold text-muted-foreground">
+                                {agenda.start?.dateTime ? format(new Date(agenda.start.dateTime), "HH:mm") : '--:--'} WIB
+                              </p>
                             </div>
                             <p className="text-[10px] text-muted-foreground mt-0.5 whitespace-normal break-words font-medium">
                               {agenda.location || 'Lokasi belum diatur'}
@@ -566,28 +566,28 @@ export function KegiatanUpload({ onSuccess, initialData }: { onSuccess?: () => v
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <FormField control={form.control} name="date" render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xs font-bold uppercase">Tanggal</FormLabel>
-                      <FormControl><Input type="date" {...field} /></FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )} />
+                  <FormItem>
+                    <FormLabel className="text-xs font-bold uppercase">Tanggal</FormLabel>
+                    <FormControl><Input type="date" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
                 <FormField control={form.control} name="time" render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xs font-bold uppercase flex items-center gap-2">
-                        <Clock className="h-3 w-3" /> Jam
-                      </FormLabel>
-                      <FormControl><Input type="time" {...field} /></FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )} />
+                  <FormItem>
+                    <FormLabel className="text-xs font-bold uppercase flex items-center gap-2">
+                      <Clock className="h-3 w-3" /> Jam
+                    </FormLabel>
+                    <FormControl><Input type="time" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
                 <FormField control={form.control} name="location" render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xs font-bold uppercase">Lokasi</FormLabel>
-                      <FormControl><Input placeholder="Tempat..." {...field} /></FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )} />
+                  <FormItem>
+                    <FormLabel className="text-xs font-bold uppercase">Lokasi</FormLabel>
+                    <FormControl><Input placeholder="Tempat..." {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
               </div>
 
               <FormField
@@ -632,18 +632,18 @@ export function KegiatanUpload({ onSuccess, initialData }: { onSuccess?: () => v
 
                 <div className="space-y-8">
                   <div className="space-y-3">
-                    <ImageUploader 
-                      label={watchActivityType === "Internal" ? "1. Foto Utama Kegiatan" : "Foto Utama Kegiatan"} 
-                      onUploadComplete={(urls) => setCloudinaryUrls(prev => ({ ...prev, kegiatan: [...prev.kegiatan, ...urls] }))} 
+                    <ImageUploader
+                      label={watchActivityType === "Internal" ? "1. Foto Utama Kegiatan" : "Foto Utama Kegiatan"}
+                      onUploadComplete={(urls) => setCloudinaryUrls(prev => ({ ...prev, kegiatan: [...prev.kegiatan, ...urls] }))}
                     />
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      className="w-full h-10 text-[10px] font-black uppercase gap-2 border-primary/20 hover:bg-primary/5 rounded-xl shadow-sm" 
-                      onClick={() => handlePreviewCategoryDok('kegiatan', cloudinaryUrls.kegiatan)} 
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full h-10 text-[10px] font-black uppercase gap-2 border-primary/20 hover:bg-primary/5 rounded-xl shadow-sm"
+                      onClick={() => handlePreviewCategoryDok('kegiatan', cloudinaryUrls.kegiatan)}
                       disabled={cloudinaryUrls.kegiatan.length === 0 || !!isGeneratingDok}
                     >
-                      {isGeneratingDok === 'kegiatan' ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4 text-primary" />} 
+                      {isGeneratingDok === 'kegiatan' ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4 text-primary" />}
                       Buat Dokumen Kegiatan
                     </Button>
                   </div>
@@ -651,38 +651,38 @@ export function KegiatanUpload({ onSuccess, initialData }: { onSuccess?: () => v
                   {watchActivityType === "Internal" && (
                     <>
                       <div className="space-y-3">
-                        <ImageUploader 
-                          label="2. Foto ATK / Belanja" 
-                          onUploadComplete={(urls) => setCloudinaryUrls(prev => ({ ...prev, atk: [...prev.atk, ...urls] }))} 
+                        <ImageUploader
+                          label="2. Foto ATK / Belanja"
+                          onUploadComplete={(urls) => setCloudinaryUrls(prev => ({ ...prev, atk: [...prev.atk, ...urls] }))}
                         />
-                        <Button 
-                          type="button" 
-                          variant="outline" 
-                          className="w-full h-10 text-[10px] font-black uppercase gap-2 border-primary/20 hover:bg-primary/5 rounded-xl shadow-sm" 
-                          onClick={() => handlePreviewCategoryDok('atk', cloudinaryUrls.atk)} 
-                      disabled={cloudinaryUrls.atk.length === 0 || !!isGeneratingDok}
-                    >
-                      {isGeneratingDok === 'atk' ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4 text-primary" />} 
-                      Buat Dokumen ATK
-                    </Button>
-                  </div>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="w-full h-10 text-[10px] font-black uppercase gap-2 border-primary/20 hover:bg-primary/5 rounded-xl shadow-sm"
+                          onClick={() => handlePreviewCategoryDok('atk', cloudinaryUrls.atk)}
+                          disabled={cloudinaryUrls.atk.length === 0 || !!isGeneratingDok}
+                        >
+                          {isGeneratingDok === 'atk' ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4 text-primary" />}
+                          Buat Dokumen ATK
+                        </Button>
+                      </div>
 
-                  <div className="space-y-3">
-                    <ImageUploader 
-                      label="3. Foto Konsumsi / Makan" 
-                      onUploadComplete={(urls) => setCloudinaryUrls(prev => ({ ...prev, konsumsi: [...prev.konsumsi, ...urls] }))} 
-                    />
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      className="w-full h-10 text-[10px] font-black uppercase gap-2 border-primary/20 hover:bg-primary/5 rounded-xl shadow-sm" 
-                      onClick={() => handlePreviewCategoryDok('konsumsi', cloudinaryUrls.konsumsi)} 
-                      disabled={cloudinaryUrls.konsumsi.length === 0 || !!isGeneratingDok}
-                    >
-                      {isGeneratingDok === 'konsumsi' ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4 text-primary" />} 
-                      Buat Dokumen KONSUMSI
-                    </Button>
-                  </div>
+                      <div className="space-y-3">
+                        <ImageUploader
+                          label="3. Foto Konsumsi / Makan"
+                          onUploadComplete={(urls) => setCloudinaryUrls(prev => ({ ...prev, konsumsi: [...prev.konsumsi, ...urls] }))}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="w-full h-10 text-[10px] font-black uppercase gap-2 border-primary/20 hover:bg-primary/5 rounded-xl shadow-sm"
+                          onClick={() => handlePreviewCategoryDok('konsumsi', cloudinaryUrls.konsumsi)}
+                          disabled={cloudinaryUrls.konsumsi.length === 0 || !!isGeneratingDok}
+                        >
+                          {isGeneratingDok === 'konsumsi' ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4 text-primary" />}
+                          Buat Dokumen KONSUMSI
+                        </Button>
+                      </div>
                     </>
                   )}
                 </div>

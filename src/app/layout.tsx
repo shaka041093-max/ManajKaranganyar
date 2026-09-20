@@ -11,10 +11,11 @@ import { Settings, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import { VectorBackground } from '@/components/layout/VectorBackground';
 import { useUser } from '@/firebase';
 
 /**
- * Guard Komponen untuk memastikan hanya admin rungkang@gmail.id 
+ * Guard Komponen untuk memastikan hanya admin karanganyar@gmail.id 
  * yang bisa mengakses fitur manajemen desa.
  */
 function ManagementGuard({ children }: { children: React.ReactNode }) {
@@ -24,9 +25,13 @@ function ManagementGuard({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!isUserLoading) {
-      // Hanya izinkan email manajemen pusat
-      const isAllowed = user?.email?.toLowerCase() === "rungkang@gmail.id";
-      
+      // Izinkan email manajemen pusat dan admin terkonfigurasi
+      const configuredAdmin = (process.env.NEXT_PUBLIC_ADMIN_EMAIL || "").toLowerCase();
+      const userEmail = (user?.email || "").toLowerCase();
+      const isAllowed = userEmail === "karanganyar@gmail.id" || 
+        userEmail === "admin@karanganyar.id" || 
+        (configuredAdmin && userEmail === configuredAdmin);
+
       if (!user || !isAllowed) {
         router.replace('/login/');
       } else {
@@ -37,9 +42,9 @@ function ManagementGuard({ children }: { children: React.ReactNode }) {
 
   if (isUserLoading || !authorized) {
     return (
-      <div className="h-screen w-full flex flex-col items-center justify-center bg-slate-50">
-        <Loader2 className="h-10 w-10 animate-spin text-primary/30 mb-4" />
-        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Memverifikasi Otoritas Manajemen...</p>
+      <div className="h-screen w-full flex flex-col items-center justify-center bg-background">
+        <Loader2 className="h-10 w-10 animate-spin text-primary/40 mb-4" />
+        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Memverifikasi Otoritas Manajemen...</p>
       </div>
     );
   }
@@ -69,20 +74,20 @@ export default function RootLayout({
   return (
     <html lang="id">
       <head>
-        <title>Manajemen Desa Rungkang</title>
-        <meta name="description" content="Sistem Manajemen & Pelayanan Desa Rungkang, Kec. Gandrungmangu, Kab. Cilacap" />
+        <title>Manajemen Desa Karanganyar</title>
+        <meta name="description" content="Sistem Manajemen & Pelayanan Desa Karanganyar, Kec. Gandrungmangu, Kab. Cilacap" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover" />
 
         {/* ── PWA / Android APK ────────────────────────────────── */}
         <link rel="manifest" href="/site.webmanifest" />
-        <meta name="theme-color" content="#0f5132" />
+        <meta name="theme-color" content="#166534" />
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="application-name" content="Rungkang" />
+        <meta name="application-name" content="Karanganyar" />
 
         {/* ── iOS PWA (Add to Home Screen) ─────────────────────── */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="Rungkang" />
+        <meta name="apple-mobile-web-app-title" content="Karanganyar" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
         {/* ── Favicon ──────────────────────────────────────────── */}
@@ -96,7 +101,8 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
         {/* ── Service Worker Registration ───────────────────────── */}
-        <script dangerouslySetInnerHTML={{ __html: `
+        <script dangerouslySetInnerHTML={{
+          __html: `
           if ('serviceWorker' in navigator) {
             if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
               navigator.serviceWorker.getRegistrations().then(function(registrations) {
@@ -119,20 +125,21 @@ export default function RootLayout({
           </div>
         ) : (
           <FirebaseClientProvider>
+            <VectorBackground />
             {isPublicPage ? (
-              <main className="w-full min-h-screen">
+              <main className="w-full min-h-screen relative z-10">
                 {children}
                 <Toaster />
               </main>
             ) : (
               <ManagementGuard>
                 <SidebarProvider>
-                  <div className="flex min-h-screen w-full overflow-hidden">
+                  <div className="flex min-h-screen w-full overflow-hidden relative z-10">
                     <AppSidebar />
-                    <SidebarInset className="flex-1 flex flex-col min-w-0">
-                      <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4 md:hidden">
+                    <SidebarInset className="flex-1 flex flex-col min-w-0 bg-transparent">
+                      <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-2 border-b border-border/60 bg-background/80 backdrop-blur-md px-4 md:hidden">
                         <SidebarTrigger className="h-10 w-10" />
-                        <div className="flex-1 text-center font-black text-primary uppercase tracking-tighter">Rungkang</div>
+                        <div className="flex-1 text-center font-black text-primary uppercase tracking-tighter">Karanganyar</div>
                         <Button variant="ghost" size="icon" asChild className="rounded-full h-10 w-10">
                           <Link href="/settings/">
                             <Settings className="h-5 w-5 text-muted-foreground" />

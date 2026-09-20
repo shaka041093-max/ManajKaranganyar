@@ -26,12 +26,12 @@ export default function MigrateDataPage() {
       // 1. Migrate Officials to 'personnel'
       OFFICIALS.forEach((item) => {
         const ref = doc(collection(db, "personnel"))
-        batch.set(ref, { 
-          ...item, 
+        batch.set(ref, {
+          ...item,
           name: item.name.toUpperCase(),
           jabatan: item.jabatan.toUpperCase(),
-          active: true, 
-          createdAt: new Date().toISOString() 
+          active: true,
+          createdAt: new Date().toISOString()
         })
       })
 
@@ -72,14 +72,14 @@ export default function MigrateDataPage() {
           <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl flex items-start gap-3">
             <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
             <p className="text-xs text-amber-800 leading-relaxed font-bold uppercase">
-              Klik tombol di bawah untuk memindahkan data master dari file statis ke database Firestore. 
-              Gunakan akun Admin (adminrungkang) untuk menjalankan proses ini.
+              Klik tombol di bawah untuk memindahkan data master dari file statis ke database Firestore.
+              Gunakan akun Admin (adminkaranganyar) untuk menjalankan proses ini.
             </p>
           </div>
-          
-          <Button 
-            onClick={runMigration} 
-            disabled={isProcessing} 
+
+          <Button
+            onClick={runMigration}
+            disabled={isProcessing}
             className="w-full h-14 rounded-2xl font-black uppercase text-lg shadow-xl shadow-primary/20"
           >
             {isProcessing ? <Loader2 className="animate-spin mr-2" /> : "Mulai Migrasi Sekarang"}

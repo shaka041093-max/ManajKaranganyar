@@ -335,7 +335,7 @@ export default function PbbMonitoringPage() {
         <TabsContent value="dashboard" className="space-y-6">
           {/* Section 1: Main Realization Indicator Card */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="border-none shadow-xl rounded-[2rem] bg-gradient-to-br from-primary via-primary/90 to-emerald-700 text-white p-8 overflow-hidden relative">
+            <Card className="border-none shadow-xl rounded-[2rem] bg-gradient-to-br from-blue-950 via-blue-900 to-indigo-950 text-white p-8 overflow-hidden relative">
               <div className="text-xs font-black uppercase tracking-widest opacity-80">
                 Persentase Realisasi PBB Desa TA {selectedYear}
               </div>
@@ -350,7 +350,7 @@ export default function PbbMonitoringPage() {
                 </div>
                 <div className="text-right">
                   <p className="opacity-70 text-[9px] uppercase">Terealisasi</p>
-                  <p className="text-emerald-300">{formatIDR(stats.totalRealisasi)}</p>
+                  <p className="text-amber-300">{formatIDR(stats.totalRealisasi)}</p>
                 </div>
               </div>
             </Card>

@@ -300,7 +300,7 @@ export function KematianForm({ isAdmin = false }: { isAdmin?: boolean }) {
           form.setValue(jobField as any, resident.occupation);
 
           const addressField = prefix === '' ? 'address' : `${prefix}Address`;
-          const fullAddress = `${resident.address}, RT ${resident.rt} RW ${resident.rw}, ${resident.kelurahan}Kec. Gandrungmangu, Kab. Cilacap`.toUpperCase();
+          const fullAddress = `${resident.address}, RT ${resident.rt} RW ${resident.rw}, ${resident.kelurahan}, kec. Gandrungmangu, Kab. Cilacap`.toUpperCase();
           form.setValue(addressField as any, fullAddress);
 
           toast({ title: `Data Ditemukan`, description: `Data identitas telah diisi otomatis.` });

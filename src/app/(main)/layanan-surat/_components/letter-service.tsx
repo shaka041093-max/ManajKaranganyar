@@ -95,8 +95,8 @@ export function LetterService({ isAdmin = false }: LetterServiceProps) {
       {!selectedLetter ? (
         <div className="space-y-6">
            <div className="text-center space-y-1.5 my-4">
-              <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tight italic font-serif">
-                Pilih <span className="text-[#0f5132] not-italic">Layanan Surat</span>
+               <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tight italic font-serif">
+                Pilih <span className="text-primary not-italic">Layanan Surat</span>
               </h2>
               <p className="text-xs text-slate-500 font-medium max-w-md mx-auto">
                 Silakan pilih salah satu kartu di bawah ini untuk mulai pengisian formulir pengajuan surat resmi Anda.
@@ -107,7 +107,7 @@ export function LetterService({ isAdmin = false }: LetterServiceProps) {
               {letterOptions.map((opt) => (
                 <Card 
                   key={opt.type} 
-                  className="cursor-pointer group relative hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-slate-200/80 bg-white overflow-hidden rounded-xl md:rounded-2xl flex flex-col hover:border-[#0f5132]/30 shadow-xs"
+                  className="cursor-pointer group relative hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-slate-200/80 bg-white overflow-hidden rounded-xl md:rounded-2xl flex flex-col hover:border-primary/30 shadow-xs"
                   onClick={() => {
                     setSelectedLetter(opt.type);
                     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -118,7 +118,7 @@ export function LetterService({ isAdmin = false }: LetterServiceProps) {
                       <opt.icon className="h-5 w-5 md:h-7 md:w-7" />
                     </div>
                     <div className="space-y-1 md:space-y-2 flex-1">
-                      <h3 className="text-xs md:text-sm font-extrabold text-slate-900 uppercase tracking-tight leading-snug line-clamp-2 group-hover:text-[#0f5132] transition-colors">
+                      <h3 className="text-xs md:text-sm font-extrabold text-slate-900 uppercase tracking-tight leading-snug line-clamp-2 group-hover:text-primary transition-colors">
                         {opt.type}
                       </h3>
                       <p className="text-[9px] md:text-[10px] text-slate-400 font-bold uppercase tracking-wider leading-relaxed line-clamp-2 hidden sm:block">
@@ -126,8 +126,8 @@ export function LetterService({ isAdmin = false }: LetterServiceProps) {
                       </p>
                     </div>
                     <div className="mt-3 md:mt-5 pt-2.5 md:pt-4 border-t border-slate-100 w-full flex items-center justify-center gap-1.5">
-                       <span className="text-[8px] md:text-[9px] font-black text-[#0f5132] uppercase tracking-wider">BUKA FORMULIR</span>
-                       <div className="w-5 h-5 md:w-7 md:h-7 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-[#0f5132] group-hover:text-white transition-all shrink-0">
+                       <span className="text-[8px] md:text-[9px] font-black text-primary uppercase tracking-wider">BUKA FORMULIR</span>
+                       <div className="w-5 h-5 md:w-7 md:h-7 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all shrink-0">
                           <ArrowLeft className="h-3 w-3 md:h-3.5 md:w-3.5 rotate-180" />
                        </div>
                     </div>
@@ -139,7 +139,7 @@ export function LetterService({ isAdmin = false }: LetterServiceProps) {
         </div>
       ) : (
         <Card className="rounded-2xl border border-slate-200/90 shadow-lg overflow-hidden animate-in fade-in zoom-in-95 duration-500">
-          <CardHeader className="bg-[#0f5132] p-6 md:p-8 text-white relative">
+          <CardHeader className="bg-gradient-to-br from-blue-950 via-blue-900 to-indigo-950 p-6 md:p-8 text-white relative">
             <div className="absolute top-0 right-0 p-6 opacity-10">
                <FileText className="w-32 h-32" />
             </div>

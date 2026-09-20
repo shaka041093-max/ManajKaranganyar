@@ -109,7 +109,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         <SidebarFooter className="p-8">
           <div className="bg-white/5 rounded-3xl p-5 border border-white/10 space-y-4">
             <p className="text-[9px] text-white/40 font-black text-center uppercase tracking-widest leading-relaxed">
-              Pelayanan Mandiri Digital Rungkang
+              Pelayanan Mandiri Digital Karanganyar
             </p>
             {user ? (
               <Button

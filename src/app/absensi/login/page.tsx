@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation"
 import { useAuth, useUser, useFirestore } from "@/firebase"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { LogIn, Loader2, KeyRound, User, ArrowLeft, UserCheck } from "lucide-react"
+import { LogIn, Loader2, KeyRound, User, ArrowLeft, UserCheck, Eye, EyeOff } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -30,6 +30,7 @@ export default function AbsensiLoginPage() {
   const router = useRouter()
   const { toast } = useToast()
   const [isProcessing, setIsProcessing] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -52,7 +53,7 @@ export default function AbsensiLoginPage() {
     setIsProcessing(true)
     try {
       const cleanUsername = values.username.trim().toLowerCase()
-      let targetEmail = `${cleanUsername}@rungkang.id`
+      let targetEmail = `${cleanUsername}@karanganyar.id`
       let userDocId = null
       let displayName = cleanUsername
 
@@ -86,24 +87,24 @@ export default function AbsensiLoginPage() {
       // 3. AUTO-SYNC UID (NON-BLOCKING): 
       // Kita coba update database di background.
       if (userDocId) {
-        setDocumentNonBlocking(doc(db, "personel", userDocId), { 
+        setDocumentNonBlocking(doc(db, "personel", userDocId), {
           uid: currentUser.uid,
           email: targetEmail,
           last_login: new Date().toISOString()
         }, { merge: true })
       }
 
-      toast({ 
-        title: "Berhasil Masuk", 
-        description: `Selamat datang kembali, ${displayName}` 
+      toast({
+        title: "Berhasil Masuk",
+        description: `Selamat datang kembali, ${displayName}`
       })
-      
+
       router.push("/absensi/dashboard/")
-      
+
     } catch (error: any) {
       console.error("Login Error:", error);
       let msg = "Gagal masuk. Periksa kembali username dan password Anda."
-      
+
       if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
         msg = "Username atau password salah. Pastikan sudah sesuai dengan data di Manajemen Akun."
       } else if (error.message?.includes("Missing or insufficient permissions")) {
@@ -111,7 +112,7 @@ export default function AbsensiLoginPage() {
       } else {
         msg = error.message || msg
       }
-      
+
       toast({ variant: "destructive", title: "Gagal Masuk", description: msg })
     } finally {
       setIsProcessing(false)
@@ -132,8 +133,11 @@ export default function AbsensiLoginPage() {
     <div className="flex min-h-screen items-center justify-center p-4 bg-slate-50">
       <Card className="w-full max-w-md shadow-2xl border-none rounded-[2.5rem] overflow-hidden bg-white">
         <CardHeader className="text-center space-y-4 pb-4 pt-12 relative">
-          <Button variant="ghost" size="icon" asChild className="absolute left-6 top-6 rounded-full">
-            <Link href="/"><ArrowLeft className="h-5 w-5" /></Link>
+          <Button variant="ghost" size="icon" asChild className="absolute left-6 top-6 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors">
+            <Link href="/" title="Kembali ke Halaman Awal">
+              <ArrowLeft className="h-5 w-5" />
+              <span className="sr-only">Kembali ke Halaman Awal</span>
+            </Link>
           </Button>
           <div className="mx-auto h-20 w-20 rounded-[2rem] bg-primary flex items-center justify-center shadow-2xl shadow-primary/30">
             <UserCheck className="text-primary-foreground h-10 w-10" />
@@ -152,10 +156,10 @@ export default function AbsensiLoginPage() {
                   <FormControl>
                     <div className="relative">
                       <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input 
-                        placeholder="Contoh: fitri (huruf kecil semua)" 
-                        {...field} 
-                        className="h-12 rounded-xl pl-10 text-sm border-primary/10 bg-muted/30" 
+                      <Input
+                        placeholder="Contoh: fitri (huruf kecil semua)"
+                        {...field}
+                        className="h-12 rounded-xl pl-10 text-sm border-primary/10 bg-muted/30"
                         autoComplete="off"
                       />
                     </div>
@@ -169,13 +173,22 @@ export default function AbsensiLoginPage() {
                   <FormControl>
                     <div className="relative">
                       <KeyRound className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input 
-                        type="password" 
-                        placeholder="******" 
-                        {...field} 
-                        className="h-12 rounded-xl pl-10 text-sm border-primary/10 bg-muted/30" 
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="******"
+                        {...field}
+                        className="h-12 rounded-xl pl-10 pr-11 text-sm border-primary/10 bg-muted/30"
                         autoComplete="new-password"
                       />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary focus:outline-none p-1 transition-colors"
+                        tabIndex={-1}
+                        aria-label={showPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"}
+                      >
+                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
                     </div>
                   </FormControl>
                   <FormMessage />

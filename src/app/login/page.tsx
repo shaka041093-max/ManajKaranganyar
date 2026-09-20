@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { useAuth, useUser, useFirestore } from "@/firebase"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Home, LogIn, Loader2, KeyRound, Mail, AlertCircle, ArrowLeft } from "lucide-react"
+import { Home, LogIn, Loader2, KeyRound, Mail, AlertCircle, ArrowLeft, Eye, EyeOff } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -23,7 +23,7 @@ const loginSchema = z.object({
 
 /**
  * Halaman Login Utama Manajemen Desa
- * KHUSUS AKUN PUSAT: rungkang@gmail.id
+ * KHUSUS AKUN PUSAT: karanganyar@gmail.id
  */
 export default function LoginPage() {
   const { user, isUserLoading } = useUser()
@@ -32,10 +32,11 @@ export default function LoginPage() {
   const router = useRouter()
   const { toast } = useToast()
   const [isProcessing, setIsProcessing] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
   useEffect(() => {
     // Redirect jika sudah login sebagai admin pusat
-    if (user && !isUserLoading && user.email?.toLowerCase() === "rungkang@gmail.id") {
+    if (user && !isUserLoading && user.email?.toLowerCase() === "karanganyar@gmail.id") {
       router.push("/dashboard/");
     }
   }, [user, isUserLoading, router])
@@ -52,8 +53,8 @@ export default function LoginPage() {
     if (!db || !auth) return
     setIsProcessing(true)
     try {
-      const allowedEmail = "rungkang@gmail.id";
-      const allowedPass = "rungkang123";
+      const allowedEmail = "karanganyar@gmail.id";
+      const allowedPass = "karanganyar123";
 
       // 1. Hard Check Kredensial Manajemen
       if (values.email.toLowerCase() !== allowedEmail || values.password !== allowedPass) {
@@ -66,20 +67,20 @@ export default function LoginPage() {
       } catch (authErr: any) {
         // Jika akun belum terdaftar di Firebase Auth (Initial Run), daftarkan otomatis
         if (authErr.code === 'auth/user-not-found' || authErr.code === 'auth/invalid-credential' || authErr.code === 'auth/wrong-password') {
-           // Jika ini adalah percobaan login pertama dengan rungkang@gmail.id, buatkan akunnya
-           if (values.email.toLowerCase() === allowedEmail && values.password === allowedPass) {
-              const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password)
-              // Daftarkan di Firestore agar role admin terbaca global
-              await setDoc(doc(db, "users", userCredential.user.uid), {
-                id: userCredential.user.uid,
-                email: values.email.toLowerCase(),
-                name: "ADMINISTRATOR PUSAT",
-                role: "admin",
-                createdAt: new Date().toISOString()
-              }, { merge: true })
-           } else {
-             throw new Error("Email atau kata sandi manajemen salah.");
-           }
+          // Jika ini adalah percobaan login pertama dengan karanganyar@gmail.id, buatkan akunnya
+          if (values.email.toLowerCase() === allowedEmail && values.password === allowedPass) {
+            const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password)
+            // Daftarkan di Firestore agar role admin terbaca global
+            await setDoc(doc(db, "users", userCredential.user.uid), {
+              id: userCredential.user.uid,
+              email: values.email.toLowerCase(),
+              name: "ADMINISTRATOR PUSAT",
+              role: "admin",
+              createdAt: new Date().toISOString()
+            }, { merge: true })
+          } else {
+            throw new Error("Email atau kata sandi manajemen salah.");
+          }
         } else {
           throw authErr
         }
@@ -114,8 +115,11 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center p-4 bg-primary/5">
       <Card className="w-full max-w-md shadow-2xl border-none rounded-[2.5rem] overflow-hidden bg-card">
         <CardHeader className="text-center space-y-4 pb-4 pt-12 relative">
-          <Button variant="ghost" size="icon" asChild className="absolute left-6 top-6 rounded-full">
-            <Link href="/"><ArrowLeft className="h-5 w-5" /></Link>
+          <Button variant="ghost" size="icon" asChild className="absolute left-6 top-6 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors">
+            <Link href="/" title="Kembali ke Halaman Awal">
+              <ArrowLeft className="h-5 w-5" />
+              <span className="sr-only">Kembali ke Halaman Awal</span>
+            </Link>
           </Button>
           <div className="mx-auto h-20 w-20 rounded-[2rem] bg-primary flex items-center justify-center shadow-2xl shadow-primary/30">
             <Home className="text-primary-foreground h-10 w-10" />
@@ -137,10 +141,10 @@ export default function LoginPage() {
                     <FormControl>
                       <div className="relative">
                         <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input 
-                          placeholder="rungkang@gmail.id" 
-                          {...field} 
-                          className="h-12 rounded-xl pl-10 text-sm border-primary/10 bg-muted/30" 
+                        <Input
+                          placeholder="karanganyar@gmail.id"
+                          {...field}
+                          className="h-12 rounded-xl pl-10 text-sm border-primary/10 bg-muted/30"
                           autoComplete="off"
                         />
                       </div>
@@ -156,24 +160,33 @@ export default function LoginPage() {
                   <FormItem>
                     <FormLabel className="text-xs font-bold uppercase text-muted-foreground">Kata Sandi</FormLabel>
                     <FormControl>
-                       <div className="relative">
+                      <div className="relative">
                         <KeyRound className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input 
-                          type="password" 
-                          placeholder="******" 
-                          {...field} 
-                          className="h-12 rounded-xl pl-10 text-sm border-primary/10 bg-muted/30" 
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="******"
+                          {...field}
+                          className="h-12 rounded-xl pl-10 pr-11 text-sm border-primary/10 bg-muted/30"
                           autoComplete="new-password"
                         />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary focus:outline-none p-1 transition-colors"
+                          tabIndex={-1}
+                          aria-label={showPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"}
+                        >
+                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
                       </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <Button 
+              <Button
                 type="submit"
-                className="w-full h-14 text-base font-black uppercase gap-4 shadow-lg active:scale-95 transition-all rounded-2xl bg-primary hover:bg-primary/90 mt-4" 
+                className="w-full h-14 text-base font-black uppercase gap-4 shadow-lg active:scale-95 transition-all rounded-2xl bg-primary hover:bg-primary/90 mt-4"
                 disabled={isProcessing}
               >
                 {isProcessing ? (
@@ -191,7 +204,7 @@ export default function LoginPage() {
           <div className="p-4 bg-amber-50 rounded-xl flex items-start gap-3 border border-dashed border-amber-200">
             <AlertCircle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
             <p className="text-[10px] text-amber-700 leading-relaxed font-bold uppercase">
-              Halaman ini dikunci untuk Administrator Pusat Desa Rungkang. Perangkat desa silakan gunakan Portal Absensi.
+              Halaman ini dikunci untuk Administrator Pusat Desa Karanganyar. Perangkat desa silakan gunakan Portal Absensi.
             </p>
           </div>
         </CardContent>

@@ -15,7 +15,7 @@ export const generateNaskahPDF = async (type: string, data: any, logoBase64?: st
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
   const contentWidth = pageWidth - (margin * 2);
-  
+
   const logoSource = (logoBase64 && logoBase64.length > 50) ? logoBase64 : LOGO_CILACAP_FALLBACK;
   const logoImg = await loadImage(logoSource);
 
@@ -23,22 +23,22 @@ export const generateNaskahPDF = async (type: string, data: any, logoBase64?: st
 
   let currentY = 52; // Slightly higher starting point
   const lineH = 5.5;
-  const paragraphGap = 2; 
-  const sectionGap = 4; 
-  const lineHeightFactor = 1.15; 
+  const paragraphGap = 2;
+  const sectionGap = 4;
+  const lineHeightFactor = 1.15;
 
   // Helper to render justified text blocks with auto-wrap and page break detection
   const renderTextBlock = (text: string, isBold: boolean = false, customLineHeight: number = lineHeightFactor) => {
     if (!text) return;
     doc.setFont("helvetica", isBold ? "bold" : "normal");
     const paragraphs = text.split('\n').filter(p => p.trim() !== '');
-    
+
     paragraphs.forEach((p) => {
       const lines = doc.splitTextToSize(p, contentWidth);
       const textDim = doc.getTextDimensions(lines, { maxWidth: contentWidth });
       const blockHeight = textDim.h * customLineHeight;
 
-      if (currentY + blockHeight > pageHeight - 15) { 
+      if (currentY + blockHeight > pageHeight - 15) {
         doc.addPage();
         addKopSuratSync(doc, logoImg, margin, pageWidth);
         currentY = 52;
@@ -53,7 +53,7 @@ export const generateNaskahPDF = async (type: string, data: any, logoBase64?: st
     // === SURAT UNDANGAN ===
     doc.setFont("helvetica", "normal");
     doc.setFontSize(11);
-    
+
     doc.text("Nomor", margin, currentY);
     doc.text(":", margin + 25, currentY);
     doc.text(data.nomorSurat || "..... / No / 04 / 2026", margin + 28, currentY);
@@ -61,8 +61,8 @@ export const generateNaskahPDF = async (type: string, data: any, logoBase64?: st
     // Tanggal Surat H-1 dari hari pelaksanaan (Align Right, same line as Nomor)
     const letterDate = data.tanggal ? subDays(new Date(data.tanggal), 1) : new Date();
     doc.setFont("helvetica", "normal");
-    doc.text(`Rungkang, ${format(letterDate, "d MMMM yyyy", { locale: localeID })}`, pageWidth - margin, currentY, { align: "right" });
-    
+    doc.text(`Karanganyar, ${format(letterDate, "d MMMM yyyy", { locale: localeID })}`, pageWidth - margin, currentY, { align: "right" });
+
     currentY += lineH;
 
     doc.text("Sifat", margin, currentY);
@@ -87,7 +87,7 @@ export const generateNaskahPDF = async (type: string, data: any, logoBase64?: st
     const tujuanLines = doc.splitTextToSize((data.tujuan || "Bapak/Ibu/Sdr/i").toUpperCase(), contentWidth / 2);
     doc.text(tujuanLines, margin, currentY);
     currentY += (tujuanLines.length * 5) + 2;
-    
+
     doc.setFont("helvetica", "normal");
     doc.text("di -", margin, currentY);
     currentY += lineH;
@@ -96,15 +96,15 @@ export const generateNaskahPDF = async (type: string, data: any, logoBase64?: st
     currentY += 10;
     const isiUndangan = "Dengan ini kami minta bantuan Bapak/Ibu/Saudara untuk hadir besok pada :";
     doc.text(isiUndangan, margin, currentY, { lineHeightFactor: 1.15 });
-    
+
     currentY += 8;
-    
+
     const formattedTime = data.waktu ? `${data.waktu} WIB s.d Selesai` : "-";
 
     const details = [
       { l: "Hari / Tanggal", v: data.tanggal ? format(new Date(data.tanggal), "EEEE, d MMMM yyyy", { locale: localeID }) : "-" },
       { l: "Waktu", v: formattedTime },
-      { l: "Tempat", v: data.tempat || "Balai Desa Rungkang" },
+      { l: "Tempat", v: data.tempat || "Balai Desa Karanganyar" },
       { l: "Acara", v: data.agenda || "-" },
     ];
 
@@ -131,7 +131,7 @@ export const generateNaskahPDF = async (type: string, data: any, logoBase64?: st
     // === SURAT KEPUTUSAN ===
     doc.setFont("helvetica", "bold");
     doc.setFontSize(11);
-    doc.text("KEPUTUSAN KEPALA DESA RUNGKANG", pageWidth / 2, currentY, { align: "center" });
+    doc.text("KEPUTUSAN KEPALA DESA KARANGANYAR", pageWidth / 2, currentY, { align: "center" });
     currentY += lineH;
     doc.text(`NOMOR : ${data.nomorSurat || "..... / No / 04 / 2026"}`, pageWidth / 2, currentY, { align: "center" });
     currentY += 8;
@@ -141,7 +141,7 @@ export const generateNaskahPDF = async (type: string, data: any, logoBase64?: st
     doc.text(tentangLines, pageWidth / 2, currentY, { align: "center" });
     currentY += (tentangLines.length * 5) + 8;
 
-    doc.text("KEPALA DESA RUNGKANG,", pageWidth / 2, currentY, { align: "center" });
+    doc.text("KEPALA DESA KARANGANYAR,", pageWidth / 2, currentY, { align: "center" });
     currentY += 10;
 
     const addSection = (label: string, items: string[]) => {
@@ -149,7 +149,7 @@ export const generateNaskahPDF = async (type: string, data: any, logoBase64?: st
       doc.text(label, margin, currentY);
       doc.setFont("helvetica", "normal");
       doc.text(":", margin + 30, currentY);
-      
+
       let itemY = currentY;
       items.forEach((item, idx) => {
         const bullet = items.length > 1 ? `${String.fromCharCode(97 + idx)}. ` : "";
@@ -162,7 +162,7 @@ export const generateNaskahPDF = async (type: string, data: any, logoBase64?: st
 
     addSection("Menimbang", data.menimbang || []);
     addSection("Mengingat", data.mengingat || []);
-    
+
     currentY += 4;
     doc.setFont("helvetica", "bold");
     doc.text("MEMUTUSKAN :", pageWidth / 2, currentY, { align: "center" });
@@ -185,26 +185,26 @@ export const generateNaskahPDF = async (type: string, data: any, logoBase64?: st
     doc.setFontSize(12);
     doc.text("BERITA ACARA", pageWidth / 2, currentY, { align: "center" });
     currentY += 5;
-    
+
     const baTitleLines = doc.splitTextToSize((data.title || "PELAKSANAAN KEGIATAN").toUpperCase(), contentWidth - 30);
     doc.text(baTitleLines, pageWidth / 2, currentY, { align: "center" });
     currentY += (baTitleLines.length * 5) + 3;
-    
+
     doc.setFontSize(10);
     doc.text(`Nomor : ${data.nomorSurat || "..... / No / 04 / 2026"}`, pageWidth / 2, currentY, { align: "center" });
-    
+
     currentY += 10;
     doc.setFont("helvetica", "normal");
     doc.setFontSize(11);
-    
+
     const d = data.tanggal ? new Date(data.tanggal) : new Date();
     const dayName = format(d, "EEEE", { locale: localeID });
     const dateNum = d.getDate();
     const monthName = format(d, "MMMM", { locale: localeID });
     const yearNum = d.getFullYear();
 
-    const opening = `Pada hari ini ${dayName} tanggal ${terbilang(dateNum)} bulan ${monthName} tahun ${terbilang(yearNum)}, bertempat di ${data.tempat || "Balai Desa Rungkang"}, telah dilaksanakan ${data.title || "kegiatan"}.`;
-    
+    const opening = `Pada hari ini ${dayName} tanggal ${terbilang(dateNum)} bulan ${monthName} tahun ${terbilang(yearNum)}, bertempat di ${data.tempat || "Balai Desa Karanganyar"}, telah dilaksanakan ${data.title || "kegiatan"}.`;
+
     renderTextBlock(opening, false, 1.15);
     currentY += 1;
 
@@ -226,12 +226,12 @@ export const generateNaskahPDF = async (type: string, data: any, logoBase64?: st
     const closing = "Demikian berita acara ini dibuat dengan sebenar-benarnya untuk dapat dipergunakan sebagaimana mestinya.";
     const closingLines = doc.splitTextToSize(closing, contentWidth);
     const closingHeight = (closingLines.length * 5 * 1.15);
-    const signatureSpaceNeeded = 35; 
+    const signatureSpaceNeeded = 35;
 
     if (currentY + closingHeight + signatureSpaceNeeded > pageHeight - 15) {
-        doc.addPage();
-        addKopSuratSync(doc, logoImg, margin, pageWidth);
-        currentY = 52;
+      doc.addPage();
+      addKopSuratSync(doc, logoImg, margin, pageWidth);
+      currentY = 52;
     }
 
     doc.setFont("helvetica", "normal");
@@ -246,7 +246,7 @@ export const generateNaskahPDF = async (type: string, data: any, logoBase64?: st
     currentY += 5;
     doc.setFontSize(11);
     doc.text(`Nomor : ${data.nomorSurat || "..... / No / 04 / 2026"}`, pageWidth / 2, currentY, { align: "center" });
-    
+
     currentY += 10;
     doc.setFont("helvetica", "normal");
     doc.text("Dasar :", margin, currentY);
@@ -261,7 +261,7 @@ export const generateNaskahPDF = async (type: string, data: any, logoBase64?: st
 
     doc.text("Kepada :", margin, currentY);
     currentY += 6;
-    
+
     (data.petugas || []).forEach((p: any, idx: number) => {
       doc.setFont("helvetica", "normal");
       doc.text(`${idx + 1}. Nama`, margin + 10, currentY);
@@ -297,19 +297,19 @@ export const generateNaskahPDF = async (type: string, data: any, logoBase64?: st
   const sigX = pageWidth - margin - 60;
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10.5);
-  
+
   const dFooter = data.tanggal ? new Date(data.tanggal) : new Date();
   const footerDateStr = format(dFooter, "d MMMM yyyy", { locale: localeID });
 
   if (type !== 'UND') {
-    doc.text(`Rungkang, ${footerDateStr}`, sigX, currentY);
+    doc.text(`Karanganyar, ${footerDateStr}`, sigX, currentY);
     currentY += 5;
   }
   doc.setFont("helvetica", "bold");
-  doc.text("Kepala Desa Rungkang,", sigX, currentY);
-  currentY += 18; 
-  doc.text("SUSANTO", sigX, currentY);
-  const nW = doc.getTextWidth("SUSANTO");
+  doc.text("Kepala Desa Karanganyar,", sigX, currentY);
+  currentY += 18;
+  doc.text("RISKIANASARI, SE.", sigX, currentY);
+  const nW = doc.getTextWidth("RISKIANASARI, SE.");
   doc.line(sigX, currentY + 0.8, sigX + nW, currentY + 0.8);
 
   return doc.output("blob");

@@ -54,7 +54,7 @@ const formatDateIndo = (dateStr: string) => {
 /**
  * GENERATE NOTA PESANAN & FAKTUR PENGIRIMAN BARANG
  * Sesuai format fisik:
- * - Halaman 1: NOTA PESANAN (Kop Surat Pemdes Rungkang, Kepada Toko, Tabel Rincian, TTD Yang Menerima & Yang Memesan)
+ * - Halaman 1: NOTA PESANAN (Kop Surat Pemdes Karanganyar, Kepada Toko, Tabel Rincian, TTD Yang Menerima & Yang Memesan)
  * - Halaman 2: FAKTUR PENGIRIMAN BARANG (Dasar Pesanan, Kepada Kepala Desa, Tabel Rincian, TTD Yang Menerima & Yang Mengirim)
  */
 export const generateNotaDanFakturPDF = async (
@@ -141,13 +141,13 @@ export const generateNotaDanFakturPDF = async (
   doc.setFontSize(11);
   doc.text("PEMERINTAH KABUPATEN CILACAP", (pageWidth / 2) + 8, 14, { align: "center" });
   doc.text("KECAMATAN GANDRUNGMANGU", (pageWidth / 2) + 8, 19, { align: "center" });
-  
+
   doc.setFontSize(13);
-  doc.text("DESA RUNGKANG", (pageWidth / 2) + 8, 25, { align: "center" });
+  doc.text("DESA KARANGANYAR", (pageWidth / 2) + 8, 25, { align: "center" });
 
   doc.setFont("times", "normal");
   doc.setFontSize(9);
-  doc.text("Sekretariat : Jl.Raya Rungkang KM 05  Kode Pos 53254", (pageWidth / 2) + 8, 30, { align: "center" });
+  doc.text("Sekretariat : Jl.Raya Karanganyar KM 05  Kode Pos 53254", (pageWidth / 2) + 8, 30, { align: "center" });
 
   // Double Line Kop
   doc.setLineWidth(0.8);
@@ -165,7 +165,7 @@ export const generateNotaDanFakturPDF = async (
 
   const lokasiToko = (data.alamatToko && data.alamatToko.trim() !== "")
     ? data.alamatToko.toUpperCase()
-    : "CINANGSI";
+    : "KARANGANYAR";
   doc.setFont("times", "bold");
   doc.text(lokasiToko, 152, 63);
   const wLokasi = doc.getTextWidth(lokasiToko);
@@ -276,7 +276,7 @@ export const generateNotaDanFakturPDF = async (
   const sign1DateY = summary1Y + 16;
   doc.setFont("times", "normal");
   doc.setFontSize(10);
-  doc.text(`Rungkang, ${tanggalFormatIndo}`, 155, sign1DateY, { align: "center" });
+  doc.text(`Karanganyar, ${tanggalFormatIndo}`, 155, sign1DateY, { align: "center" });
 
   const sign1TitleY = sign1DateY + 6;
   doc.text("Yang Menerima", 55, sign1TitleY, { align: "center" });
@@ -311,12 +311,12 @@ export const generateNotaDanFakturPDF = async (
 
   // Kepada Kepala Desa (Right aligned block)
   doc.text("Kepada :", 138, 26);
-  doc.text("Yth. Kepala Desa Rungkang", 134, 31);
+  doc.text("Yth. Kepala Desa Karanganyar", 134, 31);
   doc.text("Di-", 143, 36);
 
   doc.setFont("times", "bold");
-  doc.text("RUNGKANG", 148, 41);
-  const wRk = doc.getTextWidth("RUNGKANG");
+  doc.text("KARANGANYAR", 148, 41);
+  const wRk = doc.getTextWidth("KARANGANYAR");
   doc.setLineWidth(0.3);
   doc.line(148, 41.8, 148 + wRk, 41.8);
 
@@ -423,14 +423,14 @@ export const generateNotaDanFakturPDF = async (
   const sign2DateY = summary2Y + 16;
   doc.setFont("times", "normal");
   doc.setFontSize(10);
-  doc.text(`Rungkang, ${tanggalFormatIndo}`, 155, sign2DateY, { align: "center" });
+  doc.text(`Karanganyar, ${tanggalFormatIndo}`, 155, sign2DateY, { align: "center" });
 
   const sign2TitleY = sign2DateY + 6;
   doc.text("Yang menerima", 55, sign2TitleY, { align: "center" });
   doc.text("Yang mengirim,", 155, sign2TitleY, { align: "center" });
 
   const sign2NameY = sign2TitleY + 23;
-  const kadesName = (data.kepalaDesaNama || "SARYOKO").toUpperCase();
+  const kadesName = (data.kepalaDesaNama || "CATUR SILVIA DEWI").toUpperCase();
   const senderName = (data.namaPemilik || "DEDI").toUpperCase();
 
   doc.setFont("times", "bold");
@@ -493,7 +493,7 @@ export const generateStrukBelanjaPDF = async (data: StrukBelanjaData): Promise<B
   // Header Toko
   doc.setFont("courier", "bold");
   doc.setFontSize(11);
-  const tokoName = (data.namaToko || "MINIMARKET RUNGKANG JAYA").toUpperCase();
+  const tokoName = (data.namaToko || "MINIMARKET KARANGANYAR JAYA").toUpperCase();
   doc.text(tokoName, pageWidth / 2, y, { align: "center" });
   y += 4.5;
 

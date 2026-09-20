@@ -50,7 +50,7 @@ export function ThermalReceiptModal({
   transaksi,
   batchData,
   noTelpPemungut,
-  namaDesa = "Rungkang",
+  namaDesa = "Karanganyar",
 }: ThermalReceiptModalProps) {
   const [paperWidth, setPaperWidth] = useState<"58mm" | "80mm">("58mm")
 
@@ -63,7 +63,7 @@ export function ThermalReceiptModal({
   const receiptItems = batchData
     ? batchData.items
     : transaksi
-    ? [
+      ? [
         {
           nop: transaksi.nop,
           namaWp: transaksi.namaWp,
@@ -75,7 +75,7 @@ export function ThermalReceiptModal({
           totalBayar: transaksi.totalBayar,
         },
       ]
-    : []
+      : []
 
   const tglBayar = batchData?.tanggalBayar || transaksi?.tanggalBayar || ""
   const kolektorNama = batchData?.penarikNama || transaksi?.penarikNama || "Kolektor Desa"
@@ -83,8 +83,8 @@ export function ThermalReceiptModal({
   const grandTotal = batchData
     ? batchData.grandTotal
     : transaksi
-    ? transaksi.totalBayar
-    : 0
+      ? transaksi.totalBayar
+      : 0
 
   const formattedDate = tglBayar
     ? format(new Date(tglBayar), "dd MMMM yyyy", { locale: id })
@@ -370,7 +370,7 @@ export function ThermalReceiptModal({
           <div>Pemungut : {kolektorNama}</div>
           <div>Jumlah WP: {receiptItems.length} Wajib Pajak</div>
           <div className="border-b border-dashed border-slate-400 my-2"></div>
-          
+
           <div className="space-y-2">
             {receiptItems.slice(0, 5).map((it, idx) => (
               <div key={idx} className="text-[11px]">

@@ -4,68 +4,98 @@
 
 @layer base {
   :root {
-    /* Forest Green + Slate Gray Theme - Profesional untuk Sistem Desa */
-    --background: 0 0% 100%;
-    --foreground: 215 25% 15%;
-    --card: 0 0% 100%;
-    --card-foreground: 215 25% 15%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 15%;
-    --primary: 195 100% 42%;      /* Forest Green #15803D - Warna utama */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 210 35% 20%;    /* Slate Gray #334155 - Warna sekunder */
-    --secondary-foreground: 0 0% 100%;
-    --muted: 195 30% 97%;        /* Pale Green #F0FDF4 - Warna lembut */
-    --muted-foreground: 215 20% 40%;
-    --accent: 190 85% 55%;       /* Light Green #22C55E - Accent */
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 195 25% 88%;
-    --input: 195 25% 93%;
-    --ring: 195 100% 42%;
-    --radius: 1rem;
+    /* =========================================================
+       TEMA KEDESAN NUSANTARA: BIRU SAMUDERA PAMONG PRAJA & EMAS PADI
+       Palet: Biru Samudera Pamong Praja (Royal Maritime Navy), 
+       Emas Bulir Padi Siap Panen (Harvest Amber/Gold), 
+       dan Putih Pualam Sejuk (Pure Porcelain White)
+       ========================================================= */
 
-    /* Sidebar Variables - Pastikan Solid */
+    /* Latar Belakang Hangat, Bersih, Bersahaja */
+    --background: 210 20% 98%;          /* #F8FAFC - Putih pualam kebiruan sejuk & bersih */
+    --foreground: 215 35% 14%;          /* #162438 - Slate pekat sangat kontras & ramah dibaca */
+
+    /* Kartu & Elemen Kontainer */
+    --card: 0 0% 100%;                 /* Putih bersih dengan bayangan lembut */
+    --card-foreground: 215 35% 14%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 35% 14%;
+
+    /* Warna Utama: Biru Samudera Pamong Praja (Royal Navy Pamong Praja) */
+    --primary: 215 75% 30%;             /* #13447C - Biru resmi pemerintahan desa & kementerian */
+    --primary-foreground: 0 0% 100%;
+
+    /* Warna Sekunder: Slate Navy (Maritime Slate) */
+    --secondary: 215 25% 24%;           /* #2E3E52 - Slate navy tenang & berwibawa */
+    --secondary-foreground: 0 0% 100%;
+
+    /* Warna Lembut: Biru Awan Halus (Soft Sky Gray) */
+    --muted: 210 25% 95%;               /* #EEF2F6 - Abu kebiruan sejuk */
+    --muted-foreground: 215 20% 45%;    /* #5C6E84 - Teks sekunder presisi */
+
+    /* Warna Aksen: Emas Bulir Padi / Hasil Panen Desa (Golden Paddy / Harvest Amber) */
+    --accent: 38 92% 50%;              /* #F59E0B - Kuning emas lumbung pangan desa */
+    --accent-foreground: 0 0% 100%;
+
+    /* Status & Batas */
+    --destructive: 0 78% 54%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 215 18% 88%;              /* Garis tepi sejuk halus */
+    --input: 215 18% 90%;
+    --ring: 215 75% 35%;
+    --radius: 1.25rem;
+
+    /* Sidebar Sistem Desa */
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 215 25% 27%;
-    --sidebar-primary: 195 100% 42%;
+    --sidebar-foreground: 215 30% 22%;
+    --sidebar-primary: 215 75% 30%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 195 30% 97%;
-    --sidebar-accent-foreground: 195 100% 42%;
-    --sidebar-border: 195 25% 93%;
-    --sidebar-ring: 195 100% 42%;
+    --sidebar-accent: 210 30% 95%;
+    --sidebar-accent-foreground: 215 75% 25%;
+    --sidebar-border: 215 18% 90%;
+    --sidebar-ring: 215 75% 30%;
+
+    /* Palet Grafik Bernuansa Samudera & Padi Nusantara */
+    --chart-1: 215 75% 35%;             /* Biru Pamong Praja */
+    --chart-2: 38 92% 50%;              /* Emas Bulir Padi */
+    --chart-3: 198 80% 40%;             /* Biru Toska Samudera */
+    --chart-4: 28 65% 42%;              /* Sawo Matang */
+    --chart-5: 210 50% 60%;             /* Sky Blue Cerah */
   }
 
   .dark {
-    --background: 215 25% 8%;
-    --foreground: 148 30% 85%;
-    --card: 215 25% 12%;
-    --card-foreground: 148 30% 85%;
-    --popover: 215 25% 8%;
-    --popover-foreground: 148 30% 85%;
-    --primary: 190 85% 55%;
-    --primary-foreground: 215 25% 8%;
-    --secondary: 215 25% 60%;
-    --secondary-foreground: 215 25% 8%;
-    --muted: 215 25% 20%;
-    --muted-foreground: 148 30% 70%;
-    --accent: 148 60% 55%;
-    --accent-foreground: 215 25% 8%;
-    --destructive: 0 62% 50%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 215 25% 20%;
-    --input: 215 25% 15%;
-    --ring: 190 85% 55%;
+    /* Mode Malam: Nuansa Samudera Malam & Safir Obsidian (Deep Maritime Obsidian) */
+    --background: 218 35% 8%;           /* #0D1522 - Biru malam samudera pekat */
+    --foreground: 210 25% 92%;
+    --card: 218 30% 12%;                /* #141E2F - Kartu malam navy obsidian */
+    --card-foreground: 210 25% 94%;
+    --popover: 218 35% 8%;
+    --popover-foreground: 210 25% 92%;
 
-    --sidebar-background: 215 25% 12%;
-    --sidebar-foreground: 148 30% 85%;
-    --sidebar-primary: 190 85% 55%;
-    --sidebar-primary-foreground: 215 25% 8%;
-    --sidebar-accent: 215 25% 20%;
-    --sidebar-accent-foreground: 148 30% 85%;
-    --sidebar-border: 215 25% 20%;
-    --sidebar-ring: 190 85% 55%;
+    --primary: 212 90% 55%;             /* Biru safir cerah untuk kontras tinggi malam hari */
+    --primary-foreground: 218 45% 6%;
+    --secondary: 215 25% 35%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 218 25% 16%;
+    --muted-foreground: 210 20% 70%;
+    --accent: 38 92% 52%;              /* Padi emas malam hari */
+    --accent-foreground: 218 45% 6%;
+    --destructive: 0 65% 52%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 218 25% 18%;
+    --input: 218 25% 18%;
+    --ring: 212 90% 55%;
+
+    --sidebar-background: 218 30% 10%;
+    --sidebar-foreground: 210 25% 88%;
+    --sidebar-primary: 212 90% 55%;
+    --sidebar-primary-foreground: 218 45% 6%;
+    --sidebar-accent: 218 25% 16%;
+    --sidebar-accent-foreground: 212 90% 60%;
+    --sidebar-border: 218 25% 18%;
+    --sidebar-ring: 212 90% 55%;
   }
 }
 
@@ -92,10 +122,152 @@
   @apply bg-muted-foreground/20 rounded-full;
 }
 
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
+@layer components {
+  /* Utilitas Tipografi Gradien Modern */
+  .text-gradient-desa {
+    @apply bg-gradient-to-r from-blue-950 via-blue-800 to-indigo-900 dark:from-sky-200 dark:via-blue-300 dark:to-amber-200 bg-clip-text text-transparent;
+  }
+  .text-gradient-amber {
+    @apply bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-600 dark:from-amber-400 dark:to-yellow-300 bg-clip-text text-transparent;
+  }
+
+  /* Utilitas Kartu Nuansa Pedesaan Modern (Glassmorphism) */
+  .card-desa {
+    @apply rounded-2xl md:rounded-3xl border border-blue-950/10 dark:border-blue-500/20 bg-white/85 dark:bg-card/90 backdrop-blur-md text-card-foreground shadow-sm shadow-blue-950/5 transition-all duration-300 hover:shadow-xl hover:shadow-blue-950/10 hover:border-blue-600/30 hover:-translate-y-1;
+  }
+  .card-desa-header {
+    @apply p-5 md:p-6 bg-gradient-to-r from-blue-50/70 via-blue-50/30 to-transparent dark:from-blue-950/40 dark:via-blue-950/10 dark:to-transparent border-b border-blue-950/10 dark:border-blue-500/20;
+  }
+  .badge-padi {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-black uppercase bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/25 shadow-sm;
+  }
+  .badge-desa {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-black uppercase bg-blue-800/15 text-blue-900 dark:text-sky-300 border border-blue-800/25 shadow-sm;
+  }
+
+  /* Animasi Elegan Masuk Konten */
+  .animate-fade-in-up {
+    animation: fadeInUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .animate-float-subtle {
+    animation: floatSubtle 4s ease-in-out infinite;
+  }
+  .animate-pulse-glow {
+    animation: pulseGlow 3s ease-in-out infinite;
+  }
+  /* Animasi Kilau Teks Hero Modern: Biru Samudera & Emas Padi */
+  .text-shimmer-hero {
+    background: linear-gradient(
+      100deg,
+      #ffffff 0%,
+      #ffffff 30%,
+      #7dd3fc 45%,
+      #fde047 55%,
+      #93c5fd 65%,
+      #ffffff 80%,
+      #ffffff 100%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: beamSweep 4s ease-in-out infinite;
+  }
+
+  .hero-title-white {
+    background: linear-gradient(
+      100deg,
+      #ffffff 0%,
+      #ffffff 35%,
+      #93c5fd 50%,
+      #ffffff 65%,
+      #ffffff 100%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: beamSweep 4.5s ease-in-out infinite;
+    display: inline-block;
+  }
+
+  .hero-title-accent {
+    background: linear-gradient(
+      100deg,
+      #38bdf8 0%,
+      #60a5fa 25%,
+      #fde047 50%,
+      #38bdf8 75%,
+      #60a5fa 100%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: beamSweep 3.5s ease-in-out infinite;
+    display: inline-block;
+  }
+
+  .hero-title-aura {
+    animation: heroTitleFloat 5s ease-in-out infinite;
+    filter: drop-shadow(0 0 32px rgba(59, 130, 246, 0.45)) drop-shadow(0 4px 18px rgba(0, 0, 0, 0.85));
+  }
+
+  .text-glow-hero {
+    filter: drop-shadow(0 0 28px rgba(59, 130, 246, 0.4)) drop-shadow(0 4px 16px rgba(0, 0, 0, 0.5));
+  }
 }
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes floatSubtle {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes heroTitleFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes beamSweep {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes textShimmerSweep {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }

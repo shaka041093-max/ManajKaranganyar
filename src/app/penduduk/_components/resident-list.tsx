@@ -282,7 +282,7 @@ export function ResidentList() {
         <Card className="bg-slate-50/70 border border-slate-200/90 rounded-2xl shadow-xs">
           <CardHeader className="pb-1.5 pt-4 px-5">
             <CardTitle className="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center gap-2">
-              <Users className="h-4 w-4 text-[#0f5132]" />
+              <Users className="h-4 w-4 text-primary" />
               Statistik Database
             </CardTitle>
           </CardHeader>
@@ -290,7 +290,7 @@ export function ResidentList() {
             <div className="text-2xl font-black text-slate-900">
               {totalCount === null ? <Skeleton className="h-7 w-20" /> : totalCount.toLocaleString('id-ID')}
             </div>
-            <p className="text-[11px] text-slate-500 font-medium italic mt-0.5">Total dokumen penduduk Desa Rungkang</p>
+            <p className="text-[11px] text-slate-500 font-medium italic mt-0.5">Total dokumen penduduk Desa Karanganyar</p>
           </CardContent>
         </Card>
       </div>
@@ -306,13 +306,13 @@ export function ResidentList() {
             <Search className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
             <Input
               placeholder="Masukkan NIK 16 Digit atau Nama Depan..."
-              className="pl-10 h-10 rounded-xl text-xs font-semibold bg-white border-slate-200 shadow-xs focus:ring-2 focus:ring-emerald-600"
+              className="pl-10 h-10 rounded-xl text-xs font-semibold bg-white border-slate-200 shadow-xs focus:ring-2 focus:ring-primary"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               disabled={isSearching}
             />
           </div>
-          <Button type="submit" size="default" className="px-6 h-10 rounded-xl font-bold uppercase tracking-wide bg-[#0f5132] hover:bg-emerald-900 text-white shadow-xs text-xs" disabled={isSearching}>
+          <Button type="submit" size="default" className="px-6 h-10 rounded-xl font-bold uppercase tracking-wide bg-primary hover:bg-primary/90 text-primary-foreground shadow-xs text-xs" disabled={isSearching}>
             {isSearching ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Search className="h-3.5 w-3.5 mr-1.5" />}
             Cari
           </Button>
@@ -352,7 +352,7 @@ export function ResidentList() {
               Generate Data Testing
             </Button>
 
-            <Button variant="outline" size="sm" onClick={handleRecalculate} disabled={isRecalculating} className="rounded-xl font-bold text-xs border-emerald-600 text-emerald-700 hover:bg-emerald-50">
+            <Button variant="outline" size="sm" onClick={handleRecalculate} disabled={isRecalculating} className="rounded-xl font-bold text-xs border-primary/40 text-primary hover:bg-primary/10">
               {isRecalculating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <BarChart3 className="mr-1.5 h-3.5 w-3.5" />}
               Update Statistik Grafik
             </Button>
@@ -405,7 +405,7 @@ export function ResidentList() {
                     <TableCell className="text-[10px] font-semibold">{resident.relationshipToHeadOfFamily || '-'}</TableCell>
                     <TableCell className="text-[10px] min-w-[300px]">
                       <p className="leading-tight truncate">
-                        {`${resident.address}, RT ${resident.rt} RW ${resident.rw}, ${resident.kelurahan}Kec. Gandrungmangu, Kab. Cilacap`}
+                        {`${resident.address}, RT ${resident.rt} RW ${resident.rw}, ${resident.kelurahan}, kec. Gandrungmangu, Kab. Cilacap`}
                       </p>
                     </TableCell>
                     <TableCell className="text-right">

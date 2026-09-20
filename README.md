@@ -1,4 +1,4 @@
-# Sistem Manajemen Desa Rungkang
+# Sistem Manajemen Desa Karanganyar
 
 Sistem ini dirancang untuk memudahkan administrasi desa, mulai dari pelaporan kegiatan hingga pengajuan SPPD, lengkap dengan integrasi Google Drive dan AI.
 

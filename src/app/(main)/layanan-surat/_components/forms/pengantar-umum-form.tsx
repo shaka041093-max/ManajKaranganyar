@@ -126,7 +126,7 @@ export function PengantarUmumForm({ isAdmin = false }: { isAdmin?: boolean }) {
             form.setValue('birthPlace', resident.placeOfBirth);
             form.setValue('birthDate', formatDbDateToForm(resident.dateOfBirth));
             form.setValue('job', resident.occupation);
-            const fullAddress = `${resident.address}, RT ${resident.rt} RW ${resident.rw}, ${resident.kelurahan}Kec. Gandrungmangu, Kab. Cilacap`.toUpperCase();
+            const fullAddress = `${resident.address}, RT ${resident.rt} RW ${resident.rw}, ${resident.kelurahan}, kec. Gandrungmangu, Kab. Cilacap`.toUpperCase();
             form.setValue('address', fullAddress);
             toast({ title: "Data Ditemukan" });
           }

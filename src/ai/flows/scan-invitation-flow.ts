@@ -8,8 +8,8 @@
  * - ScanInvitationOutput - The return type for the scanInvitation function.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { ai } from '@/ai/genkit';
+import { z } from 'genkit';
 
 const ScanInvitationInputSchema = z.object({
   pdfDataUri: z
@@ -24,7 +24,7 @@ const ScanInvitationOutputSchema = z.object({
   eventTitle: z.string().describe('The main title or purpose of the event (acara). Extract the core topic, including multi-line text if present. E.g., "Rapat Koordinasi Percepatan Pelaksanaan Agenda Strategis".'),
   eventDate: z.string().describe('The date of the event. Extract from "Hari/tanggal" and format it as YYYY-MM-DD. For "Selasa, 06 Desember 2026", the output should be "2026-12-06". If the year is not specified, assume the current year.'),
   eventTime: z.string().describe('The start time of the event from "Waktu". For "Pukul 10.00 WIB s/d selesai", the output should be "10:00".'),
-  eventLocation: z.string().describe('The location or venue of the event (tempat). E.g., "Balai Desa Rungkang".'),
+  eventLocation: z.string().describe('The location or venue of the event (tempat). E.g., "Balai Desa Karanganyar".'),
   eventNotes: z.string().optional().describe('Any additional notes or instructions from the "Catatan" field. This is optional; if not present, omit this field. E.g., "Hadir tepat waktu."'),
 });
 export type ScanInvitationOutput = z.infer<typeof ScanInvitationOutputSchema>;
@@ -36,8 +36,8 @@ export async function scanInvitation(input: ScanInvitationInput): Promise<ScanIn
 const prompt = ai.definePrompt({
   name: 'scanInvitationPrompt',
   model: 'googleai/gemini-2.5-flash',
-  input: {schema: ScanInvitationInputSchema},
-  output: {schema: ScanInvitationOutputSchema},
+  input: { schema: ScanInvitationInputSchema },
+  output: { schema: ScanInvitationOutputSchema },
   prompt: `You are an expert administrative assistant for a village in Indonesia. Your task is to analyze the provided document (an invitation letter) and extract key information about an event.
 
 Analyze the document provided via the media URL. Extract the event's title (acara), date (tanggal), time (waktu), location (tempat), and any additional notes (catatan).
@@ -57,7 +57,7 @@ const scanInvitationFlow = ai.defineFlow(
     outputSchema: ScanInvitationOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
+    const { output } = await prompt(input);
     return output!;
   }
 );

@@ -7,31 +7,31 @@ export function KeteranganUmumPrintTemplate({ submission }: { submission: Letter
 
   return (
     <PrintLayout submission={submission}>
-      <p className="mt-8 text-justify leading-relaxed">
-        Yang bertanda tangan di bawah ini Kepala Desa Rungkang, Kecamatan
+      <p className="mt-3 text-justify leading-normal">
+        Yang bertanda tangan di bawah ini Kepala Desa Karanganyar, Kecamatan
         Gandrungmangu, Kabupaten Cilacap, menerangkan dengan sebenarnya bahwa:
       </p>
 
-      <table className="mt-4 border-collapse w-full">
+      <table className="mt-2 border-collapse w-full">
         <tbody>
-          <DataRow label="Nama Lengkap" value={formData.name} />
-          <DataRow label="NIK" value={formData.nik} />
-          <DataRow label="Jenis Kelamin" value={formData.gender} />
-          <DataRow label="Tempat / Tgl Lahir" value={formatTTL(formData.birthPlace, formData.birthDate, formData.nik || submission.nik)} />
-          <DataRow label="Pekerjaan" value={formData.job} />
-          <DataRow label="Alamat" value={formData.address} />
+          <DataRow compact="tight" label="Nama Lengkap" value={formData.name} />
+          <DataRow compact="tight" label="NIK" value={formData.nik} />
+          <DataRow compact="tight" label="Jenis Kelamin" value={formData.gender} />
+          <DataRow compact="tight" label="Tempat / Tgl Lahir" value={formatTTL(formData.birthPlace, formData.birthDate)} />
+          <DataRow compact="tight" label="Pekerjaan" value={formData.job} />
+          <DataRow compact="tight" label="Alamat" value={formData.address} />
         </tbody>
       </table>
 
-      <p className="mt-8 text-justify leading-relaxed">
-        Berdasarkan catatan yang ada di kantor kami, nama tersebut di atas adalah benar-benar warga Desa Rungkang, Kecamatan Gandrungmangu, Kabupaten Cilacap.
+      <p className="mt-2.5 text-justify leading-normal">
+        Berdasarkan catatan yang ada di kantor kami, nama tersebut di atas adalah benar-benar warga Desa Karanganyar, Kecamatan Gandrungmangu, Kabupaten Cilacap.
       </p>
 
-      <p className="mt-4 text-justify leading-relaxed">
+      <p className="mt-2 text-justify leading-normal">
         Surat keterangan ini diberikan kepada yang bersangkutan untuk dipergunakan sebagaimana mestinya, yaitu untuk keperluan : <strong>{formData.purpose}</strong>.
       </p>
 
-      <p className="mt-6 text-justify leading-relaxed">
+      <p className="mt-2.5 text-justify leading-normal">
         Demikian surat keterangan ini dibuat dengan sebenarnya untuk dapat dipergunakan sebagaimana mestinya.
       </p>
     </PrintLayout>

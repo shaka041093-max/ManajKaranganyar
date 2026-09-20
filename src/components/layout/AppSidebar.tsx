@@ -1,12 +1,12 @@
 "use client";
 
 import * as React from "react"
-import { 
-  LayoutDashboard, 
-  FileUp, 
-  Map, 
-  User, 
-  Settings, 
+import {
+  LayoutDashboard,
+  FileUp,
+  Map,
+  User,
+  Settings,
   LogOut,
   Home,
   Loader2,
@@ -82,9 +82,9 @@ const menuGroups: MenuGroupType[] = [
   {
     label: "PELAYANAN",
     items: [
-      { 
-        label: "Manajemen Surat", 
-        icon: FileText, 
+      {
+        label: "Manajemen Surat",
+        icon: FileText,
         href: "/pelayanan",
         subItems: [
           { label: "Kelola Surat", icon: FileCheck, href: "/pelayanan" },
@@ -130,7 +130,7 @@ export function AppSidebar() {
     if (!db || !user) return null
     return doc(db, "settings", "village")
   }, [db, user])
-  
+
   const { data: configData } = useDoc(villageSettingsRef)
 
   React.useEffect(() => {
@@ -165,11 +165,11 @@ export function AppSidebar() {
         <div className="flex items-center gap-4">
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-background shadow-lg shadow-primary/10 border border-border overflow-hidden shrink-0">
             {configData?.logoBase64 ? (
-              <Image 
-                src={configData.logoBase64} 
-                alt="Logo Desa" 
-                width={48} 
-                height={48} 
+              <Image
+                src={configData.logoBase64}
+                alt="Logo Desa"
+                width={48}
+                height={48}
                 className="object-contain p-1.5"
                 unoptimized
               />
@@ -180,7 +180,7 @@ export function AppSidebar() {
             )}
           </div>
           <div className="flex flex-col overflow-hidden">
-            <span className="font-black text-xl leading-tight tracking-tighter text-foreground">Rungkang</span>
+            <span className="font-black text-xl leading-tight tracking-tighter text-foreground">Karanganyar</span>
             <span className="text-[10px] text-muted-foreground uppercase tracking-[0.1em] font-bold">DATABASE TERPADU</span>
           </div>
         </div>
@@ -207,7 +207,7 @@ export function AppSidebar() {
                 if (item.subItems) {
                   const isOpen = Boolean(openSubMenus[item.label]);
 
-                  
+
                   return (
                     <SidebarMenuItem key={item.label} className="flex flex-col">
                       <SidebarMenuButton
@@ -215,33 +215,33 @@ export function AppSidebar() {
                         onClick={() => toggleSubMenu(item.label)}
                         className={cn(
                           "h-12 px-4 rounded-xl transition-all duration-300 group justify-between",
-                          isSubActive 
-                            ? "bg-amber-500/10 text-amber-600 font-bold hover:bg-amber-500/15" 
+                          isSubActive
+                            ? "bg-primary/10 text-primary font-bold hover:bg-primary/15"
                             : "hover:bg-muted text-muted-foreground"
                         )}
                       >
                         <div className="flex items-center gap-3">
                           <div className={cn(
                             "shrink-0 transition-colors",
-                            isSubActive ? "text-amber-600" : "text-muted-foreground group-hover:text-primary"
+                            isSubActive ? "text-primary" : "text-muted-foreground group-hover:text-primary"
                           )}>
                             <item.icon className={cn("h-5 w-5", isSubActive && "stroke-[2.5px]")} />
                           </div>
                           <span className={cn(
                             "font-bold text-[13px] whitespace-nowrap",
-                            isSubActive ? "text-amber-700" : "text-foreground"
+                            isSubActive ? "text-primary" : "text-foreground"
                           )}>
                             {item.label}
                           </span>
                         </div>
                         <ChevronDown className={cn(
                           "h-4 w-4 shrink-0 transition-transform duration-200 text-muted-foreground",
-                          isOpen && "rotate-180 text-amber-600"
+                          isOpen && "rotate-180 text-primary"
                         )} />
                       </SidebarMenuButton>
 
                       {isOpen && (
-                        <div className="flex flex-col gap-1 pl-4 mt-1 border-l-2 border-amber-500/20 ml-4 py-1">
+                        <div className="flex flex-col gap-1 pl-4 mt-1 border-l-2 border-primary/20 ml-4 py-1">
                           {item.subItems.map((sub) => {
                             const subPath = sub.href.replace(/\/$/, "")
                             const isSubItemActive = mounted && (
@@ -258,12 +258,12 @@ export function AppSidebar() {
                                 className={cn(
                                   "h-10 px-3 rounded-lg transition-all text-xs font-bold",
                                   isSubItemActive
-                                    ? "bg-amber-500 text-white shadow-md shadow-amber-500/20 hover:bg-amber-600 hover:text-white"
+                                    ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20 hover:bg-primary/90 hover:text-white"
                                     : "hover:bg-muted text-muted-foreground hover:text-foreground"
                                 )}
                               >
                                 <Link href={sub.href} className="flex items-center gap-2.5 w-full">
-                                  <sub.icon className={cn("h-4 w-4 shrink-0", isSubItemActive ? "text-white" : "text-amber-600")} />
+                                  <sub.icon className={cn("h-4 w-4 shrink-0", isSubItemActive ? "text-white" : "text-primary")} />
                                   <span>{sub.label}</span>
                                 </Link>
                               </SidebarMenuButton>
@@ -277,15 +277,15 @@ export function AppSidebar() {
 
                 return (
                   <SidebarMenuItem key={item.href}>
-                    <SidebarMenuButton 
-                      asChild 
+                    <SidebarMenuButton
+                      asChild
                       isActive={isActive}
                       tooltip={item.label}
                       onClick={handleLinkClick}
                       className={cn(
                         "h-12 px-4 rounded-xl transition-all duration-300 group",
-                        isActive 
-                          ? "bg-primary/10 text-primary border-none hover:bg-primary/10" 
+                        isActive
+                          ? "bg-primary/10 text-primary border-none hover:bg-primary/10"
                           : "hover:bg-muted text-muted-foreground"
                       )}
                     >
@@ -302,7 +302,7 @@ export function AppSidebar() {
                         )}>
                           {item.label}
                         </span>
-                        {isActive && <div className="ml-auto h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />} 
+                        {isActive && <div className="ml-auto h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />}
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -318,12 +318,12 @@ export function AppSidebar() {
           </SidebarGroupLabel>
           <SidebarMenu className="gap-1.5">
             <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Pengaturan" onClick={handleLinkClick} className="h-11 px-4 rounded-xl hover:bg-muted text-muted-foreground">
-                    <Link href="/settings/" className="flex items-center gap-3">
-                        <Settings className="h-5 w-5 shrink-0" />
-                        <span className="font-semibold text-[13px]">Pengaturan</span>
-                    </Link>
-                </SidebarMenuButton>
+              <SidebarMenuButton asChild tooltip="Pengaturan" onClick={handleLinkClick} className="h-11 px-4 rounded-xl hover:bg-muted text-muted-foreground">
+                <Link href="/settings/" className="flex items-center gap-3">
+                  <Settings className="h-5 w-5 shrink-0" />
+                  <span className="font-semibold text-[13px]">Pengaturan</span>
+                </Link>
+              </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
@@ -334,13 +334,13 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <div className="flex items-center gap-3 w-full px-2 py-3 overflow-hidden">
               <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20">
-                <span className="text-xs font-black text-primary uppercase">{user?.email?.substring(0,2).toUpperCase() || 'AD'}</span>
+                <span className="text-xs font-black text-primary uppercase">{user?.email?.substring(0, 2).toUpperCase() || 'AD'}</span>
               </div>
               <div className="flex flex-col text-left overflow-hidden flex-1">
                 <span className="text-sm font-black text-foreground truncate">{user?.email?.split('@')[0].toUpperCase() || 'Pengguna'}</span>
                 <span className="text-[10px] text-muted-foreground font-bold uppercase truncate">Perangkat Desa</span>
               </div>
-              <button 
+              <button
                 onClick={handleLogout}
                 disabled={isLoggingOut}
                 className="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-muted hover:shadow-sm text-muted-foreground hover:text-destructive transition-all shrink-0"

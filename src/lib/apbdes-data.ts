@@ -1,5 +1,5 @@
 /**
- * @fileOverview Data anggaran APBDes Desa Rungkang 2026.
+ * @fileOverview Data anggaran APBDes Desa Karanganyar 2026.
  */
 
 export interface ApbItem {

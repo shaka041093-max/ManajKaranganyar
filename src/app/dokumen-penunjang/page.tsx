@@ -6,12 +6,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { 
-  Printer, 
-  ArrowLeft, 
-  Users, 
-  UserCheck, 
-  Wallet, 
+import {
+  Printer,
+  ArrowLeft,
+  Users,
+  UserCheck,
+  Wallet,
   Briefcase,
   Calendar,
   Loader2,
@@ -169,29 +169,29 @@ const getRtRwWeight = (jabatan: string) => {
 
 const getKaderWeight = (jabatan: string) => {
   const j = jabatan.toUpperCase();
-  const match = j.match(/(?:SARI RAHAYU|LESTARI|RAHAYU)\s*(\d+)/i) || j.match(/(\d+)/);
+  const match = j.match(/(?:WIWIT RAHAYU|LESTARI|RAHAYU)\s*(\d+)/i) || j.match(/(\d+)/);
   return match ? parseInt(match[1]) : 999;
 };
 
 const sortParticipants = (list: any[]) => {
-    return list.sort((a, b) => {
-        const catA = a.category;
-        const catB = b.category;
-        
-        if (catA !== catB) {
-            return CATEGORY_ORDER.indexOf(catA) - CATEGORY_ORDER.indexOf(catB);
-        }
+  return list.sort((a, b) => {
+    const catA = a.category;
+    const catB = b.category;
 
-        if (catA === "Pemerintah Desa") {
-            return getRankWeight(a.jabatan) - getRankWeight(b.jabatan);
-        } else if (catA === "RT/RW") {
-            return getRtRwWeight(a.jabatan) - getRtRwWeight(b.jabatan);
-        } else if (catA === "Kader") {
-            return getKaderWeight(a.jabatan) - getKaderWeight(b.jabatan);
-        }
-        
-        return a.name.localeCompare(b.name);
-    });
+    if (catA !== catB) {
+      return CATEGORY_ORDER.indexOf(catA) - CATEGORY_ORDER.indexOf(catB);
+    }
+
+    if (catA === "Pemerintah Desa") {
+      return getRankWeight(a.jabatan) - getRankWeight(b.jabatan);
+    } else if (catA === "RT/RW") {
+      return getRtRwWeight(a.jabatan) - getRtRwWeight(b.jabatan);
+    } else if (catA === "Kader") {
+      return getKaderWeight(a.jabatan) - getKaderWeight(b.jabatan);
+    }
+
+    return a.name.localeCompare(b.name);
+  });
 };
 
 function DokumenContent() {
@@ -217,7 +217,7 @@ function DokumenContent() {
   // Mengambil data personil dari Firestore
   const personnelRef = useMemoFirebase(() => (db && user) ? collection(db, "personnel") : null, [db, user])
   const { data: dbOfficials } = useCollection(personnelRef)
-  
+
   // GLOBAL CONFIG: Ambil Logo dari Pengaturan Desa
   const villageSettingsRef = useMemoFirebase(() => {
     if (!db || !user) return null
@@ -226,15 +226,15 @@ function DokumenContent() {
   const { data: villageSettings } = useDoc(villageSettingsRef)
 
   const [useApbdes, setUseApbdes] = useState(true)
-  const [selectedYear, setSelectedYear] = useState("2026") 
+  const [selectedYear, setSelectedYear] = useState("2026")
   const [bidang, setBidang] = useState("")
   const [sumber, setSumber] = useState("")
   const [kegiatan, setKegiatan] = useState("")
   const [manualTitle, setManualTitle] = useState("")
   const [date, setDate] = useState("")
-  const [location, setLocation] = useState("Balai Desa Rungkang")
+  const [location, setLocation] = useState("Balai Desa Karanganyar")
   const [time, setTime] = useState("09:00 WIB")
-  
+
   const [jumlahOrang, setJumlahOrang] = useState<number>(15)
   const [jumlahKuotaPeserta, setJumlahKuotaPeserta] = useState<number>(30)
   const [participantSelections, setParticipantSelections] = useState(Array(6).fill("none"));
@@ -280,7 +280,7 @@ function DokumenContent() {
   // Fetch actual health records data based on selection
   const healthDataQuery = useMemoFirebase(() => {
     if (!db || !user || type !== "daftar-hadir-posyandu" || posyanduSubType !== "peserta" || !selectedHealthCategory) return null;
-    
+
     const colRef = collection(db, "health_records");
     if (selectedLestari && selectedLestari !== "SEMUA POSYANDU") {
       return query(colRef, where("category", "==", selectedHealthCategory), where("posyandu", "==", selectedLestari));
@@ -296,10 +296,10 @@ function DokumenContent() {
   const [notaDate, setNotaDate] = useState("");
   const [notaPerangkatNama, setNotaPerangkatNama] = useState("");
   const [notaPerangkatJabatan, setNotaPerangkatJabatan] = useState("");
-  const [notaKepalaDesa, setNotaKepalaDesa] = useState("SARYOKO");
+  const [notaKepalaDesa, setNotaKepalaDesa] = useState("CATUR SILVIA DEWI");
   const [notaNamaToko, setNotaNamaToko] = useState("");
   const [notaNamaPemilik, setNotaNamaPemilik] = useState("");
-  const [notaAlamatToko, setNotaAlamatToko] = useState("CINANGSI");
+  const [notaAlamatToko, setNotaAlamatToko] = useState("KARANGANYAR");
   const [notaNoTelp, setNotaNoTelp] = useState("");
   const [notaNoNota, setNotaNoNota] = useState("");
   const [notaNoFaktur, setNotaNoFaktur] = useState("");
@@ -313,7 +313,7 @@ function DokumenContent() {
   const [strukMenit, setStrukMenit] = useState("30");
   const [strukDetik, setStrukDetik] = useState("00");
   const [strukNamaToko, setStrukNamaToko] = useState("");
-  const [strukAlamatToko, setStrukAlamatToko] = useState("Jl. Raya Pelita KM 5 Rungkang");
+  const [strukAlamatToko, setStrukAlamatToko] = useState("Jl. Slamet Riyadi No. 60, Desa Karanganyar");
   const [strukNoTelp, setStrukNoTelp] = useState("");
   const [strukKasir, setStrukKasir] = useState("KASIR 01");
   const [strukNoRef, setStrukNoRef] = useState("");
@@ -328,7 +328,7 @@ function DokumenContent() {
     setDate(today)
     setNotaDate(today)
     setStrukDate(today)
-    
+
     // Auto switch to manual mode for posyandu & bukti-transaksi
     if (type === "daftar-hadir-posyandu" || type === "bukti-transaksi") {
       setUseApbdes(false)
@@ -341,21 +341,21 @@ function DokumenContent() {
     const groups = new Set<string>();
     kaders.forEach(k => {
       const job = k.jabatan?.toUpperCase() || "";
-      // Cari pola "Sari Rahayu [Angka]" atau "Lestari [Angka]"
+      // Cari pola "Wiwit Rahayu [Angka]" atau "Lestari [Angka]"
       const matchSari = job.match(/SARI\s+RAHAYU\s*(\d+)?/i);
       const matchLestari = job.match(/LESTARI\s*(\d+)?/i);
-      
+
       if (matchSari) groups.add(matchSari[0].trim());
       else if (matchLestari) groups.add(matchLestari[0].trim());
-      else if (job.includes("SARI RAHAYU")) groups.add("SARI RAHAYU");
+      else if (job.includes("WIWIT RAHAYU")) groups.add("WIWIT RAHAYU");
       else if (job.includes("LESTARI")) groups.add("LESTARI");
     });
-    
+
     const result = Array.from(groups).sort((a, b) => {
-        const numA = parseInt(a.match(/\d+/)?.[0] || "0");
-        const numB = parseInt(b.match(/\d+/)?.[0] || "0");
-        if (numA !== numB) return numA - numB;
-        return a.localeCompare(b);
+      const numA = parseInt(a.match(/\d+/)?.[0] || "0");
+      const numB = parseInt(b.match(/\d+/)?.[0] || "0");
+      if (numA !== numB) return numA - numB;
+      return a.localeCompare(b);
     });
     return ["SEMUA POSYANDU", ...result];
   }, [dbOfficials]);
@@ -366,9 +366,9 @@ function DokumenContent() {
     setParticipantSelections(newSelections);
   };
 
-  const participantCategories = useMemo(() => 
+  const participantCategories = useMemo(() =>
     Array.from(new Set((dbOfficials || []).map(o => o.category).filter(c => c && c.trim() !== '')))
-  , [dbOfficials]);
+    , [dbOfficials]);
 
   const filteredSources = useMemo(() => {
     if (!bidang || !currentApbData) return []
@@ -381,8 +381,8 @@ function DokumenContent() {
 
   const filteredActivities = useMemo(() => {
     if (!bidang || !sumber || !currentApbData) return []
-    return currentApbData.filter((item: any) => 
-      String(item.bidang) === String(bidang) && 
+    return currentApbData.filter((item: any) =>
+      String(item.bidang) === String(bidang) &&
       item.tahun === selectedYear &&
       String(item.sumber || "").trim() === String(sumber).trim()
     )
@@ -392,7 +392,7 @@ function DokumenContent() {
     setIsGenerating(true)
     try {
       const finalTitle = (type === "daftar-hadir-posyandu" || !useApbdes) ? manualTitle : kegiatan;
-      
+
       let pdfBlob;
 
       if (type === "daftar-hadir" || type === "uang-saku") {
@@ -400,79 +400,79 @@ function DokumenContent() {
         const quota = jumlahOrang || 1;
         const selectedCats = participantSelections.filter(cat => cat && cat !== "none");
         let allParticipants: any[] = [];
-        
+
         selectedCats.forEach(cat => {
-            const members = (dbOfficials || []).filter(o => o.category === cat).map(o => ({
-                name: String(o.name || ""),
-                jabatan: String(o.jabatan || ""),
-                category: String(o.category || "")
-            }));
-            allParticipants.push(...members);
+          const members = (dbOfficials || []).filter(o => o.category === cat).map(o => ({
+            name: String(o.name || ""),
+            jabatan: String(o.jabatan || ""),
+            category: String(o.category || "")
+          }));
+          allParticipants.push(...members);
         });
 
         const sorted = sortParticipants(allParticipants);
         const uniqueParticipants = Array.from(new Map(sorted.map(item => [item.name, item])).values());
-        const finalParticipants = Array.from({ length: quota }, (_, i) => 
-            uniqueParticipants[i] || { name: "", jabatan: "", category: "" }
+        const finalParticipants = Array.from({ length: quota }, (_, i) =>
+          uniqueParticipants[i] || { name: "", jabatan: "", category: "" }
         );
 
-        const pdfData = { 
-            kegiatan: finalTitle, 
-            tanggal: date, 
-            participants: finalParticipants, 
-            nominal: uangSakuNominal, 
-            tax: uangSakuTax,
-            location,
-            time
+        const pdfData = {
+          kegiatan: finalTitle,
+          tanggal: date,
+          participants: finalParticipants,
+          nominal: uangSakuNominal,
+          tax: uangSakuTax,
+          location,
+          time
         };
-        
+
         if (type === "daftar-hadir") {
           pdfBlob = await generateDaftarHadirPDF(pdfData, villageSettings?.logoBase64);
         } else {
           pdfBlob = await generateUangSakuPDF(pdfData, villageSettings?.logoBase64);
         }
-      } 
+      }
       else if (type === "daftar-hadir-posyandu") {
         if (!finalTitle) throw new Error("Judul kegiatan harus diisi")
         if (!selectedLestari) throw new Error("Pilih Kelompok Posyandu")
-        
+
         const isAll = selectedLestari === "SEMUA POSYANDU";
         const displayLestari = isAll ? "LESTARI" : selectedLestari;
         const reportTitle = isAll ? "DAFTAR HADIR POSYANDU" : `DAFTAR HADIR POSYANDU ${displayLestari}`;
 
         if (posyanduSubType === "kader") {
-            const kaders = (dbOfficials || []).filter(o => o.category === "Kader" && (isAll || o.jabatan?.toUpperCase().includes(selectedLestari)));
-            const quota = Math.max(kaders.length, 10); 
-            const sortedKaders = sortParticipants(kaders);
-            const finalParticipants = Array.from({ length: quota }, (_, i) => 
-                sortedKaders[i] ? { name: sortedKaders[i].name, jabatan: sortedKaders[i].jabatan, category: "Kader" } : { name: "", jabatan: "", category: "" }
-            );
-            const pdfData = { 
-                kegiatan: finalTitle, 
-                tanggal: date, 
-                participants: finalParticipants,
-                mainTitle: reportTitle,
-                location,
-                time
-            };
-            pdfBlob = await generateDaftarHadirPDF(pdfData, villageSettings?.logoBase64);
+          const kaders = (dbOfficials || []).filter(o => o.category === "Kader" && (isAll || o.jabatan?.toUpperCase().includes(selectedLestari)));
+          const quota = Math.max(kaders.length, 10);
+          const sortedKaders = sortParticipants(kaders);
+          const finalParticipants = Array.from({ length: quota }, (_, i) =>
+            sortedKaders[i] ? { name: sortedKaders[i].name, jabatan: sortedKaders[i].jabatan, category: "Kader" } : { name: "", jabatan: "", category: "" }
+          );
+          const pdfData = {
+            kegiatan: finalTitle,
+            tanggal: date,
+            participants: finalParticipants,
+            mainTitle: reportTitle,
+            location,
+            time
+          };
+          pdfBlob = await generateDaftarHadirPDF(pdfData, villageSettings?.logoBase64);
         } else {
-            const mappedParticipants = (healthRecords || []).map(r => ({
-                name: r.name,
-                jabatan: r.address, 
-                category: r.category
-            }));
-            mappedParticipants.sort((a, b) => a.name.localeCompare(b.name));
-            const pdfData = {
-                kegiatan: finalTitle,
-                tanggal: date,
-                participants: mappedParticipants,
-                quota: Math.max(mappedParticipants.length, jumlahKuotaPeserta),
-                mainTitle: isAll ? `DAFTAR HADIR ${selectedHealthCategory.toUpperCase()} POSYANDU` : `DAFTAR HADIR ${selectedHealthCategory.toUpperCase()} POSYANDU ${displayLestari}`,
-                location,
-                time
-            };
-            pdfBlob = await generateDaftarHadirPesertaPDF(pdfData, villageSettings?.logoBase64);
+          const mappedParticipants = (healthRecords || []).map(r => ({
+            name: r.name,
+            jabatan: r.address,
+            category: r.category
+          }));
+          mappedParticipants.sort((a, b) => a.name.localeCompare(b.name));
+          const pdfData = {
+            kegiatan: finalTitle,
+            tanggal: date,
+            participants: mappedParticipants,
+            quota: Math.max(mappedParticipants.length, jumlahKuotaPeserta),
+            mainTitle: isAll ? `DAFTAR HADIR ${selectedHealthCategory.toUpperCase()} POSYANDU` : `DAFTAR HADIR ${selectedHealthCategory.toUpperCase()} POSYANDU ${displayLestari}`,
+            location,
+            time
+          };
+          pdfBlob = await generateDaftarHadirPesertaPDF(pdfData, villageSettings?.logoBase64);
         }
       }
       else if (type === "honor-narasumber") {
@@ -486,12 +486,12 @@ function DokumenContent() {
         let categoryTitle = honorKegiatanCat === "Input Manual"
           ? (manualHonorCat.trim() || "HONORARIUM KEGIATAN")
           : honorKegiatanCat
-        
+
         let formattedHeading = categoryTitle.toUpperCase()
         if (!formattedHeading.startsWith("TANDA TERIMA")) {
           formattedHeading = `TANDA TERIMA ${formattedHeading}`
         }
-        
+
         pdfBlob = await generateHonorNarasumberPDF({
           docTitle: formattedHeading,
           title: finalTitle,
@@ -507,7 +507,7 @@ function DokumenContent() {
           if (!notaPerangkatNama.trim()) throw new Error("Pilih perangkat / pelaksana yang membidangi")
           const valid = notaItems.filter(it => it.jenisBarang && it.jenisBarang.trim() !== "")
           if (valid.length === 0) throw new Error("Tambahkan minimal 1 barang pada nota")
-          
+
           pdfBlob = await generateNotaDanFakturPDF({
             tanggal: notaDate,
             namaToko: notaNamaToko,
@@ -516,7 +516,7 @@ function DokumenContent() {
             noTeleponToko: notaNoTelp,
             perangkatNama: notaPerangkatNama,
             perangkatJabatan: notaPerangkatJabatan,
-            kepalaDesaNama: notaKepalaDesa || "SARYOKO",
+            kepalaDesaNama: notaKepalaDesa || "CATUR SILVIA DEWI",
             noNota: notaNoNota,
             noFaktur: notaNoFaktur,
             items: notaItems
@@ -544,32 +544,32 @@ function DokumenContent() {
       else if (type === "insentif") {
         let insentifParticipants: { name: string; position: string; category: string }[] = []
         const categoryMap = {
-            "RT/RW": "RT/RW",
-            "KADER POSYANDU": "Kader",
-            "GURU PAUD": "Guru TK & Paud",
-            "KADER KPM": "KPM",
-            "HONORARIUM LINMAS": "Linmas"
+          "RT/RW": "RT/RW",
+          "KADER POSYANDU": "Kader",
+          "GURU PAUD": "Guru TK & Paud",
+          "KADER KPM": "KPM",
+          "HONORARIUM LINMAS": "Linmas"
         };
         const selectedCategory = (categoryMap as any)[insentifCat];
-        if(selectedCategory) {
-            const rawMembers = (dbOfficials || []).filter(o => o.category === selectedCategory).map(o => ({ 
-              name: String(o.name || ""), 
-              position: String(o.jabatan || ""),
-              category: String(o.category || ""),
-              jabatan: String(o.jabatan || "") 
-            }));
-            const sorted = sortParticipants(rawMembers);
-            insentifParticipants = sorted.map(s => ({ name: s.name, position: s.position, category: s.category }));
+        if (selectedCategory) {
+          const rawMembers = (dbOfficials || []).filter(o => o.category === selectedCategory).map(o => ({
+            name: String(o.name || ""),
+            position: String(o.jabatan || ""),
+            category: String(o.category || ""),
+            jabatan: String(o.jabatan || "")
+          }));
+          const sorted = sortParticipants(rawMembers);
+          insentifParticipants = sorted.map(s => ({ name: s.name, position: s.position, category: s.category }));
         }
 
-        pdfBlob = await generateInsentifPDF({ 
-          category: insentifCat, 
-          month: insentifMonth, 
-          date: date, 
-          nominal: insentifNominal, 
-          tax: insentifTax, 
-          participants: insentifParticipants, 
-          jumlahOrang: insentifParticipants.length 
+        pdfBlob = await generateInsentifPDF({
+          category: insentifCat,
+          month: insentifMonth,
+          date: date,
+          nominal: insentifNominal,
+          tax: insentifTax,
+          participants: insentifParticipants,
+          jumlahOrang: insentifParticipants.length
         }, villageSettings?.logoBase64)
       }
       else if (type === "siltap") {
@@ -607,11 +607,11 @@ function DokumenContent() {
             });
           dataToPrint.sort((a, b) => b.nominal - a.nominal || a.name.localeCompare(b.name));
         }
-        pdfBlob = await generateSiltapPDF({ 
-            month: insentifMonth, 
-            date, 
-            title: siltapSubType === "perangkat" ? "TANDA TERIMA SILTAP" : "TANDA TERIMA INSENTIF BPD", 
-            data: dataToPrint 
+        pdfBlob = await generateSiltapPDF({
+          month: insentifMonth,
+          date,
+          title: siltapSubType === "perangkat" ? "TANDA TERIMA SILTAP" : "TANDA TERIMA INSENTIF BPD",
+          data: dataToPrint
         }, villageSettings?.logoBase64)
       }
 
@@ -804,21 +804,21 @@ function DokumenContent() {
           </div>
         </CardHeader>
         <CardContent className="p-8 space-y-8">
-          
+
           {type === "insentif" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2">
               <div className="space-y-4">
                 <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Pilih Kelompok Penerima</Label>
                 <div className="grid grid-cols-2 gap-4">
                   {["RT/RW", "KADER POSYANDU", "GURU PAUD", "KADER KPM", "HONORARIUM LINMAS"].map((cat) => (
-                    <Button 
+                    <Button
                       key={cat}
                       type="button"
                       onClick={() => setInsentifCat(cat)}
                       className={cn(
                         "h-14 rounded-2xl font-black text-[10px] uppercase transition-all border-2",
-                        insentifCat === cat 
-                          ? "bg-purple-600 border-purple-600 text-white shadow-lg shadow-purple-200" 
+                        insentifCat === cat
+                          ? "bg-purple-600 border-purple-600 text-white shadow-lg shadow-purple-200"
                           : "bg-white border-muted text-purple-900 hover:bg-purple-50 hover:border-purple-200"
                       )}
                     >
@@ -846,11 +846,11 @@ function DokumenContent() {
                   <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Tgl Penyaluran</Label>
                   <div className="relative">
                     <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-purple-600/50" />
-                    <Input 
-                      type="date" 
+                    <Input
+                      type="date"
                       value={date}
                       onChange={(e) => setDate(e.target.value)}
-                      className="h-14 pl-12 rounded-2xl bg-muted/20 border-none font-bold text-base" 
+                      className="h-14 pl-12 rounded-2xl bg-muted/20 border-none font-bold text-base"
                     />
                   </div>
                 </div>
@@ -861,12 +861,12 @@ function DokumenContent() {
                   <Label className="text-[10px] font-black uppercase text-purple-900 tracking-widest ml-1">Nominal Insentif (RP)</Label>
                   <div className="relative">
                     <Coins className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-purple-600" />
-                    <Input 
+                    <Input
                       type="number"
-                      placeholder="0" 
+                      placeholder="0"
                       value={insentifNominal}
                       onChange={(e) => setInsentifNominal(e.target.value)}
-                      className="h-14 pl-12 rounded-2xl bg-white border-none font-black text-purple-900 text-lg shadow-sm" 
+                      className="h-14 pl-12 rounded-2xl bg-white border-none font-black text-purple-900 text-lg shadow-sm"
                     />
                   </div>
                 </div>
@@ -874,12 +874,12 @@ function DokumenContent() {
                   <Label className="text-[10px] font-black uppercase text-purple-900 tracking-widest ml-1">Pot Pajak (%)</Label>
                   <div className="relative">
                     <Percent className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-purple-600" />
-                    <Input 
+                    <Input
                       type="number"
-                      placeholder="0" 
+                      placeholder="0"
                       value={insentifTax}
                       onChange={(e) => setInsentifTax(e.target.value)}
-                      className="h-14 pl-12 rounded-2xl bg-white border-none font-black text-purple-900 text-lg shadow-sm" 
+                      className="h-14 pl-12 rounded-2xl bg-white border-none font-black text-purple-900 text-lg shadow-sm"
                     />
                   </div>
                 </div>
@@ -888,147 +888,147 @@ function DokumenContent() {
           )}
 
           {type === "siltap" && (
-             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2">
-                <div className="space-y-4">
-                    <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Pilih Jenis Pembayaran</Label>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <Button 
-                            type="button"
-                            onClick={() => setSiltapSubType("perangkat")}
-                            className={cn(
-                                "h-16 rounded-2xl font-black text-xs uppercase gap-3 transition-all",
-                                siltapSubType === "perangkat" ? "bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-200" : "bg-muted/30 text-muted-foreground hover:bg-emerald-50 hover:text-emerald-700 border-2 border-transparent"
-                            )}
-                        >
-                            <Users className="h-5 w-5" /> SILTAP PERANGKAT
-                        </Button>
-                        <Button 
-                            type="button"
-                            onClick={() => setSiltapSubType("bpd")}
-                            className={cn(
-                                "h-16 rounded-2xl font-black text-xs uppercase gap-3 transition-all",
-                                siltapSubType === "bpd" ? "bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-200" : "bg-muted/30 text-muted-foreground hover:bg-emerald-50 hover:text-emerald-700 border-2 border-transparent"
-                            )}
-                        >
-                            <ShieldCheck className="h-5 w-5" /> INSENTIF BPD
-                        </Button>
-                    </div>
+            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2">
+              <div className="space-y-4">
+                <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Pilih Jenis Pembayaran</Label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Button
+                    type="button"
+                    onClick={() => setSiltapSubType("perangkat")}
+                    className={cn(
+                      "h-16 rounded-2xl font-black text-xs uppercase gap-3 transition-all",
+                      siltapSubType === "perangkat" ? "bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20" : "bg-muted/30 text-muted-foreground hover:bg-primary/10 hover:text-primary border-2 border-transparent"
+                    )}
+                  >
+                    <Users className="h-5 w-5" /> SILTAP PERANGKAT
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={() => setSiltapSubType("bpd")}
+                    className={cn(
+                      "h-16 rounded-2xl font-black text-xs uppercase gap-3 transition-all",
+                      siltapSubType === "bpd" ? "bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20" : "bg-muted/30 text-muted-foreground hover:bg-primary/10 hover:text-primary border-2 border-transparent"
+                    )}
+                  >
+                    <ShieldCheck className="h-5 w-5" /> INSENTIF BPD
+                  </Button>
                 </div>
+              </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                        <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Pilih Bulan / Tunjangan</Label>
-                        <Select value={insentifMonth} onValueChange={setInsentifMonth}>
-                            <SelectTrigger className="h-14 rounded-2xl bg-muted/20 border-none px-5 text-base font-bold">
-                                <SelectValue placeholder="Pilih Bulan..." />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"].map(m => (
-                                    <SelectItem key={m} value={m} className="font-bold">{m}</SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
-                    <div className="space-y-2">
-                        <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Tgl Cetak</Label>
-                        <div className="relative">
-                            <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                            <Input 
-                                type="date" 
-                                value={date}
-                                onChange={(e) => setDate(e.target.value)}
-                                className="h-14 pl-12 rounded-2xl bg-muted/20 border-none font-bold text-base" 
-                            />
-                        </div>
-                    </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Pilih Bulan / Tunjangan</Label>
+                  <Select value={insentifMonth} onValueChange={setInsentifMonth}>
+                    <SelectTrigger className="h-14 rounded-2xl bg-muted/20 border-none px-5 text-base font-bold">
+                      <SelectValue placeholder="Pilih Bulan..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"].map(m => (
+                        <SelectItem key={m} value={m} className="font-bold">{m}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
-             </div>
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Tgl Cetak</Label>
+                  <div className="relative">
+                    <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input
+                      type="date"
+                      value={date}
+                      onChange={(e) => setDate(e.target.value)}
+                      className="h-14 pl-12 rounded-2xl bg-muted/20 border-none font-bold text-base"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
           )}
 
           {type === "daftar-hadir-posyandu" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2">
-                <Tabs value={posyanduSubType} onValueChange={(v: any) => setPosyanduSubType(v)} className="w-full">
-                    <TabsList className="grid grid-cols-2 w-full h-12 mb-6 bg-rose-50 p-1 rounded-xl">
-                        <TabsTrigger value="kader" className="gap-2 text-[10px] font-black uppercase rounded-lg data-[state=active]:bg-rose-600 data-[state=active]:text-white">
-                            <UserCheck className="h-4 w-4" />
-                            Daftar Kader
-                        </TabsTrigger>
-                        <TabsTrigger value="peserta" className="gap-2 text-[10px] font-black uppercase rounded-lg data-[state=active]:bg-rose-600 data-[state=active]:text-white">
-                            <Baby className="h-4 w-4" />
-                            Daftar Peserta Posyandu
-                        </TabsTrigger>
-                    </TabsList>
+              <Tabs value={posyanduSubType} onValueChange={(v: any) => setPosyanduSubType(v)} className="w-full">
+                <TabsList className="grid grid-cols-2 w-full h-12 mb-6 bg-rose-50 p-1 rounded-xl">
+                  <TabsTrigger value="kader" className="gap-2 text-[10px] font-black uppercase rounded-lg data-[state=active]:bg-rose-600 data-[state=active]:text-white">
+                    <UserCheck className="h-4 w-4" />
+                    Daftar Kader
+                  </TabsTrigger>
+                  <TabsTrigger value="peserta" className="gap-2 text-[10px] font-black uppercase rounded-lg data-[state=active]:bg-rose-600 data-[state=active]:text-white">
+                    <Baby className="h-4 w-4" />
+                    Daftar Peserta Posyandu
+                  </TabsTrigger>
+                </TabsList>
 
-                    <div className="space-y-6">
-                        <div className="space-y-2">
-                            <Label className="text-[10px] font-black uppercase text-rose-600 tracking-widest ml-1">Judul Kegiatan</Label>
-                            <Input 
-                                placeholder="Contoh: Posyandu Balita & Lansia" 
-                                value={manualTitle}
-                                onChange={(e) => setManualTitle(e.target.value)}
-                                className="h-14 rounded-2xl bg-rose-50/50 border-rose-100 font-bold" 
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label className="text-[10px] font-black uppercase text-rose-600 tracking-widest ml-1">Pilih Kelompok Posyandu</Label>
-                            <Select value={selectedLestari} onValueChange={setSelectedLestari}>
-                                <SelectTrigger className="h-14 rounded-2xl bg-rose-50 border-rose-100 font-black">
-                                    <SelectValue placeholder="Pilih Posyandu..." />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {LestariGroups.map(group => (
-                                        <SelectItem key={group} value={group} className="font-bold">{group}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <Label className="text-[10px] font-black uppercase text-rose-600 tracking-widest ml-1">Judul Kegiatan</Label>
+                    <Input
+                      placeholder="Contoh: Posyandu Balita & Lansia"
+                      value={manualTitle}
+                      onChange={(e) => setManualTitle(e.target.value)}
+                      className="h-14 rounded-2xl bg-rose-50/50 border-rose-100 font-bold"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-[10px] font-black uppercase text-rose-600 tracking-widest ml-1">Pilih Kelompok Posyandu</Label>
+                    <Select value={selectedLestari} onValueChange={setSelectedLestari}>
+                      <SelectTrigger className="h-14 rounded-2xl bg-rose-50 border-rose-100 font-black">
+                        <SelectValue placeholder="Pilih Posyandu..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {LestariGroups.map(group => (
+                          <SelectItem key={group} value={group} className="font-bold">{group}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-                        {posyanduSubType === "peserta" && (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-in slide-in-from-top-1">
-                                <div className="space-y-2">
-                                    <Label className="text-[10px] font-black uppercase text-rose-600 tracking-widest ml-1">Pilih Jenis Peserta</Label>
-                                    <Select value={selectedHealthCategory} onValueChange={setSelectedHealthCategory}>
-                                        <SelectTrigger className="h-14 rounded-2xl bg-rose-50 border-rose-100 font-bold">
-                                            <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {HEALTH_CATEGORIES.map(cat => (
-                                                <SelectItem key={cat} value={cat} className="font-bold">{cat}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-[10px] font-black uppercase text-rose-600 tracking-widest ml-1">Minimal Baris (Jika Data Sedikit)</Label>
-                                    <div className="relative">
-                                        <Users className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-rose-600/50" />
-                                        <Input 
-                                            type="number"
-                                            value={jumlahKuotaPeserta}
-                                            onChange={(e) => setJumlahKuotaPeserta(parseInt(e.target.value) || 0)}
-                                            className="h-14 pl-12 rounded-2xl bg-rose-50/30 border-rose-100 font-black text-rose-900" 
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label className="text-[10px] font-black uppercase text-rose-600 tracking-widest ml-1">Tanggal</Label>
-                                <Input type="date" value={date} onChange={e => setDate(e.target.value)} className="h-12 rounded-xl" />
-                            </div>
-                            <div className="space-y-2">
-                                <Label className="text-[10px] font-black uppercase text-rose-600 tracking-widest ml-1">Waktu</Label>
-                                <Input value={time} onChange={e => setTime(e.target.value)} placeholder="09:00 WIB" className="h-12 rounded-xl" />
-</div>
+                  {posyanduSubType === "peserta" && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-in slide-in-from-top-1">
+                      <div className="space-y-2">
+                        <Label className="text-[10px] font-black uppercase text-rose-600 tracking-widest ml-1">Pilih Jenis Peserta</Label>
+                        <Select value={selectedHealthCategory} onValueChange={setSelectedHealthCategory}>
+                          <SelectTrigger className="h-14 rounded-2xl bg-rose-50 border-rose-100 font-bold">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {HEALTH_CATEGORIES.map(cat => (
+                              <SelectItem key={cat} value={cat} className="font-bold">{cat}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-[10px] font-black uppercase text-rose-600 tracking-widest ml-1">Minimal Baris (Jika Data Sedikit)</Label>
+                        <div className="relative">
+                          <Users className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-rose-600/50" />
+                          <Input
+                            type="number"
+                            value={jumlahKuotaPeserta}
+                            onChange={(e) => setJumlahKuotaPeserta(parseInt(e.target.value) || 0)}
+                            className="h-14 pl-12 rounded-2xl bg-rose-50/30 border-rose-100 font-black text-rose-900"
+                          />
                         </div>
-                        <div className="space-y-2">
-                            <Label className="text-[10px] font-black uppercase text-rose-600 tracking-widest ml-1">Lokasi (Manual)</Label>
-                            <Input value={location} onChange={e => setLocation(e.target.value)} placeholder="Contoh: Rumah Ibu RW 01" className="h-12 rounded-xl" />
-                        </div>
+                      </div>
                     </div>
-                </Tabs>
+                  )}
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label className="text-[10px] font-black uppercase text-rose-600 tracking-widest ml-1">Tanggal</Label>
+                      <Input type="date" value={date} onChange={e => setDate(e.target.value)} className="h-12 rounded-xl" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-[10px] font-black uppercase text-rose-600 tracking-widest ml-1">Waktu</Label>
+                      <Input value={time} onChange={e => setTime(e.target.value)} placeholder="09:00 WIB" className="h-12 rounded-xl" />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-[10px] font-black uppercase text-rose-600 tracking-widest ml-1">Lokasi (Manual)</Label>
+                    <Input value={location} onChange={e => setLocation(e.target.value)} placeholder="Contoh: Rumah Ibu RW 01" className="h-12 rounded-xl" />
+                  </div>
+                </div>
+              </Tabs>
             </div>
           )}
 
@@ -1081,11 +1081,11 @@ function DokumenContent() {
                         <Label className="text-[9px] font-black uppercase text-muted-foreground ml-1">Tanggal Transaksi / Pesanan</Label>
                         <div className="relative">
                           <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-orange-600" />
-                          <Input 
-                            type="date" 
+                          <Input
+                            type="date"
                             value={notaDate}
                             onChange={(e) => setNotaDate(e.target.value)}
-                            className="h-12 pl-12 rounded-xl bg-white border-orange-200 font-bold" 
+                            className="h-12 pl-12 rounded-xl bg-white border-orange-200 font-bold"
                           />
                         </div>
                       </div>
@@ -1094,7 +1094,7 @@ function DokumenContent() {
                         <div className="flex items-center justify-between">
                           <Label className="text-[9px] font-black uppercase text-muted-foreground ml-1">Perangkat / Pemesan Barang</Label>
                           {dbOfficials && dbOfficials.length > 0 && (
-                            <Select 
+                            <Select
                               onValueChange={(val) => {
                                 const off = dbOfficials.find(o => o.name === val);
                                 if (off) {
@@ -1116,11 +1116,11 @@ function DokumenContent() {
                             </Select>
                           )}
                         </div>
-                        <Input 
-                          placeholder="Contoh: TEDY TRISNANTO" 
+                        <Input
+                          placeholder="Contoh: TEDY TRISNANTO"
                           value={notaPerangkatNama}
                           onChange={(e) => setNotaPerangkatNama(e.target.value)}
-                          className="h-12 rounded-xl bg-white border-orange-200 font-bold" 
+                          className="h-12 rounded-xl bg-white border-orange-200 font-bold"
                         />
                       </div>
 
@@ -1128,7 +1128,7 @@ function DokumenContent() {
                         <div className="flex items-center justify-between">
                           <Label className="text-[9px] font-black uppercase text-muted-foreground ml-1">Penerima Faktur (Kepala Desa)</Label>
                           {dbOfficials && dbOfficials.length > 0 && (
-                            <Select 
+                            <Select
                               onValueChange={(val) => setNotaKepalaDesa(val)}
                             >
                               <SelectTrigger className="h-6 text-[9px] font-bold border-orange-200 text-orange-700 bg-white w-auto px-2 rounded-lg">
@@ -1144,41 +1144,41 @@ function DokumenContent() {
                             </Select>
                           )}
                         </div>
-                        <Input 
-                          placeholder="Contoh: SARYOKO" 
+                        <Input
+                          placeholder="Contoh: CATUR SILVIA DEWI"
                           value={notaKepalaDesa}
                           onChange={(e) => setNotaKepalaDesa(e.target.value)}
-                          className="h-12 rounded-xl bg-white border-orange-200 font-bold" 
+                          className="h-12 rounded-xl bg-white border-orange-200 font-bold"
                         />
                       </div>
 
                       <div className="space-y-1.5">
                         <Label className="text-[9px] font-black uppercase text-muted-foreground ml-1">Nama Pemilik Toko / Pengirim</Label>
-                        <Input 
-                          placeholder="Contoh: DEDI" 
+                        <Input
+                          placeholder="Contoh: DEDI"
                           value={notaNamaPemilik}
                           onChange={(e) => setNotaNamaPemilik(e.target.value)}
-                          className="h-12 rounded-xl bg-white border-orange-200 font-bold" 
+                          className="h-12 rounded-xl bg-white border-orange-200 font-bold"
                         />
                       </div>
 
                       <div className="space-y-1.5">
                         <Label className="text-[9px] font-black uppercase text-muted-foreground ml-1">Nama Toko / Usaha</Label>
-                        <Input 
-                          placeholder="Contoh: NAYA" 
+                        <Input
+                          placeholder="Contoh: NAYA"
                           value={notaNamaToko}
                           onChange={(e) => setNotaNamaToko(e.target.value)}
-                          className="h-12 rounded-xl bg-white border-orange-200 font-bold text-orange-950" 
+                          className="h-12 rounded-xl bg-white border-orange-200 font-bold text-orange-950"
                         />
                       </div>
 
                       <div className="space-y-1.5">
                         <Label className="text-[9px] font-black uppercase text-muted-foreground ml-1">Desa / Lokasi Toko (Di-)</Label>
-                        <Input 
-                          placeholder="Contoh: CINANGSI" 
+                        <Input
+                          placeholder="Contoh: KARANGANYAR"
                           value={notaAlamatToko}
                           onChange={(e) => setNotaAlamatToko(e.target.value)}
-                          className="h-12 rounded-xl bg-white border-orange-200 font-medium" 
+                          className="h-12 rounded-xl bg-white border-orange-200 font-medium"
                         />
                       </div>
                     </div>
@@ -1230,7 +1230,7 @@ function DokumenContent() {
 
                                 {/* 2. Jenis / Nama Barang */}
                                 <td className="py-2.5 px-3">
-                                  <Input 
+                                  <Input
                                     placeholder="Contoh: Foto Copy Undangan dan Materi"
                                     value={item.jenisBarang}
                                     onChange={(e) => handleNotaItemChange(idx, "jenisBarang", e.target.value)}
@@ -1240,7 +1240,7 @@ function DokumenContent() {
 
                                 {/* 3. Banyaknya */}
                                 <td className="py-2.5 px-2">
-                                  <Input 
+                                  <Input
                                     type="number"
                                     min="1"
                                     placeholder="1"
@@ -1252,7 +1252,7 @@ function DokumenContent() {
 
                                 {/* 4. Satuan */}
                                 <td className="py-2.5 px-2">
-                                  <Input 
+                                  <Input
                                     placeholder="buah / Rim"
                                     value={item.satuan}
                                     onChange={(e) => handleNotaItemChange(idx, "satuan", e.target.value)}
@@ -1262,7 +1262,7 @@ function DokumenContent() {
 
                                 {/* 5. Harga Satuan */}
                                 <td className="py-2.5 px-3">
-                                  <Input 
+                                  <Input
                                     type="number"
                                     placeholder="0"
                                     value={item.hargaSatuan}
@@ -1352,11 +1352,11 @@ function DokumenContent() {
                         <Label className="text-[9px] font-black uppercase text-muted-foreground ml-1">Tanggal Pembelian</Label>
                         <div className="relative">
                           <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-orange-600" />
-                          <Input 
-                            type="date" 
+                          <Input
+                            type="date"
                             value={strukDate}
                             onChange={(e) => setStrukDate(e.target.value)}
-                            className="h-12 pl-12 rounded-xl bg-white border-orange-200 font-bold" 
+                            className="h-12 pl-12 rounded-xl bg-white border-orange-200 font-bold"
                           />
                         </div>
                       </div>
@@ -1364,65 +1364,65 @@ function DokumenContent() {
                       <div className="space-y-1.5">
                         <Label className="text-[9px] font-black uppercase text-muted-foreground ml-1">Waktu Transaksi (Jam : Menit : Detik)</Label>
                         <div className="grid grid-cols-3 gap-2">
-                          <Input 
-                            placeholder="Jam (00-23)" 
+                          <Input
+                            placeholder="Jam (00-23)"
                             value={strukJam}
                             onChange={(e) => setStrukJam(e.target.value)}
-                            className="h-12 rounded-xl bg-white border-orange-200 text-center font-bold" 
+                            className="h-12 rounded-xl bg-white border-orange-200 text-center font-bold"
                           />
-                          <Input 
-                            placeholder="Menit (00-59)" 
+                          <Input
+                            placeholder="Menit (00-59)"
                             value={strukMenit}
                             onChange={(e) => setStrukMenit(e.target.value)}
-                            className="h-12 rounded-xl bg-white border-orange-200 text-center font-bold" 
+                            className="h-12 rounded-xl bg-white border-orange-200 text-center font-bold"
                           />
-                          <Input 
-                            placeholder="Detik (00-59)" 
+                          <Input
+                            placeholder="Detik (00-59)"
                             value={strukDetik}
                             onChange={(e) => setStrukDetik(e.target.value)}
-                            className="h-12 rounded-xl bg-white border-orange-200 text-center font-bold" 
+                            className="h-12 rounded-xl bg-white border-orange-200 text-center font-bold"
                           />
                         </div>
                       </div>
 
                       <div className="space-y-1.5">
                         <Label className="text-[9px] font-black uppercase text-muted-foreground ml-1">Nama Toko / Minimarket</Label>
-                        <Input 
-                          placeholder="Contoh: MINIMARKET RUNGKANG JAYA" 
+                        <Input
+                          placeholder="Contoh: MINIMARKET KARANGANYAR JAYA"
                           value={strukNamaToko}
                           onChange={(e) => setStrukNamaToko(e.target.value)}
-                          className="h-12 rounded-xl bg-white border-orange-200 font-bold text-orange-950" 
+                          className="h-12 rounded-xl bg-white border-orange-200 font-bold text-orange-950"
                         />
                       </div>
 
                       <div className="space-y-1.5">
                         <Label className="text-[9px] font-black uppercase text-muted-foreground ml-1">Alamat Toko</Label>
-                        <Input 
-                          placeholder="Contoh: Jl. Raya Pelita KM 5 Rungkang" 
+                        <Input
+                          placeholder="Contoh: Jl. Slamet Riyadi No. 60, Desa Karanganyar"
                           value={strukAlamatToko}
                           onChange={(e) => setStrukAlamatToko(e.target.value)}
-                          className="h-12 rounded-xl bg-white border-orange-200 font-medium" 
+                          className="h-12 rounded-xl bg-white border-orange-200 font-medium"
                         />
                       </div>
 
                       <div className="space-y-1.5">
                         <Label className="text-[9px] font-black uppercase text-muted-foreground ml-1">Nama Kasir (Opsional)</Label>
-                        <Input 
-                          placeholder="KASIR 01" 
+                        <Input
+                          placeholder="KASIR 01"
                           value={strukKasir}
                           onChange={(e) => setStrukKasir(e.target.value)}
-                          className="h-12 rounded-xl bg-white border-orange-200 font-medium" 
+                          className="h-12 rounded-xl bg-white border-orange-200 font-medium"
                         />
                       </div>
 
                       <div className="space-y-1.5">
                         <Label className="text-[9px] font-black uppercase text-muted-foreground ml-1">Nominal Pembayaran Tunai (Rp)</Label>
-                        <Input 
+                        <Input
                           type="number"
-                          placeholder="Opsional (Pas / Otomatis)" 
+                          placeholder="Opsional (Pas / Otomatis)"
                           value={strukBayarTunai}
                           onChange={(e) => setStrukBayarTunai(e.target.value)}
-                          className="h-12 rounded-xl bg-white border-orange-200 font-bold text-orange-950" 
+                          className="h-12 rounded-xl bg-white border-orange-200 font-bold text-orange-950"
                         />
                       </div>
                     </div>
@@ -1474,7 +1474,7 @@ function DokumenContent() {
 
                                 {/* 2. Jenis / Nama Barang */}
                                 <td className="py-2.5 px-3">
-                                  <Input 
+                                  <Input
                                     placeholder="Contoh: Aqua Botol 600ml"
                                     value={item.jenisBarang}
                                     onChange={(e) => handleStrukItemChange(idx, "jenisBarang", e.target.value)}
@@ -1484,7 +1484,7 @@ function DokumenContent() {
 
                                 {/* 3. Banyaknya */}
                                 <td className="py-2.5 px-2">
-                                  <Input 
+                                  <Input
                                     type="number"
                                     min="1"
                                     placeholder="1"
@@ -1496,7 +1496,7 @@ function DokumenContent() {
 
                                 {/* 4. Satuan */}
                                 <td className="py-2.5 px-2">
-                                  <Input 
+                                  <Input
                                     placeholder="Pcs / Btl"
                                     value={item.satuan}
                                     onChange={(e) => handleStrukItemChange(idx, "satuan", e.target.value)}
@@ -1506,7 +1506,7 @@ function DokumenContent() {
 
                                 {/* 5. Harga Satuan */}
                                 <td className="py-2.5 px-3">
-                                  <Input 
+                                  <Input
                                     type="number"
                                     placeholder="0"
                                     value={item.hargaSatuan}
@@ -1573,15 +1573,15 @@ function DokumenContent() {
           {(type !== "siltap" && type !== "insentif" && type !== "daftar-hadir-posyandu" && type !== "bukti-transaksi") && (
             <div className="space-y-8">
               <div className="flex gap-2 p-1 bg-muted/50 rounded-xl">
-                <Button 
-                  variant={useApbdes ? "default" : "ghost"} 
+                <Button
+                  variant={useApbdes ? "default" : "ghost"}
                   className={cn("flex-1 text-[10px] uppercase font-black gap-2 h-10", useApbdes && "shadow-md")}
                   onClick={() => setUseApbdes(true)}
                 >
                   <Database className="h-3 w-3" /> APBDes
                 </Button>
-                <Button 
-                  variant={!useApbdes ? "default" : "ghost"} 
+                <Button
+                  variant={!useApbdes ? "default" : "ghost"}
                   className={cn("flex-1 text-[10px] uppercase font-black gap-2 h-10", !useApbdes && "shadow-md")}
                   onClick={() => setUseApbdes(false)}
                 >
@@ -1593,19 +1593,19 @@ function DokumenContent() {
                 {useApbdes ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="sm:col-span-2 space-y-2">
-                        <Label className="text-[10px] font-black uppercase text-primary tracking-widest ml-1 flex items-center gap-2">
-                            <Calendar className="h-3 w-3" /> Pilih Tahun APBDes
-                        </Label>
-                        <Select value={selectedYear} onValueChange={(val) => { setSelectedYear(val); setSumber(""); setKegiatan(""); }}>
-                            <SelectTrigger className="h-12 rounded-xl bg-primary/5 border-primary/10 px-5 font-black text-primary">
-                                <SelectValue placeholder="Pilih Tahun..." />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {["2024", "2025", "2026", "2027", "2028", "2029"].map(y => (
-                                    <SelectItem key={y} value={y}>{y}</SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                      <Label className="text-[10px] font-black uppercase text-primary tracking-widest ml-1 flex items-center gap-2">
+                        <Calendar className="h-3 w-3" /> Pilih Tahun APBDes
+                      </Label>
+                      <Select value={selectedYear} onValueChange={(val) => { setSelectedYear(val); setSumber(""); setKegiatan(""); }}>
+                        <SelectTrigger className="h-12 rounded-xl bg-primary/5 border-primary/10 px-5 font-black text-primary">
+                          <SelectValue placeholder="Pilih Tahun..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {["2024", "2025", "2026", "2027", "2028", "2029"].map(y => (
+                            <SelectItem key={y} value={y}>{y}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
 
                     <div className="space-y-2">
@@ -1651,11 +1651,11 @@ function DokumenContent() {
                 ) : (
                   <div className="space-y-2">
                     <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Nama Kegiatan</Label>
-                    <Input 
-                      placeholder="Ketik perihal kegiatan..." 
+                    <Input
+                      placeholder="Ketik perihal kegiatan..."
                       value={manualTitle}
                       onChange={(e) => setManualTitle(e.target.value)}
-                      className="h-14 rounded-2xl bg-muted/20 border-none px-5 text-base font-medium" 
+                      className="h-14 rounded-2xl bg-muted/20 border-none px-5 text-base font-medium"
                     />
                   </div>
                 )}
@@ -1665,11 +1665,11 @@ function DokumenContent() {
                     <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Tanggal</Label>
                     <div className="relative">
                       <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input 
-                        type="date" 
+                      <Input
+                        type="date"
                         value={date}
                         onChange={(e) => setDate(e.target.value)}
-                        className="h-12 pl-12 rounded-xl bg-muted/20 border-none font-medium" 
+                        className="h-12 pl-12 rounded-xl bg-muted/20 border-none font-medium"
                       />
                     </div>
                   </div>
@@ -1677,11 +1677,11 @@ function DokumenContent() {
                     <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Waktu</Label>
                     <div className="relative">
                       <Clock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input 
-                        placeholder="09:00 WIB" 
+                      <Input
+                        placeholder="09:00 WIB"
                         value={time}
                         onChange={(e) => setTime(e.target.value)}
-                        className="h-12 pl-12 rounded-xl bg-muted/20 border-none font-medium" 
+                        className="h-12 pl-12 rounded-xl bg-muted/20 border-none font-medium"
                       />
                     </div>
                   </div>
@@ -1689,11 +1689,11 @@ function DokumenContent() {
 
                 <div className="space-y-2">
                   <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Lokasi</Label>
-                  <Input 
-                    placeholder="Lokasi kegiatan..." 
+                  <Input
+                    placeholder="Lokasi kegiatan..."
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
-                    className="h-12 rounded-xl bg-muted/20 border-none px-5 font-medium" 
+                    className="h-12 rounded-xl bg-muted/20 border-none px-5 font-medium"
                   />
                 </div>
               </div>
@@ -1702,88 +1702,88 @@ function DokumenContent() {
 
           {type === "honor-narasumber" && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2">
-                <div className="space-y-4">
-                    <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Jumlah Narasumber</Label>
-                    <div className="grid grid-cols-4 gap-3">
-                        {[1, 2, 3, 4].map((n) => (
-                            <Button
-                                key={n}
-                                type="button"
-                                variant={numNarsum === n ? "default" : "outline"}
-                                onClick={() => setNumNarsum(n)}
-                                className={cn(
-                                    "h-14 rounded-2xl font-black text-sm transition-all",
-                                    numNarsum === n ? "bg-amber-600 hover:bg-amber-700 shadow-lg shadow-amber-200" : "border-amber-200 hover:bg-amber-50 text-amber-900"
-                                )}
-                            >
-                                {n} Orang
-                            </Button>
-                        ))}
+              <div className="space-y-4">
+                <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Jumlah Narasumber</Label>
+                <div className="grid grid-cols-4 gap-3">
+                  {[1, 2, 3, 4].map((n) => (
+                    <Button
+                      key={n}
+                      type="button"
+                      variant={numNarsum === n ? "default" : "outline"}
+                      onClick={() => setNumNarsum(n)}
+                      className={cn(
+                        "h-14 rounded-2xl font-black text-sm transition-all",
+                        numNarsum === n ? "bg-amber-600 hover:bg-amber-700 shadow-lg shadow-amber-200" : "border-amber-200 hover:bg-amber-50 text-amber-900"
+                      )}
+                    >
+                      {n} Orang
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                {Array.from({ length: numNarsum }).map((_, i) => (
+                  <div key={i} className="p-6 rounded-[2rem] border border-amber-100 bg-amber-50/30 relative overflow-hidden group">
+                    <div className="absolute top-0 left-0 w-1.5 h-full bg-amber-600 opacity-20" />
+                    <div className="flex items-center justify-between mb-6">
+                      <h3 className="text-[10px] font-black uppercase text-amber-800 tracking-[0.2em]">Narasumber {i + 1}</h3>
+                      <Briefcase className="h-4 w-4 text-amber-600 opacity-40" />
                     </div>
-                </div>
 
-                <div className="space-y-6">
-                    {Array.from({ length: numNarsum }).map((_, i) => (
-                        <div key={i} className="p-6 rounded-[2rem] border border-amber-100 bg-amber-50/30 relative overflow-hidden group">
-                            <div className="absolute top-0 left-0 w-1.5 h-full bg-amber-600 opacity-20" />
-                            <div className="flex items-center justify-between mb-6">
-                                <h3 className="text-[10px] font-black uppercase text-amber-800 tracking-[0.2em]">Narasumber {i + 1}</h3>
-                                <Briefcase className="h-4 w-4 text-amber-600 opacity-40" />
-                            </div>
-
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                                <div className="space-y-2">
-                                    <Label className="text-[9px] font-black uppercase text-amber-900/60 ml-1">Nama Lengkap</Label>
-                                    <Input 
-                                        placeholder="Ketik nama..." 
-                                        value={narsumData[i].name}
-                                        onChange={(e) => updateNarsumData(i, "name", e.target.value)}
-                                        className="h-12 rounded-xl bg-white border-amber-100 focus:border-amber-400"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-[9px] font-black uppercase text-amber-900/60 ml-1">Jabatan</Label>
-                                    <Input 
-                                        placeholder="Jabatan/Instansi..." 
-                                        value={narsumData[i].position}
-                                        onChange={(e) => updateNarsumData(i, "position", e.target.value)}
-                                        className="h-12 rounded-xl bg-white border-amber-100 focus:border-amber-400"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-[9px] font-black uppercase text-amber-900/60 ml-1">Nominal Honor (Rp)</Label>
-                                    <div className="relative">
-                                        <Coins className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-amber-600 opacity-50" />
-                                        <Input 
-                                            type="number"
-                                            placeholder="0" 
-                                            value={narsumData[i].nominal}
-                                            onChange={(e) => updateNarsumData(i, "nominal", e.target.value)}
-                                            className="h-12 pl-10 rounded-xl bg-white border-amber-100 focus:border-amber-400 font-bold"
-                                        />
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-[9px] font-black uppercase text-amber-900/60 ml-1">Pajak (%)</Label>
-                                    <div className="relative">
-                                        <Percent className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-amber-600 opacity-50" />
-                                        <Input 
-                                            type="number"
-                                            placeholder="0" 
-                                            value={narsumData[i].tax}
-                                            onChange={(e) => setNarsumData(prev => {
-                                                const next = [...prev];
-                                                next[i] = { ...next[i], tax: e.target.value };
-                                                return next;
-                                            })}
-                                            className="h-12 pl-10 rounded-xl bg-white border-amber-100 focus:border-amber-400 font-bold"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                      <div className="space-y-2">
+                        <Label className="text-[9px] font-black uppercase text-amber-900/60 ml-1">Nama Lengkap</Label>
+                        <Input
+                          placeholder="Ketik nama..."
+                          value={narsumData[i].name}
+                          onChange={(e) => updateNarsumData(i, "name", e.target.value)}
+                          className="h-12 rounded-xl bg-white border-amber-100 focus:border-amber-400"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-[9px] font-black uppercase text-amber-900/60 ml-1">Jabatan</Label>
+                        <Input
+                          placeholder="Jabatan/Instansi..."
+                          value={narsumData[i].position}
+                          onChange={(e) => updateNarsumData(i, "position", e.target.value)}
+                          className="h-12 rounded-xl bg-white border-amber-100 focus:border-amber-400"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-[9px] font-black uppercase text-amber-900/60 ml-1">Nominal Honor (Rp)</Label>
+                        <div className="relative">
+                          <Coins className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-amber-600 opacity-50" />
+                          <Input
+                            type="number"
+                            placeholder="0"
+                            value={narsumData[i].nominal}
+                            onChange={(e) => updateNarsumData(i, "nominal", e.target.value)}
+                            className="h-12 pl-10 rounded-xl bg-white border-amber-100 focus:border-amber-400 font-bold"
+                          />
                         </div>
-                    ))}
-                </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-[9px] font-black uppercase text-amber-900/60 ml-1">Pajak (%)</Label>
+                        <div className="relative">
+                          <Percent className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-amber-600 opacity-50" />
+                          <Input
+                            type="number"
+                            placeholder="0"
+                            value={narsumData[i].tax}
+                            onChange={(e) => setNarsumData(prev => {
+                              const next = [...prev];
+                              next[i] = { ...next[i], tax: e.target.value };
+                              return next;
+                            })}
+                            className="h-12 pl-10 rounded-xl bg-white border-amber-100 focus:border-amber-400 font-bold"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
@@ -1795,14 +1795,14 @@ function DokumenContent() {
                 </Label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {HONOR_KEGIATAN_CATEGORIES.map((cat, idx) => (
-                    <Button 
+                    <Button
                       key={cat}
                       type="button"
                       onClick={() => handleSelectHonorCat(cat)}
                       className={cn(
                         "h-14 rounded-2xl font-black text-xs transition-all border-2 text-left justify-start px-4",
-                        honorKegiatanCat === cat 
-                          ? "bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700 hover:border-indigo-700" 
+                        honorKegiatanCat === cat
+                          ? "bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700 hover:border-indigo-700"
                           : "bg-white border-muted text-indigo-950 hover:bg-indigo-50/50 hover:border-indigo-200"
                       )}
                     >
@@ -1823,11 +1823,11 @@ function DokumenContent() {
                   <Label className="text-[10px] font-black uppercase text-indigo-800 tracking-widest ml-1">
                     Nama Kategori Honor (Input Manual)
                   </Label>
-                  <Input 
-                    placeholder="Contoh: Honorarium Tim Teknis Lapangan" 
+                  <Input
+                    placeholder="Contoh: Honorarium Tim Teknis Lapangan"
                     value={manualHonorCat}
                     onChange={(e) => setManualHonorCat(e.target.value)}
-                    className="h-12 rounded-xl bg-white border-indigo-200 font-bold text-indigo-950" 
+                    className="h-12 rounded-xl bg-white border-indigo-200 font-bold text-indigo-950"
                   />
                   <p className="text-[10px] text-indigo-700/70 font-medium ml-1 italic">
                     * Judul dokumen pada PDF akan dicetak: &quot;TANDA TERIMA {manualHonorCat.trim().toUpperCase() || "HONORARIUM KEGIATAN"}&quot;
@@ -1851,8 +1851,8 @@ function DokumenContent() {
                       onClick={() => setNumHonorKegiatan(n)}
                       className={cn(
                         "h-12 rounded-xl font-black text-xs transition-all",
-                        numHonorKegiatan === n 
-                          ? "bg-indigo-600 hover:bg-indigo-700 shadow-md shadow-indigo-200 text-white" 
+                        numHonorKegiatan === n
+                          ? "bg-indigo-600 hover:bg-indigo-700 shadow-md shadow-indigo-200 text-white"
                           : "border-indigo-100 hover:bg-indigo-50 text-indigo-900"
                       )}
                     >
@@ -1863,12 +1863,12 @@ function DokumenContent() {
                 {numHonorKegiatan > 10 && (
                   <div className="flex items-center gap-3 pt-1">
                     <Label className="text-[10px] font-bold text-muted-foreground">Kustom Jumlah:</Label>
-                    <Input 
-                      type="number" 
-                      min="1" 
-                      max="20" 
-                      value={numHonorKegiatan} 
-                      onChange={(e) => setNumHonorKegiatan(Math.max(1, Math.min(20, parseInt(e.target.value) || 1)))} 
+                    <Input
+                      type="number"
+                      min="1"
+                      max="20"
+                      value={numHonorKegiatan}
+                      onChange={(e) => setNumHonorKegiatan(Math.max(1, Math.min(20, parseInt(e.target.value) || 1)))}
                       className="w-24 h-10 rounded-lg text-center font-bold"
                     />
                   </div>
@@ -1887,27 +1887,27 @@ function DokumenContent() {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div className="space-y-1">
                     <Label className="text-[9px] font-bold uppercase text-indigo-900/70 ml-1">Nominal Honor (Rp)</Label>
-                    <Input 
-                      type="number" 
-                      placeholder="Contoh: 150000" 
-                      value={batchHonorNominal} 
-                      onChange={(e) => setBatchHonorNominal(e.target.value)} 
+                    <Input
+                      type="number"
+                      placeholder="Contoh: 150000"
+                      value={batchHonorNominal}
+                      onChange={(e) => setBatchHonorNominal(e.target.value)}
                       className="h-11 rounded-xl bg-white border-indigo-200 font-bold"
                     />
                   </div>
                   <div className="space-y-1">
                     <Label className="text-[9px] font-bold uppercase text-indigo-900/70 ml-1">Pajak (%)</Label>
-                    <Input 
-                      type="number" 
-                      placeholder="0" 
-                      value={batchHonorTax} 
-                      onChange={(e) => setBatchHonorTax(e.target.value)} 
+                    <Input
+                      type="number"
+                      placeholder="0"
+                      value={batchHonorTax}
+                      onChange={(e) => setBatchHonorTax(e.target.value)}
                       className="h-11 rounded-xl bg-white border-indigo-200 font-bold"
                     />
                   </div>
                   <div className="flex items-end">
-                    <Button 
-                      type="button" 
+                    <Button
+                      type="button"
                       onClick={applyBatchHonor}
                       className="w-full h-11 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs shadow-xs"
                     >
@@ -1949,7 +1949,7 @@ function DokumenContent() {
                           <div className="flex items-center justify-between">
                             <Label className="text-[9px] font-black uppercase text-muted-foreground ml-1">Nama Penerima</Label>
                             {dbOfficials && dbOfficials.length > 0 && (
-                              <Select 
+                              <Select
                                 onValueChange={(val) => {
                                   const off = dbOfficials.find(o => o.name === val);
                                   if (off) {
@@ -1973,8 +1973,8 @@ function DokumenContent() {
                               </Select>
                             )}
                           </div>
-                          <Input 
-                            placeholder="Ketik nama lengkap penerima..." 
+                          <Input
+                            placeholder="Ketik nama lengkap penerima..."
                             value={item.name}
                             onChange={(e) => updateHonorKegiatanData(i, "name", e.target.value)}
                             className="h-12 rounded-xl bg-muted/20 border-none font-bold"
@@ -1983,8 +1983,8 @@ function DokumenContent() {
 
                         <div className="space-y-1.5 sm:col-span-2">
                           <Label className="text-[9px] font-black uppercase text-muted-foreground ml-1">Jabatan / Peran</Label>
-                          <Input 
-                            placeholder="Contoh: Protokoler / Petugas / Anggota" 
+                          <Input
+                            placeholder="Contoh: Protokoler / Petugas / Anggota"
                             value={item.position}
                             onChange={(e) => updateHonorKegiatanData(i, "position", e.target.value)}
                             className="h-12 rounded-xl bg-muted/20 border-none font-medium"
@@ -1995,9 +1995,9 @@ function DokumenContent() {
                           <Label className="text-[9px] font-black uppercase text-muted-foreground ml-1">Nominal Honor (Rp)</Label>
                           <div className="relative">
                             <Coins className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-indigo-600 opacity-60" />
-                            <Input 
+                            <Input
                               type="number"
-                              placeholder="0" 
+                              placeholder="0"
                               value={item.nominal}
                               onChange={(e) => updateHonorKegiatanData(i, "nominal", e.target.value)}
                               className="h-12 pl-10 rounded-xl bg-muted/20 border-none font-black text-indigo-950"
@@ -2009,9 +2009,9 @@ function DokumenContent() {
                           <Label className="text-[9px] font-black uppercase text-muted-foreground ml-1">Potongan Pajak (%)</Label>
                           <div className="relative">
                             <Percent className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-indigo-600 opacity-60" />
-                            <Input 
+                            <Input
                               type="number"
-                              placeholder="0" 
+                              placeholder="0"
                               value={item.tax}
                               onChange={(e) => updateHonorKegiatanData(i, "tax", e.target.value)}
                               className="h-12 pl-10 rounded-xl bg-muted/20 border-none font-black text-indigo-950"
@@ -2032,7 +2032,7 @@ function DokumenContent() {
                 <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Kuota Peserta (Master Baris Tabel)</Label>
                 <div className="relative">
                   <Users className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-primary" />
-                  <Input 
+                  <Input
                     type="number"
                     value={jumlahOrang}
                     onChange={(e) => setJumlahOrang(parseInt(e.target.value) || 0)}
@@ -2048,12 +2048,12 @@ function DokumenContent() {
                     <Label className="text-[10px] font-black uppercase text-teal-900 tracking-widest">Nominal Uang Saku (Rp)</Label>
                     <div className="relative">
                       <Coins className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-teal-600" />
-                      <Input 
+                      <Input
                         type="number"
-                        placeholder="0" 
+                        placeholder="0"
                         value={uangSakuNominal}
                         onChange={(e) => setUangSakuNominal(e.target.value)}
-                        className="h-12 pl-12 rounded-xl bg-white border-teal-200 font-black text-teal-700" 
+                        className="h-12 pl-12 rounded-xl bg-white border-teal-200 font-black text-teal-700"
                       />
                     </div>
                   </div>
@@ -2061,12 +2061,12 @@ function DokumenContent() {
                     <Label className="text-[10px] font-black uppercase text-teal-900 tracking-widest">Pot Pajak (%)</Label>
                     <div className="relative">
                       <Percent className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-teal-600" />
-                      <Input 
+                      <Input
                         type="number"
-                        placeholder="0" 
+                        placeholder="0"
                         value={uangSakuTax}
                         onChange={(e) => setUangSakuTax(e.target.value)}
-                        className="h-12 pl-12 rounded-xl bg-white border-teal-200 font-black text-teal-700" 
+                        className="h-12 pl-12 rounded-xl bg-white border-teal-200 font-black text-teal-700"
                       />
                     </div>
                   </div>
@@ -2087,8 +2087,8 @@ function DokumenContent() {
                   {participantSelections.map((selection, i) => (
                     <div key={i} className="space-y-1.5">
                       <Label className={cn("text-[9px] font-black uppercase ml-1", type === "uang-saku" ? "text-teal-800" : "text-primary/90")}>Kelompok Peserta {i + 1}</Label>
-                      <Select 
-                        value={selection} 
+                      <Select
+                        value={selection}
                         onValueChange={(value) => handleParticipantSelectionChange(i, value)}
                       >
                         <SelectTrigger className={cn("h-11 rounded-xl bg-white", type === "uang-saku" ? "border-teal-200" : "border-primary/20")}>
@@ -2109,17 +2109,17 @@ function DokumenContent() {
           )}
 
           <div className="pt-6 border-t space-y-4">
-            <Button 
+            <Button
               className={cn(
                 "w-full h-16 gap-3 text-lg font-black uppercase shadow-lg rounded-[1.25rem] active:scale-95 transition-all",
-                type === "honor-narasumber" ? "bg-amber-600 hover:bg-amber-700 shadow-amber-200" : 
-                type === "honor-kegiatan" ? "bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-200" :
-                type === "bukti-transaksi" ? "bg-orange-500 hover:bg-orange-600 text-white shadow-orange-500/20" :
-                type === "insentif" ? "bg-purple-600 hover:bg-purple-700 text-white shadow-purple-200" :
-                type === "siltap" ? "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-200" :
-                type === "uang-saku" ? "bg-teal-600 hover:bg-teal-700 text-teal-50 shadow-teal-200" :
-                type === "daftar-hadir-posyandu" ? "bg-rose-600 hover:bg-rose-700 text-white shadow-rose-200" :
-                "bg-primary hover:bg-primary/90 shadow-primary/20"
+                type === "honor-narasumber" ? "bg-amber-600 hover:bg-amber-700 shadow-amber-200" :
+                  type === "honor-kegiatan" ? "bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-200" :
+                    type === "bukti-transaksi" ? "bg-orange-500 hover:bg-orange-600 text-white shadow-orange-500/20" :
+                      type === "insentif" ? "bg-purple-600 hover:bg-purple-700 text-white shadow-purple-200" :
+                        type === "siltap" ? "bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary/20" :
+                          type === "uang-saku" ? "bg-teal-600 hover:bg-teal-700 text-teal-50 shadow-teal-200" :
+                            type === "daftar-hadir-posyandu" ? "bg-rose-600 hover:bg-rose-700 text-white shadow-rose-200" :
+                              "bg-primary hover:bg-primary/90 shadow-primary/20"
               )}
               onClick={handlePrint}
               disabled={isGenerating}
@@ -2128,7 +2128,7 @@ function DokumenContent() {
               Cetak PDF Sekarang
             </Button>
             <p className="text-[10px] text-center text-muted-foreground italic font-medium">
-                * Dokumen akan dicetak dengan kop surat Pemerintah Desa Rungkang.
+              * Dokumen akan dicetak dengan kop surat Pemerintah Desa Karanganyar.
             </p>
           </div>
         </CardContent>

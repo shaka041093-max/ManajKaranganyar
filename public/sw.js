@@ -1,9 +1,9 @@
 /**
- * Service Worker - Manajemen Desa Rungkang PWA
+ * Service Worker - Manajemen Desa Karanganyar PWA
  * Versi yang dioptimalkan untuk skor PWABuilder & TWA Android.
  */
 
-const CACHE_NAME = 'rungkang-pwa-v3';
+const CACHE_NAME = 'karanganyar-pwa-v3';
 const OFFLINE_URL = '/offline.html';
 const PRECACHE_ASSETS = [
   '/offline.html',
@@ -20,7 +20,7 @@ self.addEventListener('install', (event) => {
       const cache = await caches.open(CACHE_NAME);
       // Cache asset statis satu per satu, abaikan error per-file
       await Promise.allSettled(
-        PRECACHE_ASSETS.map((url) => cache.add(url).catch(() => {}))
+        PRECACHE_ASSETS.map((url) => cache.add(url).catch(() => { }))
       );
     })()
   );
@@ -118,7 +118,7 @@ self.addEventListener('fetch', (event) => {
 self.addEventListener('push', (event) => {
   if (!event.data) return;
   const data = event.data.json();
-  self.registration.showNotification(data.title || 'Rungkang', {
+  self.registration.showNotification(data.title || 'Karanganyar', {
     body: data.body || 'Ada notifikasi baru',
     icon: '/android-chrome-192x192.png',
     badge: '/favicon-32x32.png',

@@ -7,34 +7,34 @@ export function DomisiliPrintTemplate({ submission }: { submission: LetterSubmis
 
   return (
     <PrintLayout submission={submission} hideRequesterSignature={true}>
-      <p className="mt-8 text-justify leading-relaxed">
-        Yang bertanda tangan dibawah ini, Kepala Desa Rungkang, Kecamatan
+      <p className="mt-3 text-justify leading-normal">
+        Yang bertanda tangan dibawah ini, Kepala Desa Karanganyar, Kecamatan
         Gandrungmangu, Kabupaten Cilacap, menerangkan dengan sebenarnya bahwa :
-      </p>
-
-      <table className="mt-4 border-collapse w-full">
-        <tbody>
-          <DataRow label="Nama" value={formData.name} />
-          <DataRow label="NIK" value={formData.nik} />
-          <DataRow label="Jenis Kelamin" value={formData.gender} />
-          <DataRow label="Tempat/ Tanggal lahir" value={formatTTL(formData.birthPlace, formData.birthDate, formData.nik || submission.nik)} />
-          <DataRow label="Warganegara" value={formData.nationality} />
-          <DataRow label="Agama" value={formData.religion} />
-          <DataRow label="Alamat Asal (KTP)" value={formData.originAddress} />
-        </tbody>
-      </table>
-
-      <p className="mt-6 text-justify leading-relaxed">
-        Adalah benar penduduk Desa Rungkang, Kecamatan Gandrungmangu, Kabupaten Cilacap dan saat ini berdomisili di :
       </p>
 
       <table className="mt-2 border-collapse w-full">
         <tbody>
-          <DataRow label="Alamat Domisili" value={formData.domicileAddress} />
+          <DataRow compact="tight" label="Nama" value={formData.name} />
+          <DataRow compact="tight" label="NIK" value={formData.nik} />
+          <DataRow compact="tight" label="Jenis Kelamin" value={formData.gender} />
+          <DataRow compact="tight" label="Tempat/ Tanggal lahir" value={formatTTL(formData.birthPlace, formData.birthDate)} />
+          <DataRow compact="tight" label="Warganegara" value={formData.nationality} />
+          <DataRow compact="tight" label="Agama" value={formData.religion} />
+          <DataRow compact="tight" label="Alamat Asal (KTP)" value={formData.originAddress} />
         </tbody>
       </table>
 
-      <p className="mt-6 text-justify leading-relaxed">
+      <p className="mt-2.5 text-justify leading-normal">
+        Adalah benar penduduk Desa Karanganyar, Kecamatan Gandrungmangu, Kabupaten Cilacap dan saat ini berdomisili di :
+      </p>
+
+      <table className="mt-1.5 border-collapse w-full">
+        <tbody>
+          <DataRow compact="tight" label="Alamat Domisili" value={formData.domicileAddress} />
+        </tbody>
+      </table>
+
+      <p className="mt-2.5 text-justify leading-normal">
         Demikian surat keterangan ini kami buat dengan sebenarnya agar dapat dipergunakan seperlunya.
       </p>
     </PrintLayout>

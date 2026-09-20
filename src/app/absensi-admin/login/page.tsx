@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { useAuth, useUser, useFirestore } from "@/firebase"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { LogIn, Loader2, KeyRound, User, ShieldCheck } from "lucide-react"
+import { LogIn, Loader2, KeyRound, User, ShieldCheck, ArrowLeft, Eye, EyeOff } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input"
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth"
 import { doc, setDoc } from "firebase/firestore"
 import { INTERNAL_USERS } from "@/lib/internal-users"
+import Link from "next/link"
 
 const loginSchema = z.object({
   username: z.string().min(1, "Username admin diperlukan."),
@@ -28,6 +29,7 @@ export default function AdminAbsensiLoginPage() {
   const router = useRouter()
   const { toast } = useToast()
   const [isProcessing, setIsProcessing] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -36,7 +38,12 @@ export default function AdminAbsensiLoginPage() {
 
   useEffect(() => {
     if (mounted && user && !isUserLoading) {
-      const isAdmin = user.email === "admin@rungkang.id" || user.email === "rungkang@gmail.id"
+      const configuredAdminEmail = (process.env.NEXT_PUBLIC_ADMIN_EMAIL || "").toLowerCase();
+      const userEmail = (user.email || "").toLowerCase();
+      const isAdmin = (configuredAdminEmail && userEmail === configuredAdminEmail) ||
+        userEmail === "admin@karanganyar.id" ||
+        userEmail === "karanganyar@gmail.id" ||
+        userEmail === "desakaranganyargandrungmangu@gmail.com";
       if (isAdmin) {
         router.push("/absensi-admin/dashboard/")
       }
@@ -65,22 +72,22 @@ export default function AdminAbsensiLoginPage() {
       } catch (authErr: any) {
         // Jika belum terdaftar di Firebase Auth, coba daftarkan otomatis (Initial Setup)
         if (authErr.code === 'auth/user-not-found' || authErr.code === 'auth/invalid-credential') {
-           try {
-              const userCredential = await createUserWithEmailAndPassword(auth, targetAdmin.email, values.password)
-              // Daftarkan di Firestore personel agar terverifikasi role-nya
-              await setDoc(doc(db, "personel", userCredential.user.uid), {
-                uid: userCredential.user.uid,
-                email: targetAdmin.email,
-                username: cleanUsername,
-                password: values.password,
-                nama: targetAdmin.nama,
-                role: "admin",
-                aktif: true,
-                updated_at: new Date().toISOString()
-              }, { merge: true })
-           } catch (createErr) {
-             throw authErr // Lempar error auth asli jika gagal create
-           }
+          try {
+            const userCredential = await createUserWithEmailAndPassword(auth, targetAdmin.email, values.password)
+            // Daftarkan di Firestore personel agar terverifikasi role-nya
+            await setDoc(doc(db, "personel", userCredential.user.uid), {
+              uid: userCredential.user.uid,
+              email: targetAdmin.email,
+              username: cleanUsername,
+              password: values.password,
+              nama: targetAdmin.nama,
+              role: "admin",
+              aktif: true,
+              updated_at: new Date().toISOString()
+            }, { merge: true })
+          } catch (createErr) {
+            throw authErr // Lempar error auth asli jika gagal create
+          }
         } else {
           throw authErr
         }
@@ -105,7 +112,18 @@ export default function AdminAbsensiLoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4 bg-[#0f172a]">
-      <Card className="w-full max-w-[440px] shadow-2xl border-none rounded-[3.5rem] overflow-hidden bg-white animate-in fade-in zoom-in-95 duration-500">
+      <Card className="w-full max-w-[440px] shadow-2xl border-none rounded-[3.5rem] overflow-hidden bg-white animate-in fade-in zoom-in-95 duration-500 relative">
+        <Button
+          variant="ghost"
+          size="icon"
+          asChild
+          className="absolute left-6 top-6 rounded-full text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition-colors"
+        >
+          <Link href="/" title="Kembali ke Halaman Awal">
+            <ArrowLeft className="h-5 w-5" />
+            <span className="sr-only">Kembali ke Halaman Awal</span>
+          </Link>
+        </Button>
         <CardContent className="p-10 sm:p-14 space-y-8">
           <div className="text-center space-y-6">
             <div className="mx-auto h-24 w-24 rounded-[2.5rem] bg-[#1e293b] flex items-center justify-center shadow-2xl shadow-black/20">
@@ -129,10 +147,10 @@ export default function AdminAbsensiLoginPage() {
                   <FormControl>
                     <div className="relative">
                       <User className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                      <Input 
-                        placeholder="adminrungkang" 
-                        {...field} 
-                        className="h-14 rounded-2xl pl-12 text-sm border-none bg-slate-50 focus:ring-2 focus:ring-slate-200 font-bold text-slate-700" 
+                      <Input
+                        placeholder="adminkaranganyar"
+                        {...field}
+                        className="h-14 rounded-2xl pl-12 text-sm border-none bg-slate-50 focus:ring-2 focus:ring-slate-200 font-bold text-slate-700"
                         autoComplete="off"
                       />
                     </div>
@@ -140,36 +158,45 @@ export default function AdminAbsensiLoginPage() {
                   <FormMessage />
                 </FormItem>
               )} />
-              
+
               <FormField control={form.control} name="password" render={({ field }) => (
                 <FormItem className="space-y-2">
                   <FormLabel className="text-[10px] font-black uppercase text-slate-500 tracking-wider ml-1">Kata Sandi</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                      <Input 
-                        type="password" 
-                        placeholder="••••••••" 
-                        {...field} 
-                        className="h-14 rounded-2xl pl-12 text-sm border-none bg-slate-50 focus:ring-2 focus:ring-slate-200 font-bold text-slate-700" 
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="••••••••"
+                        {...field}
+                        className="h-14 rounded-2xl pl-12 pr-12 text-sm border-none bg-slate-50 focus:ring-2 focus:ring-slate-200 font-bold text-slate-700"
                         autoComplete="new-password"
                       />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 focus:outline-none p-1 transition-colors"
+                        tabIndex={-1}
+                        aria-label={showPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"}
+                      >
+                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
                     </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
 
-              <Button 
-                type="submit" 
-                className="w-full h-16 text-sm font-black uppercase shadow-xl rounded-2xl bg-[#1e293b] hover:bg-[#0f172a] mt-4 text-white gap-3 transition-all active:scale-[0.98]" 
+              <Button
+                type="submit"
+                className="w-full h-16 text-sm font-black uppercase shadow-xl rounded-2xl bg-[#1e293b] hover:bg-[#0f172a] mt-4 text-white gap-3 transition-all active:scale-[0.98]"
                 disabled={isProcessing}
               >
                 {isProcessing ? (
                   <Loader2 className="h-6 w-6 animate-spin" />
                 ) : (
                   <>
-                    <ShieldCheck className="h-5 w-5" /> 
+                    <ShieldCheck className="h-5 w-5" />
                     Masuk Panel Admin
                   </>
                 )}

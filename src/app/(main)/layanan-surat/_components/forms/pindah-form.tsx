@@ -278,8 +278,8 @@ export function PindahForm({ isAdmin = false }: { isAdmin?: boolean }) {
             <FormField control={form.control} name="currentAddressRt" render={({ field }) => (<FormItem><FormLabel>RT</FormLabel><FormControl><Input placeholder="001" {...field} disabled={isSubmitting} className="h-12 rounded-xl" /></FormControl><FormMessage /></FormItem>)} />
             <FormField control={form.control} name="currentAddressRw" render={({ field }) => (<FormItem><FormLabel>RW</FormLabel><FormControl><Input placeholder="001" {...field} disabled={isSubmitting} className="h-12 rounded-xl" /></FormControl><FormMessage /></FormItem>)} />
           </div>
-          <FormItem><FormLabel>Desa</FormLabel><FormControl><Input value="RUNGKANG" disabled className="h-12 rounded-xl bg-slate-50" /></FormControl></FormItem>
-          <FormItem><FormLabel>Kecamatan</FormLabel><FormControl><Input value="RUNGKANG" disabled className="h-12 rounded-xl bg-slate-50" /></FormControl></FormItem>
+          <FormItem><FormLabel>Desa</FormLabel><FormControl><Input value="KARANGANYAR" disabled className="h-12 rounded-xl bg-slate-50" /></FormControl></FormItem>
+          <FormItem><FormLabel>Kecamatan</FormLabel><FormControl><Input value="KARANGANYAR" disabled className="h-12 rounded-xl bg-slate-50" /></FormControl></FormItem>
           <FormItem><FormLabel>Kabupaten / Kota</FormLabel><FormControl><Input value="CILACAP" disabled className="h-12 rounded-xl bg-slate-50" /></FormControl></FormItem>
           <FormItem><FormLabel>Provinsi</FormLabel><FormControl><Input value="JAWA TENGAH" disabled className="h-12 rounded-xl bg-slate-50" /></FormControl></FormItem>
         </FormSection>

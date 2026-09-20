@@ -1,9 +1,10 @@
 export const firebaseConfig = {
-  apiKey: "AIzaSyD9dprqdjbTudt6M4LoE9sUWa5D9AEUEqo",
-  authDomain: "manajemen-desa-60a55.firebaseapp.com",
-  projectId: "manajemen-desa-60a55",
-  storageBucket: "manajemen-desa-60a55.firebasestorage.app",
-  messagingSenderId: "131066702812",
-  appId: "1:131066702812:web:0dbbfb1b797dce1a497d19",
-  measurementId: "G-E7R6L1GPFM"
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "AIzaSyCI-iHAFaENnsAOBLX-_dEHE9bOR7qkHeg",
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "manajkaranganyar-39292.firebaseapp.com",
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "manajkaranganyar-39292",
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "manajkaranganyar-39292.firebasestorage.app",
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "848021001600",
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "1:848021001600:web:80cd73e77efaaa0b689d65",
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || "G-QBVN03T9N5"
 };
+

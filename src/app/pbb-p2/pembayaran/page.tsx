@@ -346,12 +346,12 @@ export default function PbbPembayaranPage() {
           typeof tx.createdAt === "string"
             ? new Date(tx.createdAt)
             : tx.createdAt.toDate
-            ? tx.createdAt.toDate()
-            : new Date(tx.createdAt)
+              ? tx.createdAt.toDate()
+              : new Date(tx.createdAt)
         if (!isNaN(d.getTime())) {
           return format(d, "dd/MM/yyyy HH:mm", { locale: id })
         }
-      } catch (e) {}
+      } catch (e) { }
     }
     if (tx.tanggalBayar) {
       try {
@@ -359,7 +359,7 @@ export default function PbbPembayaranPage() {
         if (!isNaN(d.getTime())) {
           return format(d, "dd/MM/yyyy", { locale: id })
         }
-      } catch (e) {}
+      } catch (e) { }
       return tx.tanggalBayar
     }
     return "-"
@@ -396,12 +396,12 @@ export default function PbbPembayaranPage() {
               typeof tx.createdAt === "string"
                 ? new Date(tx.createdAt)
                 : tx.createdAt.toDate
-                ? tx.createdAt.toDate()
-                : new Date(tx.createdAt)
+                  ? tx.createdAt.toDate()
+                  : new Date(tx.createdAt)
             if (!isNaN(d.getTime())) {
               timeKey = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}_${d.getHours()}:${d.getMinutes()}`
             }
-          } catch (e) {}
+          } catch (e) { }
         }
         groupKey = `${tx.penarikNama || tx.penarikId}_${timeKey}`
       }
@@ -1096,8 +1096,8 @@ export default function PbbPembayaranPage() {
                               tx.statusVerifikasi === "Disetorkan ke Bank/Bapenda"
                                 ? "bg-emerald-100 text-emerald-700 border-none font-bold text-[10px]"
                                 : tx.statusVerifikasi === "Disetorkan ke Desa"
-                                ? "bg-blue-100 text-blue-700 border-none font-bold text-[10px]"
-                                : "bg-amber-100 text-amber-800 border-none font-bold text-[10px]"
+                                  ? "bg-blue-100 text-blue-700 border-none font-bold text-[10px]"
+                                  : "bg-amber-100 text-amber-800 border-none font-bold text-[10px]"
                             }
                           >
                             {tx.statusVerifikasi}
@@ -1235,7 +1235,7 @@ export default function PbbPembayaranPage() {
         transaksi={selectedTxForReceipt}
         batchData={batchReceiptData}
         noTelpPemungut={selectedCollectorInfo?.noTelp || batchReceiptData?.noTelpPemungut || ""}
-        namaDesa="Rungkang"
+        namaDesa="Karanganyar"
       />
 
       {/* MODAL CONFIRMATION HAPUS SETORAN */}

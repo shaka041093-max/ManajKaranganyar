@@ -180,12 +180,12 @@ export function RincianKegiatan() {
                   onClick={() => handleSelectEvent(event)}
                   className={cn(
                     "w-full text-left p-5 rounded-3xl border shadow-sm transition-all flex flex-col gap-1 relative overflow-hidden",
-                    isInternal ? "bg-emerald-50/50 border-emerald-100 hover:border-emerald-300" : 
-                    isExternal ? "bg-sky-50/50 border-sky-100 hover:border-sky-300" : 
+                    isInternal ? "bg-blue-50/60 border-blue-200/60 hover:border-blue-300" : 
+                    isExternal ? "bg-amber-50/60 border-amber-200/60 hover:border-amber-300" : 
                     "bg-white border-slate-100 hover:border-slate-300",
                     selectedEvent?.id === event.id && (
-                        isInternal ? "ring-2 ring-emerald-500/20 border-emerald-500 bg-emerald-50" :
-                        isExternal ? "ring-2 ring-sky-500/20 border-sky-500 bg-sky-50" :
+                        isInternal ? "ring-2 ring-blue-500/20 border-blue-500 bg-blue-50/80" :
+                        isExternal ? "ring-2 ring-amber-500/20 border-amber-500 bg-amber-50/80" :
                         "ring-2 ring-primary/20 border-primary bg-primary/5"
                     )
                   )}
@@ -193,8 +193,8 @@ export function RincianKegiatan() {
                   <div className="flex items-center gap-2 mb-1">
                     <span className={cn(
                         "text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border",
-                        isInternal ? "bg-emerald-100 border-emerald-200 text-emerald-700" :
-                        isExternal ? "bg-sky-100 border-sky-200 text-sky-700" :
+                        isInternal ? "bg-blue-100/80 border-blue-200 text-blue-900" :
+                        isExternal ? "bg-amber-100/80 border-amber-200 text-amber-800" :
                         "bg-slate-100 border-slate-200 text-slate-500"
                     )}>
                         AGENDA {type.toUpperCase()}
@@ -213,7 +213,7 @@ export function RincianKegiatan() {
         </div>
       </div>
 
-      <Card className="border-none shadow-xl shadow-slate-200/40 rounded-[2.5rem] bg-white lg:sticky lg:top-8">
+      <Card className="border-none shadow-xl shadow-blue-950/5 rounded-[2.5rem] bg-white lg:sticky lg:top-8">
         <CardHeader className="border-b">
             <div className="flex items-center gap-3">
                 <BookUser className="h-6 w-6 text-primary" />
@@ -233,7 +233,7 @@ export function RincianKegiatan() {
                 </div>
                 <span className={cn(
                     "text-[8px] font-black uppercase tracking-widest px-2 py-1 rounded-lg border",
-                    getEventType(selectedEvent.description) === "Internal" ? "bg-emerald-50 border-emerald-100 text-emerald-700" : "bg-sky-50 border-sky-100 text-sky-700"
+                    getEventType(selectedEvent.description) === "Internal" ? "bg-blue-50 border-blue-200 text-blue-800" : "bg-amber-50 border-amber-200 text-amber-800"
                 )}>
                     {getEventType(selectedEvent.description)}
                 </span>

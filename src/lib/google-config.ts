@@ -21,8 +21,8 @@ interface GoogleConfig {
 }
 
 export const GOOGLE_CONFIG: GoogleConfig = {
-  // URL Deployment sesuai parameter backend user
-  appsScriptUrl: "https://script.google.com/macros/s/AKfycbw22mWmfigj_mCTuWezpU4TpBdpkmApSeAnLWZEZubeFTAzwV-Igw5tf71ApOS5CspD/exec",
-  calendarId: "primary", // Diubah ke 'primary' untuk mencegah error 'Not Found'
-  parentFolderId: "1-yZW2Z7V5J2j2aVp9p4aJ3R8Q9J4v8tU",
+  appsScriptUrl: process.env.NEXT_PUBLIC_APPS_SCRIPT_URL || "https://script.google.com/macros/s/AKfycbyOLX5DzFQZawF2qS2iKWfSLytSHVTiMnc-F3Qg709HQgHp5NpqnO6jFfUGCZ6jQm0t6w/exec",
+  calendarId: process.env.NEXT_PUBLIC_CALENDAR_ID || "primary",
+  parentFolderId: process.env.GOOGLE_DRIVE_FOLDER_ID || process.env.NEXT_PUBLIC_DOK_PENTING_FOLDER_ID || process.env.NEXT_PUBLIC_KEGIATAN_FOLDER_ID || "1-yZW2Z7V5J2j2aVp9p4aJ3R8Q9J4v8tU",
 };
+

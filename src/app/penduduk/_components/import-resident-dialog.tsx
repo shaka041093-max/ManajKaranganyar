@@ -191,7 +191,7 @@ export function ImportResidentDialog({ open, onOpenChange }: ImportResidentDialo
         </div>
         <DialogFooter className="gap-2">
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isProcessing}>Tutup</Button>
-          <Button onClick={handleImport} disabled={isProcessing || !selectedFile} className="bg-emerald-600 hover:bg-emerald-700">
+          <Button onClick={handleImport} disabled={isProcessing || !selectedFile} className="bg-primary hover:bg-primary/90 text-primary-foreground">
             <Save className="mr-2 h-4 w-4" /> Mulai Impor
           </Button>
         </DialogFooter>

@@ -47,7 +47,7 @@ export function InputAgendaForm() {
   const [invitationFile, setInvitationFile] = useState<File | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { toast } = useToast()
-  
+
   const { user } = useUser()
   const db = useFirestore()
 
@@ -60,7 +60,7 @@ export function InputAgendaForm() {
   }, [db, user]);
   const { data: userData } = useDoc(userDocRef);
 
-  const filteredOfficials = (dbOfficials || []).filter(o => 
+  const filteredOfficials = (dbOfficials || []).filter(o =>
     o.category === "Pemerintah Desa" || o.jabatan?.includes("KAUR") || o.jabatan?.includes("KEPALA SEKSI")
   );
 
@@ -70,13 +70,13 @@ export function InputAgendaForm() {
       eventType: "Internal",
       eventDate: format(new Date(), "yyyy-MM-dd"),
       eventTime: "",
-      eventLocation: "Balai Desa Rungkang",
+      eventLocation: "Balai Desa Karanganyar",
       eventTitle: "",
       disposition: "",
       eventNotes: "",
     },
   })
-  
+
   const [mounted, setMounted] = useState(false)
   useEffect(() => {
     setMounted(true)
@@ -142,16 +142,16 @@ export function InputAgendaForm() {
 
     } catch (error: any) {
       console.error("Submit Error:", error);
-      toast({ 
-          variant: "destructive", 
-          title: "Gagal Simpan", 
-          description: error.message
+      toast({
+        variant: "destructive",
+        title: "Gagal Simpan",
+        description: error.message
       });
     } finally {
       setIsSaving(false);
     }
   }
-  
+
   if (!mounted) return null;
 
   return (
@@ -237,17 +237,17 @@ export function InputAgendaForm() {
             <FormField control={form.control} name="eventLocation" render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-xs font-bold uppercase text-muted-foreground">Tempat</FormLabel>
-                <FormControl><Input placeholder="Contoh: Balai Desa Rungkang" {...field} className="h-12 rounded-xl" /></FormControl>
+                <FormControl><Input placeholder="Contoh: Balai Desa Karanganyar" {...field} className="h-12 rounded-xl" /></FormControl>
                 <FormMessage />
               </FormItem>
             )} />
-            
+
             <FormField
               control={form.control}
               name="disposition"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-xs font-bold uppercase text-muted-foreground flex items-center gap-2"><UserCheck className="h-4 w-4"/> Disposisi (Petugas)</FormLabel>
+                  <FormLabel className="text-xs font-bold uppercase text-muted-foreground flex items-center gap-2"><UserCheck className="h-4 w-4" /> Disposisi (Petugas)</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
                     <FormControl>
                       <SelectTrigger className="h-12 rounded-xl">
@@ -276,7 +276,7 @@ export function InputAgendaForm() {
                 <FormMessage />
               </FormItem>
             )} />
-            
+
             <Alert className="bg-amber-50 border-amber-200 rounded-2xl">
               <KeyRound className="h-4 w-4 text-amber-600" />
               <AlertTitle className="font-bold text-amber-800">Solusi Gagal Simpan</AlertTitle>

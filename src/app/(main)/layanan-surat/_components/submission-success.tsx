@@ -88,7 +88,7 @@ export function SubmissionSuccess({ ticketNumber, onReset }: SubmissionSuccessPr
             <div className="text-sm text-muted-foreground text-left p-4 border rounded-lg bg-gray-50/50">
               <p className="font-semibold text-foreground mb-2">Informasi Pengambilan Surat:</p>
               <p className="mb-2">
-                Ketika status <strong>"Disetujui"</strong>, surat dapat diambil di <strong>Balai Desa Rungkang</strong>.
+                Ketika status <strong>"Disetujui"</strong>, surat dapat diambil di <strong>Balai Desa Karanganyar</strong>.
               </p>
               <ul className="list-disc pl-5 space-y-1">
                 <li><strong>Senin - Jumat:</strong> 07:00 - 16:00 WIB.</li>

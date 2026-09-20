@@ -6,9 +6,9 @@ import { useFirestore, useCollection, useMemoFirebase, useUser, useDoc } from "@
 import { collection, query, orderBy, doc } from "firebase/firestore"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { 
-  Printer, 
-  FileSpreadsheet, 
+import {
+  Printer,
+  FileSpreadsheet,
   Loader2,
   FileText,
   ChevronRight,
@@ -25,12 +25,17 @@ export default function CetakDokumenAbsensi() {
   const db = useFirestore()
   const { user } = useUser()
   const { toast } = useToast()
-  
+
   const [filterMonth, setFilterMonth] = useState(format(new Date(), "MM"))
   const [filterYear, setFilterYear] = useState(format(new Date(), "yyyy"))
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false)
 
-  const isAuthorized = user?.email === "admin@rungkang.id" || user?.email === "rungkang@gmail.id" || user?.email === "desarungkang014@gmail.com";
+  const configuredAdminEmail = (process.env.NEXT_PUBLIC_ADMIN_EMAIL || "").toLowerCase();
+  const userEmail = (user?.email || "").toLowerCase();
+  const isAuthorized = (configuredAdminEmail && userEmail === configuredAdminEmail) ||
+    userEmail === "admin@karanganyar.id" ||
+    userEmail === "karanganyar@gmail.id" ||
+    userEmail === "desakaranganyargandrungmangu@gmail.com";
 
   // 1. Ambil Data Desa (untuk Logo & Info)
   const villageRef = useMemoFirebase(() => (db && user && isAuthorized) ? doc(db, "settings", "village") : null, [db, user, isAuthorized])
@@ -41,15 +46,15 @@ export default function CetakDokumenAbsensi() {
   const { data: personnelList, isLoading: isPersonnelLoading } = useCollection(personnelRef)
 
   // 3. Ambil Seluruh Data Absensi
-  const absensiRef = useMemoFirebase(() => 
-    (db && user && isAuthorized) ? query(collection(db, "absensi"), orderBy("tanggal", "asc")) : null, 
-  [db, user, isAuthorized])
+  const absensiRef = useMemoFirebase(() =>
+    (db && user && isAuthorized) ? query(collection(db, "absensi"), orderBy("tanggal", "asc")) : null,
+    [db, user, isAuthorized])
   const { data: attendanceData, isLoading: isAttendanceLoading } = useCollection(absensiRef)
 
   // 4. Ambil Pengaturan Absensi (Hari Kerja & Libur)
-  const settingsRef = useMemoFirebase(() => 
-    (db && user && isAuthorized) ? doc(db, "absensi_settings", "global") : null, 
-  [db, user, isAuthorized])
+  const settingsRef = useMemoFirebase(() =>
+    (db && user && isAuthorized) ? doc(db, "absensi_settings", "global") : null,
+    [db, user, isAuthorized])
   const { data: attendanceSettings, isLoading: isSettingsLoading } = useDoc(settingsRef)
 
   // 5. Logika Rekap Data Laporan & Alpha Otomatis
@@ -71,9 +76,9 @@ export default function CetakDokumenAbsensi() {
 
         // Cari data absen yang cocok dengan personel ini di bulan terpilih
         const filteredAbsen = attendanceData.filter(a => {
-            const matchesId = a.personel_id === uid || a.id.startsWith(uid);
-            const matchesMonth = a.tanggal?.startsWith(`${filterYear}-${filterMonth}`);
-            return matchesId && matchesMonth;
+          const matchesId = a.personel_id === uid || a.id.startsWith(uid);
+          const matchesMonth = a.tanggal?.startsWith(`${filterYear}-${filterMonth}`);
+          return matchesId && matchesMonth;
         })
 
         // Masukkan data absen real ke dalam kalender bulan
@@ -88,11 +93,11 @@ export default function CetakDokumenAbsensi() {
         // Cek setiap tanggal untuk Alpha Otomatis
         for (let d = 1; d <= daysInMonth; d++) {
           const dateStr = `${filterYear}-${filterMonth}-${d.toString().padStart(2, '0')}`;
-          
+
           if (!userMonthData[d]) {
             const checkDate = new Date(parseInt(filterYear), parseInt(filterMonth) - 1, d);
             const dayName = ['minggu', 'senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu'][checkDate.getDay()];
-            
+
             // Jika hari kerja, bukan hari libur manual, dan di masa lalu/hari ini
             if (dateStr <= todayStr && workDays.includes(dayName) && !holidays.includes(dateStr)) {
               userMonthData[d] = { status: 'alpha' };
@@ -104,7 +109,7 @@ export default function CetakDokumenAbsensi() {
           if (record) {
             // Logika baru: Jika masuk tapi tidak pulang, anggap telat/incomplete (T)
             const isStillWorking = record.jam_masuk && !record.jam_pulang && record.status !== 'alpha' && record.status !== 'izin' && record.status !== 'dinas_luar';
-            
+
             if (record.status === 'izin') s++;
             else if (record.status === 'alpha') tk++;
             else if (record.status === 'dinas_luar') dl++;
@@ -128,7 +133,7 @@ export default function CetakDokumenAbsensi() {
 
     const daysInMonth = getDaysInMonth(new Date(parseInt(filterYear), parseInt(filterMonth) - 1))
     const monthName = format(new Date(2024, parseInt(filterMonth) - 1, 1), "MMMM", { locale: localeID }).toUpperCase()
-    
+
     const excelRows = reportData.map((row, idx) => {
       const data: any = {
         "NO": idx + 1,
@@ -178,7 +183,7 @@ export default function CetakDokumenAbsensi() {
         year: filterYear,
         data: reportData,
         logoBase64: villageSettings?.logoBase64,
-        settings: attendanceSettings 
+        settings: attendanceSettings
       })
       const url = URL.createObjectURL(pdfBlob)
       const link = document.createElement('a')
@@ -226,7 +231,7 @@ export default function CetakDokumenAbsensi() {
                 </SelectTrigger>
                 <SelectContent>
                   {Array.from({ length: 12 }).map((_, i) => (
-                    <SelectItem key={i+1} value={(i+1).toString().padStart(2, '0')} className="font-bold">
+                    <SelectItem key={i + 1} value={(i + 1).toString().padStart(2, '0')} className="font-bold">
                       {format(new Date(2024, i, 1), "MMMM", { locale: localeID })}
                     </SelectItem>
                   ))}
@@ -250,19 +255,19 @@ export default function CetakDokumenAbsensi() {
 
           <div className="p-8 bg-slate-50 rounded-[2rem] border border-slate-100 flex items-center justify-between">
             <div className="flex items-center gap-4">
-               <FileText className="h-10 w-10 text-slate-300" />
-               <div>
-                  <p className="text-xs font-black uppercase text-slate-900">Kesiapan Data</p>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase">
-                    {isLoading ? "Sinkronisasi..." : `${reportData.length} Akun Terdeteksi`}
-                  </p>
-               </div>
+              <FileText className="h-10 w-10 text-slate-300" />
+              <div>
+                <p className="text-xs font-black uppercase text-slate-900">Kesiapan Data</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase">
+                  {isLoading ? "Sinkronisasi..." : `${reportData.length} Akun Terdeteksi`}
+                </p>
+              </div>
             </div>
             {isLoading ? <Loader2 className="h-5 w-5 animate-spin text-primary/30" /> : <ChevronRight className="h-5 w-5 text-slate-200" />}
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Button 
+            <Button
               onClick={handleDownloadPDF}
               disabled={isGeneratingPDF || isLoading || reportData.length === 0}
               className="h-20 rounded-[1.5rem] bg-primary hover:bg-primary/90 shadow-xl shadow-primary/20 text-white font-black uppercase text-sm gap-4 transition-all active:scale-95"
@@ -270,11 +275,11 @@ export default function CetakDokumenAbsensi() {
               {isGeneratingPDF ? <Loader2 className="h-6 w-6 animate-spin" /> : <Printer className="h-6 w-6" />}
               Unduh Laporan PDF
             </Button>
-            <Button 
+            <Button
               onClick={handleDownloadExcel}
               disabled={isLoading || reportData.length === 0}
               variant="outline"
-              className="h-20 rounded-[1.5rem] border-slate-200 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-200 text-slate-600 font-black uppercase text-sm gap-4 transition-all active:scale-95"
+              className="h-20 rounded-[1.5rem] border-border/70 hover:bg-primary/10 hover:text-primary hover:border-primary/30 text-foreground font-black uppercase text-sm gap-4 transition-all active:scale-95"
             >
               <FileSpreadsheet className="h-6 w-6" />
               Unduh Format Excel

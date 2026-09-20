@@ -68,29 +68,29 @@ export const loadImage = (url: string): Promise<HTMLImageElement | null> => {
 }
 
 export const addKopSuratSync = (doc: jsPDF, img: HTMLImageElement | null, margin: number, pageWidth: number) => {
-    if (img) {
-        try {
-            doc.addImage(img, 'PNG', margin, 10, 18, 22);
-        } catch (e) {
-            console.error("PDF Logo Error:", e);
-        }
+  if (img) {
+    try {
+      doc.addImage(img, 'PNG', margin, 10, 18, 22);
+    } catch (e) {
+      console.error("PDF Logo Error:", e);
     }
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(12);
-    doc.text("PEMERINTAH KABUPATEN CILACAP", pageWidth / 2 + 10, 15, { align: "center" });
-    doc.text("KECAMATAN GANDRUNGMANGU", pageWidth / 2 + 10, 20, { align: "center" });
-    doc.setFontSize(16);
-    doc.text("DESA RUNGKANG", pageWidth / 2 + 10, 27, { align: "center" });
-    doc.setFontSize(8);
-    doc.setFont("helvetica", "normal");
-    doc.text("Jalan Raya Pelita KM 5 Rungkang, Kec. Gandrungmangu, Cilacap, Jawa Tengah,", pageWidth / 2 + 10, 31, { align: "center" });
-    doc.text("Tlp. 0852-2770-6666, Laman : www.rungkang-cilacap.desa.id, Pos-el : www.desarungkang014@gmail.com", pageWidth / 2 + 10, 35, { align: "center" });
-    doc.setFont("helvetica", "bold");
-    doc.text("Kode Pos 53254", pageWidth - margin, 38.5, { align: "right" });
-    doc.setLineWidth(0.8);
-    doc.line(margin, 40, pageWidth - margin, 40);
-    doc.setLineWidth(0.2);
-    doc.line(margin, 41, pageWidth - margin, 41);
+  }
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(12);
+  doc.text("PEMERINTAH KABUPATEN CILACAP", pageWidth / 2 + 10, 15, { align: "center" });
+  doc.text("KECAMATAN GANDRUNGMANGU", pageWidth / 2 + 10, 20, { align: "center" });
+  doc.setFontSize(16);
+  doc.text("DESA KARANGANYAR", pageWidth / 2 + 10, 27, { align: "center" });
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "normal");
+  doc.text("Jl. Slamet Riyadi No. 60, Desa Karanganyar, Kec. Gandrungmangu, Cilacap, Jawa Tengah,", pageWidth / 2 + 10, 31, { align: "center" });
+  doc.text("Tlp. 0877-0524-5801, Laman : www.karanganyar-cilacap.desa.id, Pos-el : www.karanganyar2020@gmail.com", pageWidth / 2 + 10, 35, { align: "center" });
+  doc.setFont("helvetica", "bold");
+  doc.text("Kode Pos 53254", pageWidth - margin, 38.5, { align: "right" });
+  doc.setLineWidth(0.8);
+  doc.line(margin, 40, pageWidth - margin, 40);
+  doc.setLineWidth(0.2);
+  doc.line(margin, 41, pageWidth - margin, 41);
 }
 
 export const formatTanggalSurat = (startDate: Date, endDate?: Date) => {
@@ -135,7 +135,7 @@ export const generateNotulenPDF = async (values: any, logoBase64?: string | null
   const displayDate = formatDateIndo(values.date);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(18);
-  doc.text("NOTULEN", pageWidth/2, 60, { align: "center" });
+  doc.text("NOTULEN", pageWidth / 2, 60, { align: "center" });
   doc.setFontSize(11);
   let currentY = 75;
   const addLabeledRow = (label: string, text: string) => {
@@ -145,7 +145,7 @@ export const generateNotulenPDF = async (values: any, logoBase64?: string | null
     doc.setFont("helvetica", "normal");
     const lines = doc.splitTextToSize(text || "-", valueWidth);
     lines.forEach((line: string, i: number) => {
-      doc.text(line, valueStartX, currentY + (i * 5)); 
+      doc.text(line, valueStartX, currentY + (i * 5));
     });
     currentY += Math.max(lines.length * 5, 5) + 2;
   };
@@ -161,17 +161,17 @@ export const generateNotulenPDF = async (values: any, logoBase64?: string | null
   const paragraphs = descriptionText.split('\n').filter((p: string) => p.trim() !== '');
   const lineHeightFactor = 1.15;
   paragraphs.forEach((para: string) => {
-      const lines = doc.splitTextToSize(para, contentWidth);
-      const textBlockHeight = doc.getTextDimensions(lines, { maxWidth: contentWidth }).h * lineHeightFactor;
-      if (currentY + textBlockHeight > pageHeight - 50) { 
-          doc.addPage();
-          addKopSuratSync(doc, logoImg, margin, pageWidth);
-          currentY = 40;
-      }
-      doc.text(lines, margin, currentY, { align: "justify", maxWidth: contentWidth, lineHeightFactor: lineHeightFactor });
-      currentY += textBlockHeight + 4;
+    const lines = doc.splitTextToSize(para, contentWidth);
+    const textBlockHeight = doc.getTextDimensions(lines, { maxWidth: contentWidth }).h * lineHeightFactor;
+    if (currentY + textBlockHeight > pageHeight - 50) {
+      doc.addPage();
+      addKopSuratSync(doc, logoImg, margin, pageWidth);
+      currentY = 40;
+    }
+    doc.text(lines, margin, currentY, { align: "justify", maxWidth: contentWidth, lineHeightFactor: lineHeightFactor });
+    currentY += textBlockHeight + 4;
   });
-  const signatureBlockHeight = 40; 
+  const signatureBlockHeight = 40;
   if (currentY + signatureBlockHeight > pageHeight - margin) {
     doc.addPage();
     addKopSuratSync(doc, logoImg, margin, pageWidth);
@@ -179,7 +179,7 @@ export const generateNotulenPDF = async (values: any, logoBase64?: string | null
   }
   const signatureName = values.officialName?.split(" - ")[0]?.toUpperCase() || "PELAKSANA KEGIATAN";
   const signatureX = pageWidth - margin - 50;
-  const signatureY = currentY + 8; 
+  const signatureY = currentY + 8;
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
   doc.text("Pelaksana Kegiatan,", signatureX, signatureY, { align: "center" });
@@ -217,7 +217,7 @@ export const generateBASTPDF = async (values: any, logoBase64?: string | null): 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
   const openingY = numY + 12;
-  const openingText = `Pada hari ini ${format(d, "EEEE", { locale: localeID })} tanggal ${terbilang(getDate(d))} bulan ${format(d, "MMMM", { locale: localeID })} tahun ${terbilang(getYear(d))} bertempat di Desa Rungkang, kami yang bertanda tangan dibawah ini :`;
+  const openingText = `Pada hari ini ${format(d, "EEEE", { locale: localeID })} tanggal ${terbilang(getDate(d))} bulan ${format(d, "MMMM", { locale: localeID })} tahun ${terbilang(getYear(d))} bertempat di Desa Karanganyar, kami yang bertanda tangan dibawah ini :`;
   const splitOpening = doc.splitTextToSize(openingText, contentWidth);
   doc.text(splitOpening, margin, openingY, { align: "justify", maxWidth: contentWidth });
   let currentY = openingY + (splitOpening.length * 5) + 6;
@@ -238,21 +238,21 @@ export const generateBASTPDF = async (values: any, logoBase64?: string | null): 
     currentY += 6;
     doc.text("Alamat", margin + 8, currentY);
     doc.text(":", dotX, currentY);
-    const alamatFull = `Desa Rungkang Kecamatan Gandrungmangu yang selanjutnya disebut ${role}`;
+    const alamatFull = `Desa Karanganyar Kecamatan Gandrungmangu yang selanjutnya disebut ${role}`;
     const splitAlamat = doc.splitTextToSize(alamatFull, contentWidth - labelWidth - 15);
-    doc.text(splitAlamat, dotX + 3, currentY); 
+    doc.text(splitAlamat, dotX + 3, currentY);
     currentY += (splitAlamat.length * 5) + 4;
   };
   const officialName = values.officialName?.split(" - ")[0] || "PETUGAS";
   const officialJob = values.officialName?.split(" - ")[1] || "PERANGKAT DESA";
   addIdentitas("I", officialName, `Pelaksana Kegiatan Anggaran (${officialJob})`, "PIHAK KESATU");
-  addIdentitas("II", "SUSANTO", "Pemegang Kekuasaan Pengelolaan Keuangan Desa", "PIHAK KEDUA");
+  addIdentitas("II", "RISKIANASARI, SE.", "Pemegang Kekuasaan Pengelolaan Keuangan Desa", "PIHAK KEDUA");
   currentY += 2;
   const midText = "Dengan ini menyatakan bahwa PIHAK KESATU telah menyerahkan barang/pekerjaan kepada PIHAK KEDUA dan PIHAK KEDUA telah menerima barang/pekerjaan dari PIHAK KESATU berupa :";
   const splitMid = doc.splitTextToSize(midText, contentWidth);
   doc.text(splitMid, margin, currentY, { align: "justify", maxWidth: contentWidth });
   currentY += (splitMid.length * 5) + 8;
-  const colW = [12, 105, 30, 33]; 
+  const colW = [12, 105, 30, 33];
   const tableHeaders = ["NO", "NAMA KEGIATAN", "VOLUME", "TTD"];
   const headerH = 10;
   const rowH = 20;
@@ -260,25 +260,25 @@ export const generateBASTPDF = async (values: any, logoBase64?: string | null): 
   let hX = margin;
   tableHeaders.forEach((h, i) => {
     doc.rect(hX, currentY, colW[i], headerH);
-    doc.text(h, hX + colW[i]/2, currentY + 6.5, { align: "center" });
+    doc.text(h, hX + colW[i] / 2, currentY + 6.5, { align: "center" });
     hX += colW[i];
   });
   currentY += headerH;
   doc.setFont("helvetica", "normal");
   let rX = margin;
   doc.rect(rX, currentY, colW[0], rowH);
-  doc.text("1", rX + colW[0]/2, currentY + rowH/2 + 1.5, { align: "center" });
+  doc.text("1", rX + colW[0] / 2, currentY + rowH / 2 + 1.5, { align: "center" });
   rX += colW[0];
   doc.rect(rX, currentY, colW[1], rowH);
   const splitKegiatan = doc.splitTextToSize(values.title || "-", colW[1] - 6);
-  doc.text(splitKegiatan, rX + 3, currentY + (rowH/2) - ((splitKegiatan.length-1)*2.5) + 1);
+  doc.text(splitKegiatan, rX + 3, currentY + (rowH / 2) - ((splitKegiatan.length - 1) * 2.5) + 1);
   rX += colW[1];
   doc.rect(rX, currentY, colW[2], rowH);
-  doc.text("1 Kegiatan", rX + colW[2]/2, currentY + rowH/2 + 1.5, { align: "center" });
+  doc.text("1 Kegiatan", rX + colW[2] / 2, currentY + rowH / 2 + 1.5, { align: "center" });
   rX += colW[2];
   doc.rect(rX, currentY, colW[3], rowH);
   currentY += rowH + 15;
-  doc.text(`Rungkang, ${format(d, "d MMMM yyyy", { locale: localeID })}`, pageWidth - margin, currentY, { align: "right" });
+  doc.text(`Karanganyar, ${format(d, "d MMMM yyyy", { locale: localeID })}`, pageWidth - margin, currentY, { align: "right" });
   const signY = currentY + 10;
   doc.setFont("helvetica", "bold");
   doc.text("PIHAK KEDUA", margin + 35, signY, { align: "center" });
@@ -291,13 +291,13 @@ export const generateBASTPDF = async (values: any, logoBase64?: string | null): 
   doc.text("Pelaksana Kegiatan Anggaran", pageWidth - margin - 35, signY + 5, { align: "center" });
   const nameY = signY + 32;
   doc.setFont("helvetica", "bold");
-  doc.text("SUSANTO", margin + 35, nameY, { align: "center" });
-  const w1 = doc.getTextWidth("SUSANTO");
-  doc.line(margin + 35 - w1/2, nameY + 1, margin + 35 + w1/2, nameY + 1);
+  doc.text("RISKIANASARI, SE.", margin + 35, nameY, { align: "center" });
+  const w1 = doc.getTextWidth("RISKIANASARI, SE.");
+  doc.line(margin + 35 - w1 / 2, nameY + 1, margin + 35 + w1 / 2, nameY + 1);
   const sigName = officialName.toUpperCase();
   doc.text(sigName, pageWidth - margin - 35, nameY, { align: "center" });
   const w2 = doc.getTextWidth(sigName);
-  doc.line(pageWidth - margin - 35 - w2/2, nameY + 1, pageWidth - margin - 35 + w2/2, nameY + 1);
+  doc.line(pageWidth - margin - 35 - w2 / 2, nameY + 1, pageWidth - margin - 35 + w2 / 2, nameY + 1);
   return doc.output("blob");
 }
 
@@ -363,11 +363,11 @@ export const generateSiltapPDF = async (values: any, logoBase64?: string | null)
   const margin = 20;
   const pageHeight = doc.internal.pageSize.getHeight();
   const pageWidth = doc.internal.pageSize.getWidth();
-  
+
   const logoSource = (logoBase64 && logoBase64.length > 50 && logoBase64.startsWith('data:image')) ? logoBase64 : LOGO_CILACAP_FALLBACK;
   const logoImg = await loadImage(logoSource);
 
-  const colW = [10, 40, 55, 25, 40]; 
+  const colW = [10, 40, 55, 25, 40];
   const rowH = 12;
   const headers = ["NO", "NAMA", "JABATAN", "NOMINAL", "TTD"];
 
@@ -414,14 +414,6 @@ export const generateSiltapPDF = async (values: any, logoBase64?: string | null)
     const spaceLeft = pageHeight - currentY;
 
     if (remainingRows <= 3 && spaceLeft < neededSpaceForRemainder) {
-        doc.addPage();
-        addKopSuratSync(doc, logoImg, margin, pageWidth);
-        currentY = 40;
-        currentY = drawHeader(currentY);
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(10);
-    } 
-    else if (currentY + itemHeight > pageHeight - 20) { 
       doc.addPage();
       addKopSuratSync(doc, logoImg, margin, pageWidth);
       currentY = 40;
@@ -429,42 +421,50 @@ export const generateSiltapPDF = async (values: any, logoBase64?: string | null)
       doc.setFont("helvetica", "normal");
       doc.setFontSize(10);
     }
-    
+    else if (currentY + itemHeight > pageHeight - 20) {
+      doc.addPage();
+      addKopSuratSync(doc, logoImg, margin, pageWidth);
+      currentY = 40;
+      currentY = drawHeader(currentY);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+    }
+
     const startY = currentY;
     let rX = margin;
-    
+
     doc.rect(rX, startY, colW[0], itemHeight);
     doc.text((i + 1).toString(), rX + colW[0] / 2, startY + (itemHeight / 2) + 1.5, { align: "center" });
     rX += colW[0];
-    
+
     doc.rect(rX, startY, colW[1], itemHeight);
     doc.text(splitNama, rX + 2, startY + 5);
     rX += colW[1];
-    
+
     doc.rect(rX, startY, colW[2], itemHeight);
     doc.text(splitJabatan, rX + 2, startY + 5);
     rX += colW[2];
-    
+
     doc.rect(rX, startY, colW[3], itemHeight);
     doc.text((item.nominal || 0).toLocaleString('id-ID'), rX + colW[3] - 2, startY + (itemHeight / 2) + 1.5, { align: "right" });
     rX += colW[3];
-    
+
     doc.rect(rX, startY, colW[4], itemHeight);
     const signX = (i % 2 === 0) ? rX + 3 : rX + (colW[4] / 2);
     doc.setFontSize(8);
     doc.text(`${i + 1}. .......`, signX, startY + (itemHeight / 2) + 1);
     doc.setFontSize(10);
-    
+
     currentY += itemHeight;
   });
 
   // BARIS TOTAL
   const totalH = 10;
   if (currentY + totalH > pageHeight - 20) {
-      doc.addPage();
-      addKopSuratSync(doc, logoImg, margin, pageWidth);
-      currentY = 40;
-      currentY = drawHeader(currentY);
+    doc.addPage();
+    addKopSuratSync(doc, logoImg, margin, pageWidth);
+    currentY = 40;
+    currentY = drawHeader(currentY);
   }
 
   const startTotalY = currentY;
@@ -479,21 +479,21 @@ export const generateSiltapPDF = async (values: any, logoBase64?: string | null)
   doc.rect(margin + totalLabelW + colW[3], startTotalY, colW[4], totalH);
   currentY += totalH;
 
-  if (currentY > pageHeight - 60) { 
-    doc.addPage(); 
+  if (currentY > pageHeight - 60) {
+    doc.addPage();
     addKopSuratSync(doc, logoImg, margin, pageWidth);
-    currentY = 40; 
+    currentY = 40;
   }
-  
+
   currentY += 15;
   const sigX = pageWidth - margin - 65;
   doc.setFont("helvetica", "normal");
-  doc.text(`Rungkang, ${formatDateIndo(values.date)}`, sigX, currentY);
+  doc.text(`Karanganyar, ${formatDateIndo(values.date)}`, sigX, currentY);
   doc.setFont("helvetica", "bold");
-  doc.text("Kepala Desa Rungkang,", sigX, currentY + 6);
-  currentY += 25; 
-  doc.text("SUSANTO", sigX, currentY);
-  const nW = doc.getTextWidth("SUSANTO");
+  doc.text("Kepala Desa Karanganyar,", sigX, currentY + 6);
+  currentY += 25;
+  doc.text("RISKIANASARI, SE.", sigX, currentY);
+  const nW = doc.getTextWidth("RISKIANASARI, SE.");
   doc.line(sigX, currentY + 1, sigX + nW, currentY + 1);
 
   return doc.output("blob");
@@ -510,90 +510,90 @@ export const generateInsentifPDF = async (values: any, logoBase64?: string | nul
   const taxPercent = parseInt(values.tax) || 0;
   const taxVal = Math.round(nom * (taxPercent / 100));
   const netVal = nom - taxVal;
-  
+
   addKopSuratSync(doc, logoImg, margin, pageWidth);
-  
+
   doc.setFont("helvetica", "bold");
   doc.setFontSize(14);
   doc.text(`TANDA TERIMA INSENTIF ${values.category.toUpperCase()}`, pageWidth / 2, 56, { align: "center" });
-  
+
   let currentY = 66;
   doc.setFontSize(10);
   doc.setFont("helvetica", "normal");
   doc.text(`Bulan : ${values.month}`, margin, currentY);
   currentY += 5;
-  
-  const colW = [10, 40, 40, 22, 18, 22, 28]; 
+
+  const colW = [10, 40, 40, 22, 18, 22, 28];
   const rowH = 10;
   const headers = ["NO", "NAMA", "JABATAN", "NOMINAL", "PAJAK", "DITERIMA", "TTD"];
-  
+
   const drawHeader = (startY: number) => {
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(9);
-      let hX = margin;
-      headers.forEach((h, i) => {
-        doc.rect(hX, startY, colW[i], 10);
-        doc.text(h, hX + colW[i]/2, startY + 6.5, { align: "center" });
-        hX += colW[i];
-      });
-      return startY + 10;
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9);
+    let hX = margin;
+    headers.forEach((h, i) => {
+      doc.rect(hX, startY, colW[i], 10);
+      doc.text(h, hX + colW[i] / 2, startY + 6.5, { align: "center" });
+      hX += colW[i];
+    });
+    return startY + 10;
   }
-  
+
   currentY = drawHeader(currentY);
-  
+
   const kuota = values.jumlahOrang || 0;
   const totalItems = kuota;
   const signatureSpace = 65;
-  
+
   let currentNominalTotal = 0;
   let currentTaxTotal = 0;
   let currentNetTotal = 0;
 
   for (let i = 0; i < totalItems; i++) {
     const p = values.participants?.[i] || { name: "", position: "" };
-    
+
     if (p.name) {
-        currentNominalTotal += nom;
-        currentTaxTotal += taxVal;
-        currentNetTotal += netVal;
+      currentNominalTotal += nom;
+      currentTaxTotal += taxVal;
+      currentNetTotal += netVal;
     }
 
     const remainingRows = totalItems - i;
     const neededSpaceForRemainder = (remainingRows * rowH) + signatureSpace;
     const spaceLeft = pageHeight - currentY;
-    
+
     if (remainingRows <= 3 && spaceLeft < neededSpaceForRemainder) {
-        doc.addPage();
-        addKopSuratSync(doc, logoImg, margin, pageWidth);
-        currentY = 40;
-        currentY = drawHeader(currentY);
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(10);
-    }
-    else if (currentY + rowH > pageHeight - 20) { 
-      doc.addPage(); 
+      doc.addPage();
       addKopSuratSync(doc, logoImg, margin, pageWidth);
-      currentY = 40; 
+      currentY = 40;
       currentY = drawHeader(currentY);
       doc.setFont("helvetica", "normal");
       doc.setFontSize(10);
     }
-    
+    else if (currentY + rowH > pageHeight - 20) {
+      doc.addPage();
+      addKopSuratSync(doc, logoImg, margin, pageWidth);
+      currentY = 40;
+      currentY = drawHeader(currentY);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+    }
+
     let rX = margin;
     colW.forEach((w) => { doc.rect(rX, currentY, w, rowH); rX += w; });
-    
+
     let cX = margin;
     doc.setFont("helvetica", "normal");
     doc.setFontSize(9);
-    doc.text((i + 1).toString(), cX + colW[0]/2, currentY + 6.5, { align: "center" });
+    doc.text((i + 1).toString(), cX + colW[0] / 2, currentY + 6.5, { align: "center" });
     cX += colW[0];
-    
+
     doc.setFontSize(8);
-    doc.text((p.name || "").toUpperCase(), cX + 2, currentY + 6.5, { maxWidth: colW[1]-4 });
+    doc.text((p.name || "").toUpperCase(), cX + 2, currentY + 6.5, { maxWidth: colW[1] - 4 });
     cX += colW[1];
-    doc.text((p.position || "").toUpperCase(), cX + 2, currentY + 6.5, { maxWidth: colW[2]-4 });
+    doc.text((p.position || "").toUpperCase(), cX + 2, currentY + 6.5, { maxWidth: colW[2] - 4 });
     cX += colW[2];
-    
+
     doc.setFontSize(9);
     if (p.name) {
       doc.text(nom.toLocaleString('id-ID'), cX + colW[3] - 2, currentY + 6.5, { align: "right" });
@@ -603,9 +603,9 @@ export const generateInsentifPDF = async (values: any, logoBase64?: string | nul
       doc.text(netVal.toLocaleString('id-ID'), cX + colW[5] - 2, currentY + 6.5, { align: "right" });
       cX += colW[5];
     } else {
-       cX += colW[3] + colW[4] + colW[5];
+      cX += colW[3] + colW[4] + colW[5];
     }
-    
+
     doc.setFontSize(8);
     const signX = (i % 2 === 0) ? cX + 2 : cX + (colW[6] / 2);
     doc.text(`${i + 1}. .......`, signX, currentY + 6.5);
@@ -615,10 +615,10 @@ export const generateInsentifPDF = async (values: any, logoBase64?: string | nul
   // BARIS TOTAL UNTUK INSENTIF
   const totalH = 10;
   if (currentY + totalH > pageHeight - 20) {
-      doc.addPage();
-      addKopSuratSync(doc, logoImg, margin, pageWidth);
-      currentY = 40;
-      currentY = drawHeader(currentY);
+    doc.addPage();
+    addKopSuratSync(doc, logoImg, margin, pageWidth);
+    currentY = 40;
+    currentY = drawHeader(currentY);
   }
 
   const startTotalY = currentY;
@@ -643,22 +643,22 @@ export const generateInsentifPDF = async (values: any, logoBase64?: string | nul
   doc.rect(totalCX, startTotalY, colW[6], totalH);
   currentY += totalH;
 
-  if (currentY > pageHeight - 60) { 
+  if (currentY > pageHeight - 60) {
     doc.addPage();
     addKopSuratSync(doc, logoImg, margin, pageWidth);
-    currentY = 40; 
+    currentY = 40;
   }
-  
+
   currentY += 15;
   const sigX = pageWidth - margin - 65;
   doc.setFontSize(10);
   doc.setFont("helvetica", "normal");
-  doc.text(`Rungkang, ${formatDateIndo(values.date)}`, sigX, currentY);
+  doc.text(`Karanganyar, ${formatDateIndo(values.date)}`, sigX, currentY);
   doc.setFont("helvetica", "bold");
-  doc.text("Kepala Desa Rungkang,", sigX, currentY + 6);
-  currentY += 25; 
-  doc.text("SUSANTO", sigX, currentY);
-  const nW = doc.getTextWidth("SUSANTO");
+  doc.text("Kepala Desa Karanganyar,", sigX, currentY + 6);
+  currentY += 25;
+  doc.text("RISKIANASARI, SE.", sigX, currentY);
+  const nW = doc.getTextWidth("RISKIANASARI, SE.");
   doc.line(sigX, currentY + 1, sigX + nW, currentY + 1);
   return doc.output("blob");
 }
@@ -679,24 +679,24 @@ export const generateHonorNarasumberPDF = async (values: any, logoBase64?: strin
   let currentY = 66;
   doc.setFontSize(10);
   const addHeaderRow = (label: string, text: string) => {
-      doc.setFont("helvetica", "bold");
-      doc.text(label, margin, currentY);
-      doc.text(":", margin + 30, currentY);
-      doc.setFont("helvetica", "normal");
-      doc.text(text || "-", margin + 33, currentY);
-      currentY += 6;
+    doc.setFont("helvetica", "bold");
+    doc.text(label, margin, currentY);
+    doc.text(":", margin + 30, currentY);
+    doc.setFont("helvetica", "normal");
+    doc.text(text || "-", margin + 33, currentY);
+    currentY += 6;
   };
   addHeaderRow("Kegiatan", values.title);
   addHeaderRow("Hari / Tanggal", format(d, "EEEE, d MMMM yyyy", { locale: localeID }));
-  addHeaderRow("Tempat", values.location || "Balai Desa Rungkang");
+  addHeaderRow("Tempat", values.location || "Balai Desa Karanganyar");
   const timeFormatted = values.time
     ? (values.time.trim().toLowerCase().startsWith("pukul")
-        ? values.time.trim()
-        : `Pukul ${values.time.trim()}`)
+      ? values.time.trim()
+      : `Pukul ${values.time.trim()}`)
     : "Pukul 09:00 WIB - Selesai";
   addHeaderRow("Waktu", timeFormatted);
   currentY += 4;
-  const colW = [8, 40, 36, 24, 18, 24, 30]; 
+  const colW = [8, 40, 36, 24, 18, 24, 30];
   const headers = ["NO", "NAMA", "JABATAN", "HONOR", "PAJAK", "DITERIMA", "TANDA TANGAN"];
   const drawHeader = (startY: number) => {
     doc.setFont("helvetica", "bold");
@@ -767,12 +767,12 @@ export const generateHonorNarasumberPDF = async (values: any, logoBase64?: strin
   }
   currentY += 15;
   const sigX = pageWidth - margin - 65;
-  doc.text(`Rungkang, ${formatDateIndo(values.date)}`, sigX, currentY);
+  doc.text(`Karanganyar, ${formatDateIndo(values.date)}`, sigX, currentY);
   doc.setFont("helvetica", "bold");
-  doc.text("Kepala Desa Rungkang,", sigX, currentY + 6);
+  doc.text("Kepala Desa Karanganyar,", sigX, currentY + 6);
   currentY += 25;
-  doc.text("SUSANTO", sigX, currentY);
-  const nW = doc.getTextWidth("SUSANTO");
+  doc.text("RISKIANASARI, SE.", sigX, currentY);
+  const nW = doc.getTextWidth("RISKIANASARI, SE.");
   doc.line(sigX, currentY + 1, sigX + nW, currentY + 1);
   return doc.output("blob");
 }
@@ -827,9 +827,9 @@ export const generateSuratTugasPDF = async (values: any, logoBase64?: string | n
     const textX = margin + 35;
     const textWidth = pageWidth - textX - margin;
     const items = values.dasar ? values.dasar.split("\n").filter(Boolean) : [
-          "Peraturan Bupati Cilacap Nomor 2 Tahun 2024 tentang Perjalanan Dinas.",
-          "Peraturan Desa Rungkang Nomor 16 tahun 2025 tentang Anggaran Pendapatan dan Belanja Desa (APBDes) Tahun Anggaran 2026.",
-        ];
+      "Peraturan Bupati Cilacap Nomor 2 Tahun 2024 tentang Perjalanan Dinas.",
+      "Peraturan Desa Karanganyar nomor 07 tahun 2025 tentang Anggaran Pendapatan dan Belanja Desa (APBDes) Tahun Anggaran 2026.",
+    ];
     items.forEach((item: string, index: number) => {
       ensurePageSpace(20);
       const lines = doc.splitTextToSize(item, textWidth);
@@ -842,72 +842,72 @@ export const generateSuratTugasPDF = async (values: any, logoBase64?: string | n
     doc.text("MEMERINTAHKAN:", pageWidth / 2, currentY, { align: "center" });
     currentY += 10;
   };
-const drawKepada = () => {
-  ensurePageSpace(30);
-  doc.setFont("helvetica", "normal");
-  doc.text("Kepada", margin, currentY);
-  doc.text(":", margin + 25, currentY);
-  const renderPerson = (index: number, person: any) => {
-    const numberX = margin + 28;
-    const labelX = margin + 34;
-    const colonX = margin + 60;
-    const valueX = margin + 63;
+  const drawKepada = () => {
+    ensurePageSpace(30);
     doc.setFont("helvetica", "normal");
-    doc.text(`${index}.`, numberX, currentY);
-    doc.text("Nama", labelX, currentY);
-    doc.text(":", colonX, currentY);
-    doc.setFont("helvetica", "bold");
-    doc.text(String(person.name || "-").toUpperCase(), valueX, currentY);
-    currentY += 6;
-    doc.setFont("helvetica", "normal");
-    doc.text("Jabatan", labelX, currentY);
-    doc.text(":", colonX, currentY);
-    doc.text(String(person.job || "-"), valueX, currentY);
-    currentY += 8;
+    doc.text("Kepada", margin, currentY);
+    doc.text(":", margin + 25, currentY);
+    const renderPerson = (index: number, person: any) => {
+      const numberX = margin + 28;
+      const labelX = margin + 34;
+      const colonX = margin + 60;
+      const valueX = margin + 63;
+      doc.setFont("helvetica", "normal");
+      doc.text(`${index}.`, numberX, currentY);
+      doc.text("Nama", labelX, currentY);
+      doc.text(":", colonX, currentY);
+      doc.setFont("helvetica", "bold");
+      doc.text(String(person.name || "-").toUpperCase(), valueX, currentY);
+      currentY += 6;
+      doc.setFont("helvetica", "normal");
+      doc.text("Jabatan", labelX, currentY);
+      doc.text(":", colonX, currentY);
+      doc.text(String(person.job || "-"), valueX, currentY);
+      currentY += 8;
+    };
+    const official = parsePerson(values.officialName);
+    renderPerson(1, official);
+    const companions = (values.companions || "").split("\n").filter(Boolean);
+    companions.forEach((item: string, i: number) => {
+      const person = parsePerson(item);
+      renderPerson(i + 2, person);
+    });
+    currentY += 4;
   };
-  const official = parsePerson(values.officialName);
-  renderPerson(1, official);
-  const companions = (values.companions || "").split("\n").filter(Boolean);
-  companions.forEach((item: string, i: number) => {
-    const person = parsePerson(item);
-    renderPerson(i + 2, person);
-  });
-  currentY += 4;
-};
-const drawUntuk = () => {
-  ensurePageSpace(50);
-  doc.setFont("helvetica", "normal");
-  doc.text("Untuk", margin, currentY);
-  doc.text(":", margin + 25, currentY);
-  const numberX = margin + 28;
-  const textX = margin + 35;
-  const textWidth = pageWidth - textX - margin;
-  const kegiatanDate = formatTanggalSurat(values.startDate, values.endDate);
-  const items = [
-    `Melaksanakan tugas dalam rangka ${values.description || "-"} ${kegiatanDate} di ${values.destination || "-"}.`,
-    "Melaksanakan tugas dengan penuh rasa tanggungjawab sesuai dengan peraturan perundang-undangan yang berlaku;",
-    "Melaporkan hasilnya setelah melaksanakan tugas;",
-    "Surat ini digunakan untuk melengkapi administrasi pertanggungjawaban keuangan perjalanan dinas.",
-  ];
-  items.forEach((item, index) => {
-    ensurePageSpace(20);
-    const lines = doc.splitTextToSize(item, textWidth);
-    doc.text(`${index + 1}.`, numberX, currentY);
-    doc.text(lines, textX, currentY, { align: "justify", maxWidth: textWidth, lineHeightFactor: 1.5 });
-    currentY += lines.length * 6;
-  });
-  currentY += 4;
-};
+  const drawUntuk = () => {
+    ensurePageSpace(50);
+    doc.setFont("helvetica", "normal");
+    doc.text("Untuk", margin, currentY);
+    doc.text(":", margin + 25, currentY);
+    const numberX = margin + 28;
+    const textX = margin + 35;
+    const textWidth = pageWidth - textX - margin;
+    const kegiatanDate = formatTanggalSurat(values.startDate, values.endDate);
+    const items = [
+      `Melaksanakan tugas dalam rangka ${values.description || "-"} ${kegiatanDate} di ${values.destination || "-"}.`,
+      "Melaksanakan tugas dengan penuh rasa tanggungjawab sesuai dengan peraturan perundang-undangan yang berlaku;",
+      "Melaporkan hasilnya setelah melaksanakan tugas;",
+      "Surat ini digunakan untuk melengkapi administrasi pertanggungjawaban keuangan perjalanan dinas.",
+    ];
+    items.forEach((item, index) => {
+      ensurePageSpace(20);
+      const lines = doc.splitTextToSize(item, textWidth);
+      doc.text(`${index + 1}.`, numberX, currentY);
+      doc.text(lines, textX, currentY, { align: "justify", maxWidth: textWidth, lineHeightFactor: 1.5 });
+      currentY += lines.length * 6;
+    });
+    currentY += 4;
+  };
   const drawSignature = () => {
     ensurePageSpace(40);
     const sigX = pageWidth - margin - 60;
     doc.setFont("helvetica", "normal");
-    doc.text(`Rungkang, ${format(d, "d MMMM yyyy", { locale: localeID })}`, sigX, currentY);
+    doc.text(`Karanganyar, ${format(d, "d MMMM yyyy", { locale: localeID })}`, sigX, currentY);
     doc.setFont("helvetica", "bold");
-    doc.text("Kepala Desa Rungkang,", sigX, currentY + 6);
+    doc.text("Kepala Desa Karanganyar,", sigX, currentY + 6);
     currentY += 28;
-    doc.text("SUSANTO", sigX, currentY);
-    const width = doc.getTextWidth("SUSANTO");
+    doc.text("RISKIANASARI, SE.", sigX, currentY);
+    const width = doc.getTextWidth("RISKIANASARI, SE.");
     doc.line(sigX, currentY + 1, sigX + width, currentY + 1);
   };
   addHeader();
@@ -952,7 +952,7 @@ export const generateSPPDPDF = async (values: any, logoBase64?: string | null): 
     const splitLabel = doc.splitTextToSize(label || "-", col2W - 4);
     const lineHeight = 4.5;
     const textHeight = Math.max(splitVal.length, splitLabel.length) * lineHeight;
-    const h = Math.max(rowH, textHeight + 4);  
+    const h = Math.max(rowH, textHeight + 4);
     doc.rect(margin, currentY, col1W, h);
     doc.text(no, margin + 2, currentY + 4);
     doc.rect(margin + col1W, currentY, col2W, h);
@@ -965,33 +965,33 @@ export const generateSPPDPDF = async (values: any, logoBase64?: string | null): 
   doc.setFontSize(9);
   const officialName = (values.officialName || "PERSONEL").split(' - ')[0].toUpperCase();
   const officialJob = (values.officialName || "JABATAN").split(' - ')[1] || "PERANGKAT DESA";
-  const lamaHari = hitungLamaHari(values.startDate,values.endDate);
-  addRow("1", "Pejabat berwenang yang memberi perintah", "Kepala Desa Rungkang");
+  const lamaHari = hitungLamaHari(values.startDate, values.endDate);
+  addRow("1", "Pejabat berwenang yang memberi perintah", "Kepala Desa Karanganyar");
   addRow("2", "Nama / NIP Pegawai yang diperintah", officialName);
   addRow("3", "a. Pangkat dan Golongan", "-");
   addRow("", "b. Jabatan / Instansi", officialJob);
   addRow("", "c. Tingkat Biaya Perjalanan Dinas", "-");
   addRow("4", "Maksud Perjalanan Dinas", values.description || "-");
   addRow("5", "Alat angkut yang dipergunakan", "Kendaraan Pribadi / Umum");
-  addRow("6", "a. Tempat Berangkat", "Desa Rungkang");
+  addRow("6", "a. Tempat Berangkat", "Desa Karanganyar");
   addRow("", "b. Tempat Tujuan", values.destination || "-");
-  addRow("7","a. Lamanya perjalanan dinas",`${lamaHari} (${terbilang(lamaHari)}) hari`);
+  addRow("7", "a. Lamanya perjalanan dinas", `${lamaHari} (${terbilang(lamaHari)}) hari`);
   addRow("", "b. Tanggal berangkat", formatDateIndo(values.startDate));
   addRow("", "c. Tanggal harus kembali", formatDateIndo(values.endDate));
   addRow("8", "Pengikut: Nama", values.companions ? values.companions.split('\n').join(', ') : "-");
-  addRow("9", "Pembebanan Anggaran", "APBDes Desa Rungkang 2026");
-  addRow("", "a. Instansi", "Pemerintah Desa Rungkang");
+  addRow("9", "Pembebanan Anggaran", "APBDes Desa Karanganyar 2026");
+  addRow("", "a. Instansi", "Pemerintah Desa Karanganyar");
   addRow("", "b. Akun", "Belanja Perjalanan Dinas");
   addRow("10", "Keterangan Lain-lain", "-");
   currentY += 15;
   const sigX = pageWidth - margin - 65;
-  doc.text(`Dikeluarkan di : Rungkang`, sigX, currentY);
+  doc.text(`Dikeluarkan di : Karanganyar`, sigX, currentY);
   doc.text(`Pada Tanggal   : ${format(d, "d MMMM yyyy", { locale: localeID })}`, sigX, currentY + 5);
   doc.setFont("helvetica", "bold");
-  doc.text("Kepala Desa Rungkang,", sigX, currentY + 12);
+  doc.text("Kepala Desa Karanganyar,", sigX, currentY + 12);
   currentY += 32;
-  doc.text("SUSANTO", sigX, currentY);
-  const nW = doc.getTextWidth("SUSANTO");
+  doc.text("RISKIANASARI, SE.", sigX, currentY);
+  const nW = doc.getTextWidth("RISKIANASARI, SE.");
   doc.line(sigX, currentY + 1, sigX + nW, currentY + 1);
   doc.addPage();
   currentY = margin;
@@ -1007,7 +1007,7 @@ export const generateSPPDPDF = async (values: any, logoBase64?: string | null): 
   doc.setFontSize(9);
   doc.setFont("helvetica", "normal");
   doc.text("I.", midX + 2, margin + 5);
-  doc.text("Berangkat dari : Desa Rungkang", midX + 7, margin + 5);
+  doc.text("Berangkat dari : Desa Karanganyar", midX + 7, margin + 5);
   doc.text("(Tempat Kedudukan)", midX + 7, margin + 9);
   doc.text("Ke", midX + 7, margin + 14);
   doc.text(":", midX + 28, margin + 14);
@@ -1016,72 +1016,72 @@ export const generateSPPDPDF = async (values: any, logoBase64?: string | null): 
   doc.text(":", midX + 28, margin + 19);
   doc.text(formatDateIndo(values.startDate), midX + 31, margin + 19);
   doc.setFont("helvetica", "bold");
-  doc.text("Kepala Desa Rungkang,", midX + colW2 / 2, margin + 27, { align: "center" });
-  doc.text("SUSANTO", midX + colW2 / 2, margin + 40, { align: "center" });
-  const wH1 = doc.getTextWidth("SUSANTO");
-  doc.line(midX + colW2 / 2 - wH1/2, margin + 41, midX + colW2 / 2 + wH1/2, margin + 41);
+  doc.text("Kepala Desa Karanganyar,", midX + colW2 / 2, margin + 27, { align: "center" });
+  doc.text("RISKIANASARI, SE.", midX + colW2 / 2, margin + 40, { align: "center" });
+  const wH1 = doc.getTextWidth("RISKIANASARI, SE.");
+  doc.line(midX + colW2 / 2 - wH1 / 2, margin + 41, midX + colW2 / 2 + wH1 / 2, margin + 41);
   doc.setFont("helvetica", "normal");
-const noX = margin + 2;
-const labelX = margin + 6;
-const dotX = margin + 28;
-const valueX = margin + 32;
-const rNoX = midX + 2;
-const rLabelX = midX + 6;
-const rDotX = midX + 28;
-const rValueX = midX + 32;
-let y2 = margin + rowH2;
-    doc.text("II.", noX, y2 + 5);
-    doc.text("Tiba di", labelX, y2 + 5);
-    doc.text(":", dotX, y2 + 5);
-    doc.text(values.destination || "-", valueX, y2 + 5);
-    doc.text("Pada tanggal", labelX, y2 + 10);
-    doc.text(":", dotX, y2 + 10);
-    doc.text(formatDateIndo(values.startDate), valueX, y2 + 10);
-    doc.text("Berangkat dari", rLabelX, y2 + 5);
-    doc.text(":", rDotX, y2 + 5);
-    doc.text("Desa Rungkang", rValueX, y2 + 5);
-    doc.text("Ke", rLabelX, y2 + 10);
-    doc.text(":", rDotX, y2 + 10);
-    doc.text(values.destination || "-", rValueX, y2 + 10);
-    doc.text("Pada tanggal", rLabelX, y2 + 15);
-    doc.text(":", rDotX, y2 + 15);
-    doc.text(formatDateIndo(values.endDate), rValueX, y2 + 15);
-    y2 += rowH2;
-    doc.text("III.", noX, y2 + 5);
-    doc.text("Tiba di", labelX, y2 + 5);
-    doc.text(":", dotX, y2 + 5);
-    doc.text("", valueX, y2 + 5);
-    doc.text("Pada tanggal", labelX, y2 + 10);
-    doc.text(":", dotX, y2 + 10);
-    doc.text("", valueX, y2 + 10);
-    doc.text("Berangkat dari", rLabelX, y2 + 5);
-    doc.text(":", rDotX, y2 + 5);
-    doc.text("", rValueX, y2 + 5);
-    doc.text("Ke", rLabelX, y2 + 10);
-    doc.text(":", rDotX, y2 + 10);
-    doc.text("", rValueX, y2 + 10);
-    doc.text("Pada tanggal", rLabelX, y2 + 15);
-    doc.text(":", rDotX, y2 + 15);
-    doc.text("", rValueX, y2 + 15);
-    y2 += rowH2;
-    const ivNoX = margin + 2;
-    const ivLabelX = margin + 6;
-    const ivDotX = margin + 28;
-    const ivValueX = margin + 32;
-    doc.text("IV.", ivNoX, y2 + 5);
-    doc.text("Tiba kembali di", ivLabelX, y2 + 5);
-    doc.text(":", ivDotX, y2 + 5);
-    doc.text("Desa Rungkang", ivValueX, y2 + 5);
-    doc.setFontSize(8);
-    doc.text("(Tempat Kedudukan)", ivValueX, y2 + 9);
-    doc.setFontSize(9);
-    doc.text("Pada tanggal", ivLabelX, y2 + 15);
-    doc.text(":", ivDotX, y2 + 15);
-    doc.text(formatDateIndo(values.endDate), ivValueX, y2 + 15);
+  const noX = margin + 2;
+  const labelX = margin + 6;
+  const dotX = margin + 28;
+  const valueX = margin + 32;
+  const rNoX = midX + 2;
+  const rLabelX = midX + 6;
+  const rDotX = midX + 28;
+  const rValueX = midX + 32;
+  let y2 = margin + rowH2;
+  doc.text("II.", noX, y2 + 5);
+  doc.text("Tiba di", labelX, y2 + 5);
+  doc.text(":", dotX, y2 + 5);
+  doc.text(values.destination || "-", valueX, y2 + 5);
+  doc.text("Pada tanggal", labelX, y2 + 10);
+  doc.text(":", dotX, y2 + 10);
+  doc.text(formatDateIndo(values.startDate), valueX, y2 + 10);
+  doc.text("Berangkat dari", rLabelX, y2 + 5);
+  doc.text(":", rDotX, y2 + 5);
+  doc.text("Desa Karanganyar", rValueX, y2 + 5);
+  doc.text("Ke", rLabelX, y2 + 10);
+  doc.text(":", rDotX, y2 + 10);
+  doc.text(values.destination || "-", rValueX, y2 + 10);
+  doc.text("Pada tanggal", rLabelX, y2 + 15);
+  doc.text(":", rDotX, y2 + 15);
+  doc.text(formatDateIndo(values.endDate), rValueX, y2 + 15);
+  y2 += rowH2;
+  doc.text("III.", noX, y2 + 5);
+  doc.text("Tiba di", labelX, y2 + 5);
+  doc.text(":", dotX, y2 + 5);
+  doc.text("", valueX, y2 + 5);
+  doc.text("Pada tanggal", labelX, y2 + 10);
+  doc.text(":", dotX, y2 + 10);
+  doc.text("", valueX, y2 + 10);
+  doc.text("Berangkat dari", rLabelX, y2 + 5);
+  doc.text(":", rDotX, y2 + 5);
+  doc.text("", rValueX, y2 + 5);
+  doc.text("Ke", rLabelX, y2 + 10);
+  doc.text(":", rDotX, y2 + 10);
+  doc.text("", rValueX, y2 + 10);
+  doc.text("Pada tanggal", rLabelX, y2 + 15);
+  doc.text(":", rDotX, y2 + 15);
+  doc.text("", rValueX, y2 + 15);
+  y2 += rowH2;
+  const ivNoX = margin + 2;
+  const ivLabelX = margin + 6;
+  const ivDotX = margin + 28;
+  const ivValueX = margin + 32;
+  doc.text("IV.", ivNoX, y2 + 5);
+  doc.text("Tiba kembali di", ivLabelX, y2 + 5);
+  doc.text(":", ivDotX, y2 + 5);
+  doc.text("Desa Karanganyar", ivValueX, y2 + 5);
+  doc.setFontSize(8);
+  doc.text("(Tempat Kedudukan)", ivValueX, y2 + 9);
+  doc.setFontSize(9);
+  doc.text("Pada tanggal", ivLabelX, y2 + 15);
+  doc.text(":", ivDotX, y2 + 15);
+  doc.text(formatDateIndo(values.endDate), ivValueX, y2 + 15);
   doc.setFont("helvetica", "bold");
-  doc.text("Kepala Desa Rungkang,", margin + colW2 / 2, y2 + 25, { align: "center" });
-  doc.text("SUSANTO", margin + colW2 / 2, y2 + 38, { align: "center" });
-  const wH2 = doc.getTextWidth("SUSANTO");
+  doc.text("Kepala Desa Karanganyar,", margin + colW2 / 2, y2 + 25, { align: "center" });
+  doc.text("RISKIANASARI, SE.", margin + colW2 / 2, y2 + 38, { align: "center" });
+  const wH2 = doc.getTextWidth("RISKIANASARI, SE.");
   doc.line(margin + colW2 / 2 - wH2 / 2, y2 + 39, margin + colW2 / 2 + wH2 / 2, y2 + 39);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
@@ -1174,37 +1174,37 @@ export const generateRAPDF = async (values: any, logoBase64?: string | null): Pr
   items.forEach((item, i) => {
     let rX = margin;
     const start = formatT(baseDate);
-    
+
     if (item.duration > 0) {
       const nextDate = dateAddMinutes(baseDate, item.duration);
       const range = `${start} – ${formatT(nextDate)}`;
-      
+
       doc.rect(rX, currentY, colW[0], rowH);
-      doc.text((i + 1).toString(), rX + colW[0]/2, currentY + 6.5, { align: "center" });
+      doc.text((i + 1).toString(), rX + colW[0] / 2, currentY + 6.5, { align: "center" });
       rX += colW[0];
 
       doc.rect(rX, currentY, colW[1], rowH);
-      doc.text(range, rX + colW[1]/2, currentY + 6.5, { align: "center" });
+      doc.text(range, rX + colW[1] / 2, currentY + 6.5, { align: "center" });
       rX += colW[1];
 
       doc.rect(rX, currentY, colW[2], rowH);
       doc.text(item.label, rX + 3, currentY + 6.5);
-      
+
       baseDate = nextDate;
     } else {
       // Last row (Selesai)
       doc.rect(rX, currentY, colW[0], rowH);
-      doc.text((i + 1).toString(), rX + colW[0]/2, currentY + 6.5, { align: "center" });
+      doc.text((i + 1).toString(), rX + colW[0] / 2, currentY + 6.5, { align: "center" });
       rX += colW[0];
 
       doc.rect(rX, currentY, colW[1], rowH);
-      doc.text(start, rX + colW[1]/2, currentY + 6.5, { align: "center" });
+      doc.text(start, rX + colW[1] / 2, currentY + 6.5, { align: "center" });
       rX += colW[1];
 
       doc.rect(rX, currentY, colW[2], rowH);
       doc.text(item.label, rX + 3, currentY + 6.5);
     }
-    
+
     currentY += rowH;
   });
 
