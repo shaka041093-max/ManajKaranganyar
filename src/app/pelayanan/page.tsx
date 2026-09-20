@@ -87,6 +87,46 @@ export default function AdminPelayananPage() {
   const [selectedSigner, setSelectedSigner] = useState<'kades' | 'sekdes'>('kades');
   const [selectedSubForDetail, setSelectedSubForDetail] = useState<LetterSubmission | null>(null);
 
+  // Dedicated state for Editing Nomor Surat
+  const [subForEditDocNum, setSubForEditDocNum] = useState<LetterSubmission | null>(null);
+  const [manualDocNumInput, setManualDocNumInput] = useState('');
+  const [isSavingDocNum, setIsSavingDocNum] = useState(false);
+
+  const handleOpenEditDocNum = (sub: LetterSubmission) => {
+    setSubForEditDocNum(sub);
+    setManualDocNumInput(sub.documentNumber && sub.documentNumber !== 'Belum Ada' ? sub.documentNumber : '');
+  };
+
+  const handleSaveManualDocNum = async () => {
+    if (!firestore || !subForEditDocNum) return;
+    if (!manualDocNumInput.trim()) {
+      toast({
+        title: "Nomor Surat Kosong",
+        description: "Silakan masukkan format nomor surat yang valid.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setIsSavingDocNum(true);
+    try {
+      const trimmedNum = manualDocNumInput.trim();
+      await updateSubmissionStatus(firestore, subForEditDocNum.id, subForEditDocNum.status || 'APPROVED', trimmedNum);
+      toast({
+        title: "Nomor Surat Diperbarui",
+        description: `Nomor surat berhasil disimpan: ${trimmedNum}`,
+      });
+      setSubForEditDocNum(null);
+    } catch (error: any) {
+      toast({
+        title: "Gagal Menyimpan",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsSavingDocNum(false);
+    }
+  };
+
   const isImageCategory = category === 'visi-misi' || category === 'maklumat' || category === 'pojok-baca';
 
   useEffect(() => {
@@ -372,6 +412,20 @@ export default function AdminPelayananPage() {
     }
   };
 
+  // Guard cetak: Wajib persetujuan admin terlebih dahulu
+  const handlePrintSub = (sub: LetterSubmission) => {
+    const isApproved = sub.status === 'APPROVED' || sub.status === 'COMPLETED' || sub.status === 'disetujui';
+    if (!isApproved) {
+      toast({
+        title: "Wajib Disetujui Dahulu",
+        description: `Pengajuan ini masih berstatus "${sub.status || 'MENUNGGU'}". Anda wajib menyetujui pengajuan surat terlebih dahulu sebelum mencetak dokumen.`,
+        variant: "destructive"
+      });
+      return;
+    }
+    setSelectedSubForPrint(sub);
+  };
+
   // Filter submissions by search query
   const filteredSubmissions = submissions?.filter((s) => {
     if (!searchSubmission.trim()) return true;
@@ -475,12 +529,12 @@ export default function AdminPelayananPage() {
                           <span>Tolak</span>
                         </DropdownMenuItem>
 
-                        <DropdownMenuItem onClick={() => setSelectedSubForPrint(sub)} className="rounded-xl px-3 py-2 cursor-pointer font-bold text-xs flex items-center gap-2.5 hover:bg-slate-50 text-slate-700">
+                        <DropdownMenuItem onClick={() => handlePrintSub(sub)} className="rounded-xl px-3 py-2 cursor-pointer font-bold text-xs flex items-center gap-2.5 hover:bg-slate-50 text-slate-700">
                           <Printer className="h-4 w-4 text-slate-700" />
                           <span>Cetak Dokumen</span>
                         </DropdownMenuItem>
 
-                        <DropdownMenuItem onClick={() => setSelectedSubForPrint(sub)} className="rounded-xl px-3 py-2 cursor-pointer font-bold text-xs flex items-center gap-2.5 hover:bg-slate-50 text-slate-700">
+                        <DropdownMenuItem onClick={() => handlePrintSub(sub)} className="rounded-xl px-3 py-2 cursor-pointer font-bold text-xs flex items-center gap-2.5 hover:bg-slate-50 text-slate-700">
                           <Download className="h-4 w-4 text-slate-700" />
                           <span>Unduh PDF</span>
                         </DropdownMenuItem>
@@ -528,17 +582,55 @@ export default function AdminPelayananPage() {
                     <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">NOMOR SURAT</span>
                     {sub.documentNumber && sub.documentNumber !== 'Belum Ada' ? (
                       <div className="flex items-center gap-1.5">
-                        <span className="text-xs font-mono font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200">
-                          {sub.documentNumber}
-                        </span>
-                        <Button variant="ghost" size="icon" className="h-6 w-6 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-lg shrink-0" onClick={() => handleGenerateDocNumForSub(sub)}>
+                        <button
+                          type="button"
+                          onClick={() => handleOpenEditDocNum(sub)}
+                          className="text-xs font-mono font-bold text-slate-800 bg-slate-100 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300 px-2 py-0.5 rounded-lg border border-slate-200 transition-all cursor-pointer flex items-center gap-1.5 group/btn"
+                          title="Klik untuk mengedit nomor surat"
+                        >
+                          <span>{sub.documentNumber}</span>
+                          <Edit className="h-2.5 w-2.5 text-slate-400 group-hover/btn:text-blue-600 transition-colors" />
+                        </button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg shrink-0"
+                          title="Edit Nomor Surat"
+                          onClick={() => handleOpenEditDocNum(sub)}
+                        >
+                          <Edit className="h-3 w-3" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-lg shrink-0"
+                          title="Tarik / Perbarui Nomor Surat Otomatis"
+                          onClick={() => handleGenerateDocNumForSub(sub)}
+                        >
                           <RefreshCw className="h-3 w-3" />
                         </Button>
                       </div>
                     ) : (
-                      <Button size="sm" variant="outline" onClick={() => handleGenerateDocNumForSub(sub)} className="h-7 px-2.5 rounded-xl font-bold text-[10px] uppercase text-primary border-primary/30 bg-primary/5 hover:bg-primary hover:text-white transition-all shadow-xs">
-                        <RefreshCw className="mr-1 h-3 w-3" /> Tarik Surat
-                      </Button>
+                      <div className="flex items-center gap-1">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleGenerateDocNumForSub(sub)}
+                          className="h-7 px-2.5 rounded-xl font-bold text-[10px] uppercase text-primary border-primary/30 bg-primary/5 hover:bg-primary hover:text-white transition-all shadow-xs"
+                          title="Tarik Nomor Otomatis"
+                        >
+                          <RefreshCw className="mr-1 h-3 w-3" /> Tarik Surat
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => handleOpenEditDocNum(sub)}
+                          className="h-7 px-2 rounded-xl font-bold text-[10px] uppercase text-slate-600 hover:text-blue-600 hover:bg-blue-50"
+                          title="Ketik Nomor Manual"
+                        >
+                          <Edit className="h-3 w-3" />
+                        </Button>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -591,9 +683,24 @@ export default function AdminPelayananPage() {
                       <TableCell>
                         {sub.documentNumber && sub.documentNumber !== 'Belum Ada' ? (
                           <div className="flex items-center gap-1.5">
-                            <span className="text-xs font-mono font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200">
-                              {sub.documentNumber}
-                            </span>
+                            <button
+                              type="button"
+                              onClick={() => handleOpenEditDocNum(sub)}
+                              className="text-xs font-mono font-bold text-slate-800 bg-slate-100 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300 px-2 py-0.5 rounded-lg border border-slate-200 transition-all cursor-pointer flex items-center gap-1.5 group/btn"
+                              title="Klik untuk mengedit nomor surat"
+                            >
+                              <span>{sub.documentNumber}</span>
+                              <Edit className="h-2.5 w-2.5 text-slate-400 group-hover/btn:text-blue-600 transition-colors" />
+                            </button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-6 w-6 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg shrink-0"
+                              title="Edit Nomor Surat Secara Manual"
+                              onClick={() => handleOpenEditDocNum(sub)}
+                            >
+                              <Edit className="h-3 w-3" />
+                            </Button>
                             <Button
                               variant="ghost"
                               size="icon"
@@ -605,14 +712,26 @@ export default function AdminPelayananPage() {
                             </Button>
                           </div>
                         ) : (
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleGenerateDocNumForSub(sub)}
-                            className="h-7 px-2.5 rounded-xl font-bold text-[10px] uppercase text-primary border-primary/30 bg-primary/5 hover:bg-primary hover:text-white transition-all shadow-xs"
-                          >
-                            <RefreshCw className="mr-1 h-3 w-3" /> Tarik Surat
-                          </Button>
+                          <div className="flex items-center gap-1">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleGenerateDocNumForSub(sub)}
+                              className="h-7 px-2.5 rounded-xl font-bold text-[10px] uppercase text-primary border-primary/30 bg-primary/5 hover:bg-primary hover:text-white transition-all shadow-xs"
+                              title="Tarik Nomor Otomatis"
+                            >
+                              <RefreshCw className="mr-1 h-3 w-3" /> Tarik Surat
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleOpenEditDocNum(sub)}
+                              className="h-7 px-2 rounded-xl font-bold text-[10px] uppercase text-slate-600 hover:text-blue-600 hover:bg-blue-50"
+                              title="Ketik Nomor Manual"
+                            >
+                              <Edit className="h-3 w-3" />
+                            </Button>
+                          </div>
                         )}
                       </TableCell>
 
@@ -654,6 +773,14 @@ export default function AdminPelayananPage() {
                             </DropdownMenuItem>
 
                             <DropdownMenuItem
+                              onClick={() => handleOpenEditDocNum(sub)}
+                              className="rounded-xl px-3 py-2 cursor-pointer font-bold text-xs flex items-center gap-2.5 text-blue-700 hover:bg-blue-50"
+                            >
+                              <Edit className="h-4 w-4 text-blue-600" />
+                              <span>Ubah Nomor Surat</span>
+                            </DropdownMenuItem>
+
+                            <DropdownMenuItem
                               onClick={() => handleQuickUpdateStatus(sub, 'APPROVED')}
                               className="rounded-xl px-3 py-2 cursor-pointer font-bold text-xs flex items-center gap-2.5 text-emerald-600 hover:bg-emerald-50"
                             >
@@ -670,7 +797,7 @@ export default function AdminPelayananPage() {
                             </DropdownMenuItem>
 
                             <DropdownMenuItem
-                              onClick={() => setSelectedSubForPrint(sub)}
+                              onClick={() => handlePrintSub(sub)}
                               className="rounded-xl px-3 py-2 cursor-pointer font-bold text-xs flex items-center gap-2.5 hover:bg-slate-50 text-slate-700"
                             >
                               <Printer className="h-4 w-4 text-slate-700" />
@@ -678,7 +805,7 @@ export default function AdminPelayananPage() {
                             </DropdownMenuItem>
 
                             <DropdownMenuItem
-                              onClick={() => setSelectedSubForPrint(sub)}
+                              onClick={() => handlePrintSub(sub)}
                               className="rounded-xl px-3 py-2 cursor-pointer font-bold text-xs flex items-center gap-2.5 hover:bg-slate-50 text-slate-700"
                             >
                               <Download className="h-4 w-4 text-slate-700" />
@@ -923,19 +1050,162 @@ export default function AdminPelayananPage() {
             </div>
           )}
 
-          <DialogFooter className="gap-2">
-            <Button variant="outline" className="rounded-xl font-bold" onClick={() => setSelectedSubForDetail(null)}>Tutup</Button>
-            <Button
-              className="rounded-xl font-black uppercase bg-blue-800 hover:bg-blue-900 text-white"
-              onClick={() => {
-                if (selectedSubForDetail) {
+          <DialogFooter className="gap-2 sm:justify-between">
+            <Button variant="outline" className="rounded-xl font-bold" onClick={() => setSelectedSubForDetail(null)}>
+              Tutup
+            </Button>
+
+            {selectedSubForDetail && (
+              selectedSubForDetail.status === 'APPROVED' || 
+              selectedSubForDetail.status === 'COMPLETED' || 
+              selectedSubForDetail.status === 'disetujui'
+            ) ? (
+              <Button
+                className="rounded-xl font-black uppercase bg-primary hover:bg-primary/90 text-white shadow-md shadow-primary/20"
+                onClick={() => {
                   const target = selectedSubForDetail;
                   setSelectedSubForDetail(null);
                   setSelectedSubForPrint(target);
-                }
-              }}
+                }}
+              >
+                <Printer className="mr-2 h-4 w-4" /> Cetak Dokumen Ini
+              </Button>
+            ) : (
+              <Button
+                className="rounded-xl font-black uppercase bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/20"
+                onClick={async () => {
+                  if (selectedSubForDetail && firestore) {
+                    await handleQuickUpdateStatus(selectedSubForDetail, 'APPROVED');
+                    let docNum = selectedSubForDetail.documentNumber;
+                    if (!docNum || docNum === 'Belum Ada') {
+                      docNum = await getNextDocumentNumber(firestore);
+                    }
+                    const updatedSub = { ...selectedSubForDetail, status: 'APPROVED', documentNumber: docNum };
+                    setSelectedSubForDetail(null);
+                    setSelectedSubForPrint(updatedSub);
+                  }
+                }}
+              >
+                <CheckCircle2 className="mr-2 h-4 w-4" /> Setujui & Lanjut Cetak
+              </Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* DIALOG 3: EDIT NOMOR SURAT RESMI */}
+      <Dialog open={!!subForEditDocNum} onOpenChange={(open) => !open && setSubForEditDocNum(null)}>
+        <DialogContent className="rounded-[2.5rem] max-w-md p-6 bg-white shadow-2xl">
+          <DialogHeader className="space-y-1.5 text-left border-b pb-4">
+            <div className="flex items-center gap-2.5">
+              <div className="h-8 w-8 rounded-xl bg-blue-100 text-blue-800 flex items-center justify-center shrink-0">
+                <Edit className="h-4 w-4" />
+              </div>
+              <div>
+                <DialogTitle className="text-lg font-black uppercase text-slate-900 tracking-tight leading-none">
+                  Edit Nomor Surat Resmi
+                </DialogTitle>
+                <DialogDescription className="text-xs text-slate-500 mt-1">
+                  Ubah nomor surat resmi permohonan warga ini secara manual.
+                </DialogDescription>
+              </div>
+            </div>
+          </DialogHeader>
+
+          {subForEditDocNum && (
+            <div className="space-y-4 py-2 text-xs">
+              {/* Info Singkat Permohonan */}
+              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase">Pemohon:</span>
+                  <span className="font-black text-slate-800 uppercase">
+                    {subForEditDocNum.formData?.name || subForEditDocNum.requesterName}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase">Jenis Surat:</span>
+                  <Badge variant="secondary" className="text-[9px] font-bold bg-amber-500/10 text-amber-800">
+                    {subForEditDocNum.letterType}
+                  </Badge>
+                </div>
+                {subForEditDocNum.formData?.nik && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase">NIK:</span>
+                    <span className="font-mono font-bold text-slate-700">{subForEditDocNum.formData.nik}</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Form Input Nomor Surat */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label className="text-[10px] font-black uppercase text-slate-600 tracking-wider">
+                    Nomor Surat Resmi
+                  </Label>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 px-2 text-[10px] font-bold text-primary hover:bg-primary/10 rounded-lg"
+                    onClick={async () => {
+                      if (!firestore) return;
+                      try {
+                        const nextNum = await getNextDocumentNumber(firestore);
+                        setManualDocNumInput(nextNum);
+                        toast({ title: "Nomor Otomatis Terambil", description: nextNum });
+                      } catch (e: any) {
+                        toast({ title: "Gagal mengambil nomor otomatis", description: e.message, variant: "destructive" });
+                      }
+                    }}
+                  >
+                    <RefreshCw className="h-3 w-3 mr-1" /> Tarik Nomor Otomatis
+                  </Button>
+                </div>
+                <Input
+                  value={manualDocNumInput}
+                  onChange={(e) => setManualDocNumInput(e.target.value)}
+                  placeholder="Contoh: 400 / 004 / 04 / 2026"
+                  className="h-12 font-mono font-black text-sm bg-slate-50 border-slate-200 focus:bg-white text-slate-900 rounded-xl px-3.5 tracking-wide"
+                  autoFocus
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleSaveManualDocNum();
+                    }
+                  }}
+                />
+                <p className="text-[10px] text-slate-400">
+                  Format baku: [Kode Klasifikasi] / [Nomor Urut] / [Bulan Romawi/Angka] / [Tahun]
+                </p>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter className="gap-2 sm:justify-end pt-2 border-t">
+            <Button
+              type="button"
+              variant="outline"
+              className="rounded-xl font-bold text-xs"
+              onClick={() => setSubForEditDocNum(null)}
+              disabled={isSavingDocNum}
             >
-              <Printer className="mr-2 h-4 w-4" /> Cetak DokumenIni
+              Batal
+            </Button>
+            <Button
+              type="button"
+              className="rounded-xl font-black uppercase text-xs bg-blue-800 hover:bg-blue-900 text-white shadow-md shadow-blue-950/20"
+              onClick={handleSaveManualDocNum}
+              disabled={isSavingDocNum}
+            >
+              {isSavingDocNum ? (
+                <>
+                  <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> Menyimpan...
+                </>
+              ) : (
+                <>
+                  <Save className="mr-1.5 h-3.5 w-3.5" /> Simpan Nomor Surat
+                </>
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>

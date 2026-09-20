@@ -333,7 +333,7 @@ export function PrintLayout({
         {signerType === 'sekdes' ? (
           <>
             <p>A.n. Kepala Desa Karanganyar</p>
-            <p>Plt. Sekretaris Desa Karanganyar</p>
+            <p>Sekretaris Desa Karanganyar</p>
             <div className={inlineSignatures ? "h-16" : isTight ? "h-11" : compactSpacing ? "h-14" : "h-16"}></div>
             <p className="font-bold underline tracking-wider uppercase">PRIYO SUMARNO, S.PD.</p>
           </>

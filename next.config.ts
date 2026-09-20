@@ -8,6 +8,18 @@ const nextConfig: NextConfig = {
   },
   // Memaksa paket Node.js tradisional dikelola sebagai eksternal untuk menghindari masalah Turbopack
   serverExternalPackages: ['docxtemplater', 'pizzip'],
+  async rewrites() {
+    return [
+      {
+        source: '/pengajuansurat/',
+        destination: '/pengajuan-surat/',
+      },
+      {
+        source: '/pengajuansurat',
+        destination: '/pengajuan-surat/',
+      },
+    ];
+  },
 };
 
 export default nextConfig;

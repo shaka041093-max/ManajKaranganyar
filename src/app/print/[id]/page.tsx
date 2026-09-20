@@ -131,7 +131,40 @@ export default function PrintPage() {
     );
   }
 
-  if (submission && typeof submission !== 'string' && !submission.documentNumber) {
+  // Wajib persetujuan admin terlebih dahulu sebelum cetak
+  if (
+    submission && 
+    typeof submission !== 'string' && 
+    submission.status !== 'APPROVED' && 
+    submission.status !== 'COMPLETED' && 
+    submission.status !== 'disetujui'
+  ) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-slate-50 p-8">
+        <div className="max-w-md w-full p-8 bg-white rounded-[2rem] shadow-xl border border-amber-200 text-center space-y-4">
+          <div className="mx-auto w-16 h-16 bg-amber-50 rounded-2xl flex items-center justify-center text-amber-600">
+            <AlertCircle className="h-8 w-8" />
+          </div>
+          <h2 className="text-xl font-black text-slate-900 uppercase">Dokumen Belum Disetujui</h2>
+          <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
+            Pengajuan surat ini masih berstatus <strong className="text-amber-700 uppercase">"{submission.status || 'MENUNGGU'}"</strong>.
+            <br />
+            Admin desa <strong>wajib menyetujui</strong> permohonan surat terlebih dahulu di menu <strong>Pelayanan Surat</strong> sebelum dokumen resmi dapat dicetak.
+          </p>
+          <div className="pt-2">
+            <button
+              onClick={() => window.location.href = '/pelayanan'}
+              className="w-full py-3 bg-primary text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-primary/90 transition-all shadow-md shadow-primary/20"
+            >
+              Kembali ke Menu Pelayanan
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (submission && typeof submission !== 'string' && (!submission.documentNumber || submission.documentNumber === 'Belum Ada')) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-slate-50 p-8">
         <div className="max-w-md w-full p-8 bg-white rounded-[2rem] shadow-xl border border-amber-100 text-center space-y-4">
@@ -141,7 +174,7 @@ export default function PrintPage() {
             <h2 className="text-xl font-black text-slate-900 uppercase">Nomor Surat Belum Ada</h2>
             <p className="text-slate-500 text-sm leading-relaxed">
                 Dokumen tidak dapat dicetak karena belum memiliki nomor surat resmi. <br/>
-                Silakan kembali ke dasbor admin dan klik tombol <strong>"Buat Nomor"</strong> terlebih dahulu.
+                Silakan kembali ke dasbor admin dan klik tombol <strong>"Tarik Surat"</strong> terlebih dahulu.
             </p>
         </div>
       </div>

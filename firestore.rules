@@ -41,7 +41,7 @@ service cloud.firestore {
     match /sppds/{docId} { allow read, write: if isSignedIn(); }
     match /spjDesa/{docId} { allow read, write: if isSignedIn(); }
     match /produkHukum/{docId} { allow read, write: if isSignedIn(); }
-    match /settings/village { allow read, write: if isSignedIn(); }
+    match /settings/village { allow read: if true; allow write: if isSignedIn(); }
 
     // == Rules: Absensi Records ==
     match /absensi/{absenId} {

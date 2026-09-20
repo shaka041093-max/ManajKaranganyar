@@ -176,6 +176,12 @@ export default function SettingsPage() {
             updatedAt: new Date().toISOString()
           }, { merge: true })
         }
+        fetch('/api/village-profile/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ heroPhotoBase64: base64 })
+        }).catch(() => {})
+
         toast({
           title: "Foto Utama Tersimpan",
           description: "Foto halaman utama tersimpan dan aktif di halaman depan."

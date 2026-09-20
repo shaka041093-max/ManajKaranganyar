@@ -90,6 +90,7 @@ export const updateSubmissionStatus = async (
     };
     if (documentNumber !== undefined) {
       updatePayload.documentNumber = documentNumber;
+      updatePayload['formData.nomorSurat'] = documentNumber;
     }
     await updateDoc(docRef, updatePayload);
   } catch (error) {
@@ -186,17 +187,26 @@ export const uploadAttachmentsToDrive = async (db: Firestore, payload: any) => {
  */
 export const addSubmission = async (db: Firestore, payload: any): Promise<string> => {
   try {
+    const isAdmin = payload.isAdmin === true;
+    const initialStatus = payload.status || (isAdmin ? 'APPROVED' : 'PENDING');
+
     let docNum = payload.documentNumber;
-    if (!docNum) {
+    if (!docNum && isAdmin) {
       docNum = await getNextDocumentNumber(db);
+    } else if (!docNum) {
+      docNum = 'Belum Ada';
     }
+
+    // Pastikan flag isAdmin tidak mengotori payload formData
+    const { isAdmin: _, ...cleanPayload } = payload;
 
     // 1. Simpan dokumen pengajuan ke Firestore terlebih dahulu agar UI instan selesai (bebas hanging)
     const docRef = await addDoc(collection(db, 'submissions'), {
-      ...payload,
+      ...cleanPayload,
       documentNumber: docNum,
-      status: payload.status || 'APPROVED',
+      status: initialStatus,
       driveFiles: [],
+      source: isAdmin ? 'internal_admin' : 'online_warga',
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
@@ -219,6 +229,37 @@ export const addSubmission = async (db: Firestore, payload: any): Promise<string
     return docRef.id;
   } catch (error) {
     console.error("Error in addSubmission:", error);
+    throw error;
+  }
+};
+
+/**
+ * Mencari status permohonan surat warga berdasarkan NIK atau Nomor Tiket
+ */
+export const searchSubmissionsByCitizen = async (
+  db: Firestore,
+  queryParam: string
+): Promise<LetterSubmission[]> => {
+  if (!queryParam || !queryParam.trim()) return [];
+  const clean = queryParam.trim();
+  try {
+    const q = query(collection(db, 'submissions'), orderBy('createdAt', 'desc'));
+    const snapshot = await getDocs(q);
+    const results: LetterSubmission[] = [];
+
+    snapshot.forEach((docSnap) => {
+      const data = docSnap.data() as any;
+      const matchTicket = (data.ticketNumber || '').toLowerCase() === clean.toLowerCase();
+      const matchNik = (data.nik || '') === clean || (data.formData?.nik || '') === clean;
+
+      if (matchTicket || matchNik) {
+        results.push({ id: docSnap.id, ...data } as LetterSubmission);
+      }
+    });
+
+    return results;
+  } catch (error) {
+    console.error("Error searching submissions by citizen:", error);
     throw error;
   }
 };

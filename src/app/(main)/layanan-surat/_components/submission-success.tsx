@@ -72,27 +72,32 @@ export function SubmissionSuccess({ ticketNumber, onReset }: SubmissionSuccessPr
       <div ref={cardRef} className="w-full max-w-lg bg-white rounded-xl">
         <Card className="w-full shadow-none border-0 sm:border">
           <CardHeader className="items-center text-center">
-            <CheckCircle className="w-16 h-16 text-green-500 mb-4" />
-            <CardTitle className="text-2xl text-green-800">Selamat! Pengajuan Berhasil</CardTitle>
-            <CardDescription>Simpan tiket ini untuk mengecek progres surat Anda.</CardDescription>
+            <div className="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-600 mb-2 shadow-inner">
+              <CheckCircle className="w-10 h-10" />
+            </div>
+            <CardTitle className="text-2xl font-black text-slate-900 tracking-tight">Pengajuan Surat Berhasil Terkirim!</CardTitle>
+            <CardDescription className="text-xs text-slate-500">
+              Permohonan Anda otomatis masuk ke sistem antrean verifikasi Admin Desa Karanganyar.
+            </CardDescription>
           </CardHeader>
           <CardContent className="text-center space-y-6">
-            <div className="bg-green-50 rounded-xl p-6 border border-green-100">
-              <p className="text-sm text-green-700 font-medium mb-2 uppercase tracking-wide">KODE TIKET ANDA</p>
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50/50 rounded-2xl p-6 border-2 border-primary/20 shadow-xs">
+              <p className="text-xs text-primary font-black uppercase tracking-widest mb-1.5">KODE TIKET PELACAKAN ANDA</p>
               <div className="flex items-center justify-center gap-3">
-                <Ticket className="w-6 h-6 text-green-600" />
-                <p className="text-3xl font-bold tracking-widest text-green-900">{ticketNumber}</p>
+                <Ticket className="w-7 h-7 text-primary" />
+                <p className="text-3xl sm:text-4xl font-black tracking-widest text-slate-900 font-mono">{ticketNumber}</p>
               </div>
+              <p className="text-[11px] text-slate-500 font-medium mt-2">
+                Catat atau simpan kode tiket ini untuk memantau status persetujuan surat Anda.
+              </p>
             </div>
 
-            <div className="text-sm text-muted-foreground text-left p-4 border rounded-lg bg-gray-50/50">
-              <p className="font-semibold text-foreground mb-2">Informasi Pengambilan Surat:</p>
-              <p className="mb-2">
-                Ketika status <strong>"Disetujui"</strong>, surat dapat diambil di <strong>Balai Desa Karanganyar</strong>.
-              </p>
-              <ul className="list-disc pl-5 space-y-1">
-                <li><strong>Senin - Jumat:</strong> 07:00 - 16:00 WIB.</li>
-                <li><strong>Sabtu & Minggu:</strong> Libur.</li>
+            <div className="text-xs text-slate-600 text-left p-4 border border-slate-200/80 rounded-xl bg-slate-50/70 space-y-2">
+              <p className="font-bold text-slate-900">Ketentuan & Prosedur Pengambilan:</p>
+              <ul className="list-disc pl-5 space-y-1 text-slate-600">
+                <li>Admin Desa akan memverifikasi kelengkapan data & berkas persyaratan Anda.</li>
+                <li>Ketika status berubah menjadi <strong>"Disetujui Admin"</strong>, dokumen resmi siap diambil.</li>
+                <li>Pengambilan di <strong>Balai Desa Karanganyar</strong> pada hari kerja (Senin - Jumat, 07:00 - 16:00 WIB) dengan membawa <strong>KTP Asli</strong>.</li>
               </ul>
             </div>
           </CardContent>
@@ -103,7 +108,7 @@ export function SubmissionSuccess({ ticketNumber, onReset }: SubmissionSuccessPr
         <Button
           onClick={handleDownloadImage}
           variant="outline"
-          className="flex-1 h-12 border-green-600 text-green-700 hover:bg-green-50"
+          className="flex-1 h-12 border-primary/30 text-primary font-bold hover:bg-primary/5 rounded-xl"
           disabled={isDownloading}
         >
           {isDownloading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
@@ -111,10 +116,10 @@ export function SubmissionSuccess({ ticketNumber, onReset }: SubmissionSuccessPr
         </Button>
         <Button
           onClick={onReset}
-          className="flex-1 h-12 bg-green-700 hover:bg-green-800"
+          className="flex-1 h-12 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl shadow-md shadow-primary/20"
         >
           <FilePlus2 className="mr-2 h-4 w-4" />
-          Buat Pengajuan Baru
+          Ajukan Surat Lain
         </Button>
       </div>
     </div>

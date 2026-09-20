@@ -142,6 +142,9 @@ export interface LetterSubmission {
   requesterUid?: string;
   requesterName?: string;
   formData: LetterSubmissionFormData;
+  ticketNumber?: string;
+  notes?: string;
+  source?: string;
   filesToUpload?: any[];
   driveFiles?: Array<{ fieldName?: string; fileName?: string; fileUrl?: string; fileId?: string }>;
 }

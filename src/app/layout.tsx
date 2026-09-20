@@ -65,11 +65,13 @@ export default function RootLayout({
   }, []);
 
   // Sembunyikan sidebar di Landing Page (/), Login Page (/login), 
-  // portal Absensi, dan fitur Dev Utility agar tidak terblokir ManagementGuard
+  // portal Absensi, fitur Dev Utility, Print, Portal Surat Online Warga (/suratonline), dan Halaman Pengajuan Surat (/pengajuan-surat)
   const isPortalAbsensi = pathname?.startsWith('/absensi/') || pathname?.startsWith('/absensi-admin/');
   const isDevUtility = pathname?.startsWith('/dev/');
   const isPrintPage = pathname?.startsWith('/print/') || pathname?.startsWith('/print');
-  const isPublicPage = pathname === '/' || pathname === '/login' || pathname === '/login/' || isPortalAbsensi || isDevUtility || isPrintPage;
+  const isSuratOnline = pathname?.startsWith('/suratonline/') || pathname === '/suratonline';
+  const isPengajuanSurat = pathname?.startsWith('/pengajuan-surat/') || pathname === '/pengajuan-surat' || pathname?.startsWith('/pengajuan');
+  const isPublicPage = pathname === '/' || pathname === '/login' || pathname === '/login/' || isPortalAbsensi || isDevUtility || isPrintPage || isSuratOnline || isPengajuanSurat;
 
   return (
     <html lang="id">
@@ -80,7 +82,7 @@ export default function RootLayout({
 
         {/* ── PWA / Android APK ────────────────────────────────── */}
         <link rel="manifest" href="/site.webmanifest" />
-        <meta name="theme-color" content="#166534" />
+        <meta name="theme-color" content="#13447c" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="application-name" content="Karanganyar" />
 

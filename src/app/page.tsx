@@ -3,7 +3,7 @@
 
 import { useUser, useDoc, useFirestore, useMemoFirebase } from "@/firebase"
 import { Button } from "@/components/ui/button"
-import { Home, LogIn, ChevronRight, Shield, Clock, MapPin, ExternalLink, Globe, UserCheck, ShieldCheck, Menu } from "lucide-react"
+import { Home, LogIn, ChevronRight, Shield, Clock, MapPin, ExternalLink, Globe, UserCheck, ShieldCheck, Menu, FileText } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { doc, onSnapshot } from "firebase/firestore"
@@ -34,7 +34,7 @@ export default function LandingPage() {
   useEffect(() => {
     setMounted(true)
     // Tarik data profil desa publik (termasuk foto utama & logo) via API route
-    fetch('/api/village-profile')
+    fetch('/api/village-profile/?t=' + Date.now(), { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         if (data && !data.error) {
@@ -55,22 +55,41 @@ export default function LandingPage() {
         const d = snap.data()
         setConfigData((prev: any) => ({ ...prev, ...d }))
       }
-    }, () => {})
+    })
     return () => unsub()
   }, [db, user])
 
   if (!mounted) return null
 
-  const heroImage = configData?.heroPhotoUrl || configData?.heroPhotoBase64
+  const getFormattedHeroImage = (data: any) => {
+    const raw = data?.heroPhotoUrl || data?.heroPhotoBase64 || data?.heroImageUrl || data?.heroImageBase64;
+    if (!raw || typeof raw !== 'string') return '/hero-desa.jpg';
+    if (raw.startsWith('http://') || raw.startsWith('https://') || raw.startsWith('data:') || raw.startsWith('/')) {
+      return raw;
+    }
+    return `data:image/jpeg;base64,${raw}`;
+  };
+
+  const getFormattedLogo = (data: any) => {
+    const raw = data?.logoBase64 || data?.logoUrl;
+    if (!raw || typeof raw !== 'string') return '';
+    if (raw.startsWith('http://') || raw.startsWith('https://') || raw.startsWith('data:')) {
+      return raw;
+    }
+    return `data:image/png;base64,${raw}`;
+  };
+
+  const heroImage = getFormattedHeroImage(configData);
+  const logoImage = getFormattedLogo(configData);
 
   return (
     <div className="flex min-h-screen flex-col bg-transparent">
       <header className="px-4 lg:px-10 h-20 flex items-center justify-between border-b border-border/70 bg-card/80 backdrop-blur-md sticky top-0 z-50">
         <div className="flex items-center gap-3">
           <div className="h-10 w-10 bg-primary rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20 overflow-hidden relative">
-            {configData?.logoBase64 ? (
+            {logoImage ? (
               <Image
-                src={configData.logoBase64}
+                src={logoImage}
                 alt="Logo Desa"
                 fill
                 className="object-contain p-1.5"
@@ -88,6 +107,12 @@ export default function LandingPage() {
 
         {/* Desktop Nav */}
         <div className="hidden md:flex gap-2">
+          <Button asChild variant="outline" className="rounded-full font-bold border-amber-400/40 text-amber-600 dark:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 transition-all">
+            <Link href="/suratonline/">
+              <FileText className="w-4 h-4 mr-1.5 text-amber-500" />
+              Surat Online Warga
+            </Link>
+          </Button>
           <Button asChild variant="outline" className="rounded-full font-bold border-primary/40 text-primary bg-card/80 backdrop-blur-md hover:bg-primary/10 transition-all">
             <Link href="/absensi/login/">Absensi</Link>
           </Button>
@@ -120,6 +145,15 @@ export default function LandingPage() {
               </SheetHeader>
 
               <div className="py-8 space-y-3">
+                <Button asChild variant="ghost" className="w-full h-14 justify-start gap-4 rounded-2xl text-sm font-black uppercase tracking-tight bg-amber-500/10 text-amber-700 hover:bg-amber-500/20 transition-all">
+                  <Link href="/suratonline/">
+                    <div className="h-10 w-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-md shadow-amber-500/20">
+                      <FileText className="h-5 w-5" />
+                    </div>
+                    Surat Online Warga
+                  </Link>
+                </Button>
+
                 <Button asChild variant="ghost" className="w-full h-14 justify-start gap-4 rounded-2xl text-sm font-black uppercase tracking-tight hover:bg-primary/5 hover:text-primary transition-all">
                   <Link href="/login/">
                     <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
@@ -173,8 +207,8 @@ export default function LandingPage() {
                   className="object-cover object-center scale-105 transition-transform duration-1000 brightness-90"
                   unoptimized
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-blue-950/75 to-slate-950/45" />
-                <div className="absolute inset-0 bg-slate-950/25 backdrop-blur-[0.5px]" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-blue-950/60 to-slate-950/35" />
+                <div className="absolute inset-0 bg-slate-950/20 backdrop-blur-[0.5px]" />
               </>
             ) : (
               <div className="w-full h-full bg-gradient-to-b from-slate-950 via-blue-950 to-slate-950">
@@ -240,6 +274,17 @@ export default function LandingPage() {
                 <span>Absensi Perangkat</span>
               </Link>
             </div>
+
+            {/* Banner Tombol Pelayanan Surat Warga Mandiri */}
+            <div className="pt-5 animate-in fade-in slide-in-from-bottom-12 duration-1000">
+              <Link
+                href="/suratonline/"
+                className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-gradient-to-r from-amber-500/20 via-amber-500/30 to-amber-500/20 hover:from-amber-500/30 hover:to-amber-500/40 border border-amber-400/50 text-amber-300 hover:text-white text-xs sm:text-sm font-black uppercase tracking-wider backdrop-blur-md shadow-lg shadow-amber-500/10 hover:scale-105 transition-all"
+              >
+                <FileText className="h-4 w-4 text-amber-400" />
+                <span>Pelayanan Mandiri Warga: Ajukan Surat Online &rarr;</span>
+              </Link>
+            </div>
           </div>
         </section>
 
@@ -294,6 +339,7 @@ export default function LandingPage() {
             <div className="space-y-4">
               <h4 className="text-amber-400 font-bold text-sm uppercase tracking-widest">Akses Cepat</h4>
               <ul className="space-y-3 text-sm">
+                <li><Link href="/suratonline/" className="text-amber-400 font-bold hover:text-amber-300 transition-colors">Surat Online Warga</Link></li>
                 <li><Link href="/absensi/login/" className="hover:text-amber-300 transition-colors">Absensi Perangkat</Link></li>
                 <li><Link href="/absensi-admin/login/" className="hover:text-amber-300 transition-colors">Monitoring Absensi</Link></li>
               </ul>
